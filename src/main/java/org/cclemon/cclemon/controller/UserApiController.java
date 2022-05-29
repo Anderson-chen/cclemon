@@ -2,6 +2,7 @@ package org.cclemon.cclemon.controller;
 
 import java.util.List;
 
+import org.cclemon.cclemon.annotation.SayHi;
 import org.cclemon.cclemon.dao.UserDao;
 import org.cclemon.cclemon.entity.Users;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ public class UserApiController {
     UserDao userDao;
 
     @GetMapping("/users")
+    @SayHi
     public List<Users> findAll() {
 
         return userDao.findAll();
