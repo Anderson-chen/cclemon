@@ -3,6 +3,7 @@ package org.cclemon.cclemon.controller;
 import java.util.List;
 
 import org.cclemon.cclemon.annotation.SayHi;
+import org.cclemon.cclemon.annotation.checkId;
 import org.cclemon.cclemon.dao.UserDao;
 import org.cclemon.cclemon.entity.Users;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +27,15 @@ public class UserApiController {
     @GetMapping("/users")
     @SayHi
     public List<Users> findAll() {
-
+        System.err.println("OK!!!");
         return userDao.findAll();
+    }
+
+    @GetMapping("/{id}")
+    @checkId
+    public Users find(@PathVariable Long id) {
+        System.err.println("OK!!!");
+        return userDao.findById(id).get();
     }
 
     @PostMapping("/user")
