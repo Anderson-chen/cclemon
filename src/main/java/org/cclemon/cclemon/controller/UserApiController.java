@@ -2,7 +2,6 @@ package org.cclemon.cclemon.controller;
 
 import java.util.List;
 
-import org.cclemon.cclemon.annotation.SayHi;
 import org.cclemon.cclemon.annotation.checkId;
 import org.cclemon.cclemon.dao.UserDao;
 import org.cclemon.cclemon.entity.Users;
@@ -25,16 +24,20 @@ public class UserApiController {
     UserDao userDao;
 
     @GetMapping("/users")
-    @SayHi
-    public List<Users> findAll() {
-        System.err.println("OK!!!");
-        return userDao.findAll();
+    public List<Users> findAll() throws Exception {
+        int x= 1;
+        int y = 2;
+        int z = x+y;
+
+        throw new Exception();
+        // return userDao.findAll();
     }
 
     @GetMapping("/{id}")
     @checkId
     public Users find(@PathVariable Long id) {
         System.err.println("OK!!!");
+        
         return userDao.findById(id).get();
     }
 
