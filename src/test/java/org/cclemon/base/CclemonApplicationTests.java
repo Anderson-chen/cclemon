@@ -1,10 +1,10 @@
-package org.cclemon.cclemonbase;
+package org.cclemon.base;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class CclemonBaseApplicationTests {
+class CclemonApplicationTests {
 
 	@Test
 	void contextLoads() {

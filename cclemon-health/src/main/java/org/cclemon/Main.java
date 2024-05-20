@@ -1,6 +1,6 @@
 package org.cclemon;
 
-import org.cclemon.cclemonbase.utils.TestUtils;
+import org.cclemon.base.utils.TestUtils;
 
 public class Main {
     public static void main(String[] args) {
