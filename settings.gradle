@@ -1,0 +1,3 @@
+rootProject.name = 'cclemon-base'
+include 'cclemon-health'
+
