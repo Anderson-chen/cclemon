@@ -11,15 +11,8 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/cclemon-core" />
             <option value="$PROJECT_DIR$/cclemon-health" />
-          </set>
-        </option>
-      </GradleProjectSettings>
-      <GradleProjectSettings>
-        <option name="externalProjectPath" value="$PROJECT_DIR$/../cclemon-health" />
-        <option name="modules">
-          <set>
-            <option value="$PROJECT_DIR$/../cclemon-health" />
           </set>
         </option>
       </GradleProjectSettings>

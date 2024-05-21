@@ -1,0 +1,3 @@
+bootJar {
+    mainClassName = 'org.cclemon.Main'
+}
