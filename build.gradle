@@ -17,21 +17,20 @@ configurations {
 	}
 }
 
-
-
-
-
 allprojects {
+	repositories {
+		mavenCentral()
+	}
+}
+
+
+subprojects {
 	apply plugin: 'java'
 	apply plugin: 'org.springframework.boot'
 	apply plugin: 'io.spring.dependency-management'
 
 	ext {
 		set('springCloudVersion', "2023.0.1")
-	}
-
-	repositories {
-		mavenCentral()
 	}
 
 	dependencies {
