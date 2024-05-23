@@ -2,7 +2,7 @@ package org.cclemon;
 
 
 
-public class Main {
+public class CclemonHealthApplication {
 
     public static void main(String[] args) {
         System.out.println("Hello health!");
