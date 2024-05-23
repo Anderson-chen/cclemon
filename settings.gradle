@@ -1,3 +1,4 @@
 rootProject.name = 'cclemon'
-include 'cclemon-health' , 'cclemon-core'
+include 'cclemon-health'
+include 'cclemon-core'
 
