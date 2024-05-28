@@ -1,4 +1,3 @@
 rootProject.name = 'cclemon'
 include 'cclemon-health'
 include 'cclemon-core'
-
