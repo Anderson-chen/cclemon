@@ -88,7 +88,8 @@ public class SecurityConfig {
                 )
                 // Form login handles the redirect to the login page from the
                 // authorization server filter chain
-                .formLogin(Customizer.withDefaults());
+                .formLogin(Customizer.withDefaults())
+                .oauth2Login(Customizer.withDefaults());
         return http.cors(Customizer.withDefaults()).build();
     }
 
@@ -105,19 +106,18 @@ public class SecurityConfig {
 
     @Bean
     public RegisteredClientRepository registeredClientRepository() {
-        RegisteredClient oidcClient = RegisteredClient.withId("cclemon-core")
-                .clientId("cclemon-core-client-id")
-                .clientSecret("cclemon-core-client-secret")
-                        .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-                        .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-                        .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-                        .redirectUri("http://localhost:8080/login/oauth2/code/cclemon-core")
-                        .postLogoutRedirectUri("http://127.0.0.1:8080/")
-                        .scope(OidcScopes.OPENID)
-                        .scope(OidcScopes.PROFILE)
-                        .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build())
+        RegisteredClient oidcClient = RegisteredClient.withId(UUID.randomUUID().toString())
+                .clientId("oidc-client")
+                .clientSecret("{noop}secret")
+                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+                .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
+                .redirectUri("http://127.0.0.1:5173/")
+                .postLogoutRedirectUri("http://127.0.0.1:5173/")
+                .scope(OidcScopes.OPENID)
+                .scope(OidcScopes.PROFILE)
+                .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build())
                 .build();
-
         return new InMemoryRegisteredClientRepository(oidcClient);
     }
 
@@ -150,7 +150,7 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
-        config.addAllowedOrigin("http://localhost:8080");
+        config.addAllowedOrigin("http://127.0.0.1:5173");
         config.setAllowCredentials(true);
         source.registerCorsConfiguration("/**", config);
         return source;

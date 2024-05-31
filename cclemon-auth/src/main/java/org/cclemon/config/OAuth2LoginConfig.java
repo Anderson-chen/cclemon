@@ -2,6 +2,7 @@ package org.cclemon.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
@@ -10,11 +11,12 @@ import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.core.oidc.IdTokenClaimNames;
 
 @Configuration
+@EnableWebSecurity
 public class OAuth2LoginConfig {
 
     @Bean
     public ClientRegistrationRepository clientRegistrationRepository() {
-        return new InMemoryClientRegistrationRepository(this.googleClientRegistration(), this.cclemonAuthClientRegistration());
+        return new InMemoryClientRegistrationRepository(this.googleClientRegistration());
     }
 
     private ClientRegistration googleClientRegistration() {
@@ -31,20 +33,6 @@ public class OAuth2LoginConfig {
                 .userNameAttributeName(IdTokenClaimNames.SUB)
                 .jwkSetUri("https://www.googleapis.com/oauth2/v3/certs")
                 .clientName("Google")
-                .build();
-    }
-
-    private ClientRegistration cclemonAuthClientRegistration() {
-        return ClientRegistration.withRegistrationId("cclemon-core")
-                .clientId("cclemon-core-client-id")
-                .clientSecret("cclemon-core-client-secret")
-                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-                .redirectUri("{baseUrl}/login/oauth2/code/{registrationId}")
-                .scope("openid")
-                .authorizationUri("http://localhost:9000/oauth2/authorize")
-                .tokenUri("http://localhost:9000/oauth2/token")
-                .clientName("cclemon-sso")
                 .build();
     }
 }
