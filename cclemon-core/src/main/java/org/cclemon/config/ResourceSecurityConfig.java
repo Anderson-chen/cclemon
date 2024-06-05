@@ -5,6 +5,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.JwtDecoders;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -20,12 +22,16 @@ public class ResourceSecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .anyRequest().authenticated()
                 )
-                .oauth2ResourceServer(oauth2 -> oauth2
-                        .jwt(jwt -> jwt
-                                .jwkSetUri("http://localhost:9000/.well-known/jwks.json")
+                .oauth2ResourceServer(oauth2ResourceServer ->
+                        oauth2ResourceServer.jwt(Customizer.withDefaults()
                         )
                 );
         return http.cors(Customizer.withDefaults()).build();
+    }
+
+    @Bean
+    JwtDecoder jwtDecoder() {
+        return JwtDecoders.fromIssuerLocation("http://localhost:9000");
     }
 
     @Bean
