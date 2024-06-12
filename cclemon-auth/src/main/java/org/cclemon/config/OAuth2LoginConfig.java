@@ -21,12 +21,12 @@ public class OAuth2LoginConfig {
 
     private ClientRegistration googleClientRegistration() {
         return ClientRegistration.withRegistrationId("google")
-                .clientId("google-client-id")
-                .clientSecret("google-client-secret")
+                .clientId("938498834002-pbvt6nf07av4r35grir897go24k32nm3.apps.googleusercontent.com")
+                .clientSecret("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")
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .redirectUri("{baseUrl}/login/oauth2/code/{registrationId}")
-                .scope("openid", "profile", "email", "address", "phone")
+                .scope("openid","profile", "email", "address", "phone")
                 .authorizationUri("https://accounts.google.com/o/oauth2/v2/auth")
                 .tokenUri("https://www.googleapis.com/oauth2/v4/token")
                 .userInfoUri("https://www.googleapis.com/oauth2/v3/userinfo")
