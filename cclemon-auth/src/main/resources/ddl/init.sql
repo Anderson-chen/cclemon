@@ -23,7 +23,7 @@ CREATE TABLE authorization (
     principalName varchar(255) NOT NULL,
     authorizationGrantType varchar(255) NOT NULL,
     authorizedScopes varchar(1000) DEFAULT NULL,
-    attributes varchar(4000) DEFAULT NULL,
+    attributes varchar(1000) DEFAULT NULL,
     state varchar(500) DEFAULT NULL,
     authorizationCodeValue varchar(4000) DEFAULT NULL,
     authorizationCodeIssuedAt timestamp DEFAULT NULL,
@@ -53,7 +53,7 @@ CREATE TABLE authorization (
     deviceCodeExpiresAt timestamp DEFAULT NULL,
     deviceCodeMetadata varchar(2000) DEFAULT NULL,
     PRIMARY KEY (id)
-);
+)DEFAULT CHARSET=ascii;
 
 CREATE TABLE authorizationConsent (
     registeredClientId varchar(255) NOT NULL,
