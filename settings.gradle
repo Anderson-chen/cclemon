@@ -2,4 +2,5 @@ rootProject.name = 'cclemon'
 include 'cclemon-health'
 include 'cclemon-core'
 include 'cclemon-auth'
+include 'cclemon-practice'
 
