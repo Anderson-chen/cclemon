@@ -1,11 +1,12 @@
 package org.cclemon.repository;
 
-import org.cclemon.encoder.PazzwordEncoder;
 import org.cclemon.entity.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.UUID;
 
 
 @SpringBootTest
@@ -20,9 +21,10 @@ class UserRepositoryTest {
     @Test
     void save() {
         var user = new User();
-        user.setId(2L);
+        user.setId(UUID.randomUUID().toString());
         user.setPassword(encoder.encode("123"));
         user.setUsername("A");
+        user.setCountry("taiwan");
         repository.save(user);
     }
 

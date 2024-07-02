@@ -6,12 +6,9 @@ import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
-import org.apache.commons.collections4.MapUtils;
 import org.cclemon.encoder.PazzwordEncoder;
-import org.cclemon.entity.User;
 import org.cclemon.repository.UserRepository;
 import org.cclemon.repository.impl.JpaUserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -49,8 +46,6 @@ import java.util.function.Function;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    @Autowired
-    UserRepository userRepository;
 
     private static KeyPair generateRsaKey() {
         KeyPair keyPair;
@@ -79,9 +74,6 @@ public class SecurityConfig {
                 .oidc(oidc -> oidc.userInfoEndpoint((userinfo -> userinfo.userInfoMapper(userInfoMapper))));
 
         // Accept access tokens for User Info and/or Client Registration
-        http.oauth2ResourceServer((resourceServer) -> resourceServer.jwt(Customizer.withDefaults()));
-
-        // social login
         http.oauth2ResourceServer((resourceServer) -> resourceServer.jwt(Customizer.withDefaults()));
 
         //cors
@@ -161,14 +153,13 @@ public class SecurityConfig {
     }
 
     @Bean
-    public OAuth2TokenCustomizer<JwtEncodingContext> tokenCustomizer() {
+    public OAuth2TokenCustomizer<JwtEncodingContext> tokenCustomizer(UserRepository userRepository) {
         return (context) -> {
             if (OAuth2TokenType.ACCESS_TOKEN.equals(context.getTokenType())) {
-                context.getClaims().claims((claims) -> {
-                    var username = MapUtils.getString(claims, "sub");
-                    var opt = userRepository.findByUsername(username);
-                    opt.ifPresent(user -> claims.put("user", new ObjectMapper().convertValue(user, Map.class)));
-                });
+                var username = context.getPrincipal().getName();
+                var opt = userRepository.findByUsername(username);
+                context.getClaims().claims((claims) ->
+                        opt.ifPresent(user -> claims.put("user", new ObjectMapper().convertValue(user, Map.class))));
             }
         };
     }
