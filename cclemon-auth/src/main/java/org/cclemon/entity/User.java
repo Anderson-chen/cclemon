@@ -19,11 +19,15 @@ import java.util.Collection;
 public class User implements UserDetails {
 
     @Id
-    private Long id;
+    private String id;
 
     private String username;
 
+    @JsonIgnore
     private String password;
+
+    private String country;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
