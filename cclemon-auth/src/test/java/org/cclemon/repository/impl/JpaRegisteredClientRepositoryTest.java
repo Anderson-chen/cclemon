@@ -3,6 +3,7 @@ package org.cclemon.repository.impl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.core.oidc.OidcScopes;
@@ -18,12 +19,15 @@ class JpaRegisteredClientRepositoryTest {
     @Autowired
     private JpaRegisteredClientRepository jpaRegisteredClientRepository;
 
+    @Autowired
+    PasswordEncoder encoder;
+
     @Test
     void save() {
         RegisteredClient oidcClient = RegisteredClient.withId(UUID.randomUUID().toString())
                 .clientIdIssuedAt(Instant.now())
                 .clientId("oidc-client")
-                .clientSecret("{noop}secret")
+                .clientSecret(encoder.encode("secret"))
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
