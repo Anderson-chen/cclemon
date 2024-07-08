@@ -6,17 +6,17 @@ import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
-import org.cclemon.encoder.PazzwordEncoder;
 import org.cclemon.repository.UserRepository;
-import org.cclemon.repository.impl.JpaUserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
@@ -62,6 +62,8 @@ public class SecurityConfig {
     @Bean
     @Order(1)
     public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
+
+        // Enable authorization server
         OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
 
         // Enable OpenID Connect 1.0
@@ -110,11 +112,18 @@ public class SecurityConfig {
     }
 
     @Bean
-    public DaoAuthenticationProvider daoAuthenticationProvider(JpaUserRepository jpaUserRepository) {
-        var provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(jpaUserRepository);
-        provider.setPasswordEncoder(new PazzwordEncoder());
-        return provider;
+    public UserDetailsService userDetailsService(UserRepository userRepository) {
+        return username -> {
+            var opt = userRepository.findByUsername(username);
+            if (opt.isEmpty()) {
+                throw new UsernameNotFoundException("User not found");
+            }
+            var user = opt.get();
+            return User.withUsername(user.getUsername())
+                    .password(user.getPassword())
+                    .authorities("USER")
+                    .build();
+        };
     }
 
     @Bean
