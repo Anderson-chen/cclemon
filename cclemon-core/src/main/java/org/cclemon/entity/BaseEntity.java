@@ -58,7 +58,7 @@ public class BaseEntity {
      */
     @LastModifiedDate
     @Column(name = "last_modified_time")
-    private LocalDateTime LastModifiedTime;
+    private LocalDateTime lastModifiedTime;
 
     /**
      * Desc:是否刪除
