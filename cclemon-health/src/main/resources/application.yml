@@ -1,8 +1,12 @@
 spring:
+  jpa:
+    hibernate:
+      ddl-auto: update  # 可選 create / update / none
+    show-sql: true
   datasource:
-    url: jdbc:mysql://localhost:3306/cclemon-auth?allowPublicKeyRetrieval=true&serverTimezone=Asia/Taipei&useSSL=false
+    url: jdbc:mysql://localhost:3306/cclemon-health?allowPublicKeyRetrieval=true&serverTimezone=Asia/Taipei&useSSL=false
     username: root
-    password: 123456
+    password: P@ssw0rd
     driverClassName: com.mysql.cj.jdbc.Driver
 
 logging:
