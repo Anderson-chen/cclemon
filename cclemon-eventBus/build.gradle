@@ -1,0 +1,11 @@
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-integration'
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+	implementation 'org.springframework.integration:spring-integration-kafka'
+	implementation 'org.springframework.integration:spring-integration-stomp'
+	implementation 'org.springframework.integration:spring-integration-websocket'
+	implementation 'org.springframework.kafka:spring-kafka'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.integration:spring-integration-test'
+	testImplementation 'org.springframework.kafka:spring-kafka-test'
+}
