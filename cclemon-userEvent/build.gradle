@@ -1,0 +1,13 @@
+dependencies {
+    // Spring Boot Web
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    // Kafka Producer
+    implementation 'org.springframework.kafka:spring-kafka'
+
+    // Spring Integration Core
+    implementation 'org.springframework.integration:spring-integration-core'
+
+    // 可選：如果你要用 Spring Integration Kafka
+    implementation 'org.springframework.integration:spring-integration-kafka'
+}
