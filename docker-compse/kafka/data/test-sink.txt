@@ -1,0 +1,20 @@
+foo 
+bar 
+barx 
+X
+XX
+X
+XXX
+XX
+XX
+
+
+sadas
+
+asdsad
+sadsaXXXX"hello kafka" 
+"Another line" 
+new line: -c: line 1: unexpected EOF while looking for matching `''
+
+
+
