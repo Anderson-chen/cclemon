@@ -12,6 +12,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class ExerciseService {
 
+
     private final ExerciseRepository exerciseRepository;
 
     private final CclemonUserRepository cclemonUserRepository;
