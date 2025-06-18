@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  cclemon-auth:
+    build: .                    # 🔥 從當前資料夾的 Dockerfile 建 image
+    image: cclemon-auth      # ✅ 自定義 image 名稱與 tag
+    container_name: cclemon-auth
+    ports:
+      - "9000:9000"
+    networks:
+      - cclemon-network
+
+networks:
+  cclemon-network:
+    external: true

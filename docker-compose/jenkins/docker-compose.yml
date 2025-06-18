@@ -1,0 +1,16 @@
+# docker-compose.yml
+version: '3.8'
+services:
+  jenkins:
+    image: jenkins/jenkins:lts
+    ports:
+      - "3000:8080"
+      - "50000:50000"  # 給 agent 用
+    volumes:
+      - jenkins_home:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock  # 如需 Jenkins 內部執行 docker
+    environment:
+      - JAVA_OPTS=-Djenkins.install.runSetupWizard=false
+
+volumes:
+  jenkins_home:

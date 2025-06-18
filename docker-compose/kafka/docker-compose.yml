@@ -17,6 +17,8 @@ services:
       - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT
       - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
       - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=INTERNAL
+    networks:
+      - cclemon-network
 
   kafka2:
     container_name: kafka2
@@ -34,6 +36,8 @@ services:
       - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT
       - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
       - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=INTERNAL
+    networks:
+      - cclemon-network
 
   kafka3:
     container_name: kafka3
@@ -51,6 +55,8 @@ services:
       - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT
       - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
       - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=INTERNAL
+    networks:
+      - cclemon-network
 
   kafka-ui:
     container_name: kafka-ui
@@ -64,6 +70,8 @@ services:
       - kafka1
       - kafka2
       - kafka3
+    networks:
+      - cclemon-network
 
   kafka-connect:
     container_name: kafka-connect
@@ -83,6 +91,8 @@ services:
       - kafka1
       - kafka2
       - kafka3
+    networks:
+      - cclemon-network
 
 volumes:
   kafka_data1:
@@ -91,3 +101,7 @@ volumes:
     driver: local
   kafka_data3:
     driver: local
+
+networks:
+  cclemon-network:
+    external: true
