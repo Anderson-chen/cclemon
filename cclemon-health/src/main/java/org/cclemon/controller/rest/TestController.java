@@ -17,7 +17,6 @@ public class TestController {
     @GetMapping(value = "/test")
     public Exercise test() throws InterruptedException {
         System.out.println(Thread.currentThread());
-        Redisson
         return exerciseService.insert();
     }
 
