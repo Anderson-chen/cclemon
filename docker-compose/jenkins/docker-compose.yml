@@ -1,16 +1,23 @@
-# docker-compose.yml
-version: '3.8'
 services:
   jenkins:
-    image: jenkins/jenkins:lts
+    build: .
+    image: jenkins
+    container_name: jenkins
     ports:
       - "3000:8080"
-      - "50000:50000"  # 給 agent 用
+      - "50000:50000"
     volumes:
       - jenkins_home:/var/jenkins_home
-      - /var/run/docker.sock:/var/run/docker.sock  # 如需 Jenkins 內部執行 docker
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./jenkins_home/init.groovy.d:/usr/share/jenkins/ref/init.groovy.d
     environment:
       - JAVA_OPTS=-Djenkins.install.runSetupWizard=false
+    networks:
+      - cclemon-network
 
 volumes:
   jenkins_home:
+
+networks:
+  cclemon-network:
+    external: true
