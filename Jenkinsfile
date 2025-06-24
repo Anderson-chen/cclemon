@@ -3,6 +3,7 @@ pipeline {
     docker {
       image 'gradle:8.8-jdk21'
       args '-v $HOME/.gradle:/home/gradle/.gradle' // Optional: cache Gradle deps
+      // 注意：要確保 Jenkins 容器有權限使用 docker daemon（掛載 /var/run/docker.sock）
     }
   }
 
@@ -12,12 +13,11 @@ pipeline {
 
   stages {
 
-      stage('Clean Workspace') {
-        steps {
-          deleteDir() // 清空 Jenkins workspace 目錄
-        }
+    stage('Clean Workspace') {
+      steps {
+        deleteDir()
       }
-
+    }
 
     stage('Checkout') {
       steps {
@@ -37,6 +37,22 @@ pipeline {
     stage('Archive Jar') {
       steps {
         archiveArtifacts artifacts: 'cclemon-auth/build/libs/*.jar', fingerprint: true
+      }
+    }
+
+    stage('Build Docker Image') {
+      steps {
+        dir('cclemon-auth') {
+          script {
+            // 自訂 image 名稱和 tag，改成你想要的
+            def imageName = "cclemon-auth"
+            def imageTag = "latest"
+
+            sh "docker build -t ${imageName}:${imageTag} ."
+            // 如果要推到遠端 registry，記得先 docker login
+            // sh "docker push ${imageName}:${imageTag}"
+          }
+        }
       }
     }
   }
