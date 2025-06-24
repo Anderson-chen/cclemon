@@ -1,5 +1,8 @@
 pipeline {
 
+
+  agent none
+  
   environment {
     TZ = 'Asia/Taipei'
   }
