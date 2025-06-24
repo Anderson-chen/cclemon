@@ -1,0 +1,32 @@
+pipeline {
+  agent {
+    docker {
+      image 'gradle:8.8-jdk21-alpine'
+      args '-v $HOME/.gradle:/home/gradle/.gradle'  // cache gradle to speed up
+    }
+  }
+
+  environment {
+    TZ = "Asia/Taipei"
+  }
+
+  stages {
+    stage('Checkout') {
+      steps {
+        checkout scm
+      }
+    }
+
+    stage('Build') {
+      steps {
+        sh './gradlew clean build -x test'
+      }
+    }
+
+    stage('Archive Artifact') {
+      steps {
+        archiveArtifacts artifacts: 'build/libs/*.jar', fingerprint: true
+      }
+    }
+  }
+}
