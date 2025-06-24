@@ -1,7 +1,7 @@
 pipeline {
   agent {
     docker {
-      image 'sumergerepo/ubi-quarkus-graalvmce-builder-image:jdk-21-rb'
+      image 'gradle:8.8-jdk21'
       args '-v $HOME/.gradle:/home/gradle/.gradle' // Optional: cache Gradle deps
     }
   }
