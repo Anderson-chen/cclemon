@@ -9,6 +9,7 @@ services:
     volumes:
       - kafka_data1:/bitnami
     environment:
+      - KAFKA_KRAFT_CLUSTER_ID=my-kafka-cluster_id
       - KAFKA_CFG_NODE_ID=0
       - KAFKA_CFG_PROCESS_ROLES=controller,broker
       - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@kafka1:9094,1@kafka2:9094,2@kafka3:9094
@@ -28,6 +29,7 @@ services:
     volumes:
       - kafka_data2:/bitnami
     environment:
+      - KAFKA_KRAFT_CLUSTER_ID=my-kafka-cluster_id
       - KAFKA_CFG_NODE_ID=1
       - KAFKA_CFG_PROCESS_ROLES=controller,broker
       - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@kafka1:9094,1@kafka2:9094,2@kafka3:9094
@@ -47,6 +49,7 @@ services:
     volumes:
       - kafka_data3:/bitnami
     environment:
+      - KAFKA_KRAFT_CLUSTER_ID=my-kafka-cluster_id
       - KAFKA_CFG_NODE_ID=2
       - KAFKA_CFG_PROCESS_ROLES=controller,broker
       - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@kafka1:9094,1@kafka2:9094,2@kafka3:9094
