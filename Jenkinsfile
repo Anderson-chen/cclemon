@@ -37,10 +37,7 @@ pipeline {
       steps {
         dir('cclemon-auth') {
           script {
-            def imageName = "cclemon-auth"
-            def imageTag = "latest"
-            sh "docker build -t ${imageName}:${imageTag} ."
-            // sh "docker push ${imageName}:${imageTag}"
+            sh "docker-compose up"
           }
         }
       }
