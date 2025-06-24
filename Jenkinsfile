@@ -34,16 +34,10 @@ pipeline {
     }
 
     stage('Build Docker Image') {
-      agent {
-        docker {
-          image 'docker:24-cli'  // 這裡用官方 Docker CLI image
-          args '-v /var/run/docker.sock:/var/run/docker.sock -v $HOME/.gradle:/home/gradle/.gradle'
-        }
-      }
+    agent { label 'master' }
       steps {
         dir('cclemon-auth') {
           script {
-          sh 'echo "Running on container: $(hostname)"'
             // 自訂 image 名稱和 tag，改成你想要的
             def imageName = "cclemon-auth"
             def imageTag = "latest"
