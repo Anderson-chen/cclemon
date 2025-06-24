@@ -11,6 +11,14 @@ pipeline {
   }
 
   stages {
+
+      stage('Clean Workspace') {
+        steps {
+          deleteDir() // 清空 Jenkins workspace 目錄
+        }
+      }
+
+
     stage('Checkout') {
       steps {
         checkout scm
