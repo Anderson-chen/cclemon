@@ -1,8 +1,10 @@
 pipeline {
+  agent {
+    docker {
+      image 'sumergerepo/ubi-quarkus-graalvmce-builder-image:jdk-21-rb'
+    }
+  }
 
-
-  agent none
-  
   environment {
     TZ = 'Asia/Taipei'
   }
@@ -40,11 +42,12 @@ pipeline {
       steps {
         dir('cclemon-auth') {
           script {
+            // 自訂 image 名稱和 tag，改成你想要的
             def imageName = "cclemon-auth"
             def imageTag = "latest"
 
             sh "docker build -t ${imageName}:${imageTag} ."
-            // 如果需要推送到遠端 registry，取消下面註解
+            // 如果要推到遠端 registry，記得先 docker login
             // sh "docker push ${imageName}:${imageTag}"
           }
         }
