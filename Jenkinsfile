@@ -19,7 +19,9 @@ pipeline {
 
     stage('Build') {
       steps {
-          sh './gradlew clean build -x test'
+        dir('cclemon-auth') {
+          sh '../gradlew clean build -x test'
+        }
       }
     }
 
