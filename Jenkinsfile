@@ -34,7 +34,12 @@ pipeline {
     }
 
     stage('Build Docker Image') {
-    agent { label 'master' }
+      agent {
+        docker {
+          image 'docker:24'  // 這裡用官方 Docker CLI image
+          args '-v /var/run/docker.sock:/var/run/docker.sock'
+        }
+      }
       steps {
         dir('cclemon-auth') {
           script {
