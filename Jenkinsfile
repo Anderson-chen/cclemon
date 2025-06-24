@@ -1,7 +1,9 @@
 pipeline {
   agent {
     docker {
-      image 'sumergerepo/ubi-quarkus-graalvmce-builder-image:jdk-21-rb'
+      image 'gradle:8.8-jdk21'
+      args '-v $HOME/.gradle:/home/gradle/.gradle' // Optional: cache Gradle deps
+      // 注意：要確保 Jenkins 容器有權限使用 docker daemon（掛載 /var/run/docker.sock）
     }
   }
 
