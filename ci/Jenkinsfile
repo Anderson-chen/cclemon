@@ -45,7 +45,8 @@ parameters {
             def imageTag = "${params.PROFILE}"
             sh """
               docker build -f ../ci/Dockerfile \
-                           -t ${params.PROJECT_NAME}:${params.PROFILE}
+                           -t ${params.PROJECT_NAME}:${params.PROFILE} \
+                           .
             """
           }
         }
