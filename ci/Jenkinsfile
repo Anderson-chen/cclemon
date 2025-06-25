@@ -1,12 +1,10 @@
 pipeline {
 
-properties([
   parameters([
     choice(name: 'TYPE', choices: ['build', 'deploy'], description: '執行類型'),
     string(name: 'PROJECT_NAME', defaultValue: 'cclemon-auth', description: '專案'),
     choice(name: 'PROFILE', choices: ['dev', 'prod'], description: '環境')
   ])
-])
 
   agent {
     dockerfile {
