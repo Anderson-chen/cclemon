@@ -11,9 +11,9 @@ pipeline {
   }
 
 parameters {
-    choice(name: '執行類型', choices: ['build', 'deploy'])
-    choice(name: '專案', choices: ['cclemon-auth', 'cclemon-health'])
-    choice(name: '環境', choices: ['dev', 'prod'])
+    choice(name: 'TYPE', choices: ['build', 'deploy'])
+    choice(name: 'PROJECT_NAME', choices: ['cclemon-auth', 'cclemon-health'])
+    choice(name: 'PROFILE', choices: ['dev', 'prod'])
 }
 
   stages {
