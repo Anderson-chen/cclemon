@@ -68,9 +68,9 @@ pipeline {
           script {
             echo "Deploying ${params.PROJECT_NAME} with profile ${params.PROFILE}"
             // 可加上實際部署腳本或指令
-            sh "docker-compose up"
+            sh "docker-compose up -d"
           }
-        }     
+        }
       }
     }
   }
