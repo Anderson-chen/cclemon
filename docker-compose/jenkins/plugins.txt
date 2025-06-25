@@ -4,3 +4,4 @@ workflow-aggregator
 git
 blueocean
 pipeline-github-lib
+pipeline-stage-view

@@ -1,14 +1,29 @@
 services:
   grafana:
     image: grafana/grafana
-    container_name: grafana
-    restart: unless-stopped
     ports:
-     - '2000:3000'
-    networks:
-      - cclemon-network   
+      - "2000:3000"
     volumes:
       - grafana-storage:/var/lib/grafana
+    networks:
+      - cclemon-network
+
+  loki:
+    image: grafana/loki:latest
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+    networks:
+      - cclemon-network
+
+  promtail:
+    image: grafana/promtail:latest
+    volumes:
+      - ./promtail-config.yaml:/etc/promtail/promtail.yaml
+      - /path/to/your/logs:/var/log  # <-- 對應 Spring Boot log
+    command: -config.file=/etc/promtail/promtail.yaml
+    networks:
+      - cclemon-network
 
 volumes:
   grafana-storage: {}

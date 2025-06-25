@@ -1,0 +1,50 @@
+commit 0bdc00473cc591a8b116326487052d404acaaf51
+tree ebce28bbf5854267cd27bea2160b6498fa2c4be9
+parent 002958627151b18e3dde9d94c00eedc9e8cc3861
+author andychen <zz60509561@gmail.com> 2025-06-25 11:22:19 +0800
+committer andychen <zz60509561@gmail.com> 2025-06-25 11:22:19 +0800
+
+    feat:修改cicd dockerfile位置
+
+
+:100644 100644 3179ecd7703485b020d4b4afd9d7c1d609d101d3 5186f2fa6f444f9feffa6d37c830cddb9c395301 M	ci/Jenkinsfile
+commit 002958627151b18e3dde9d94c00eedc9e8cc3861
+tree 07b19c0c5ba637f29add2fd9b2ec1138117958a3
+parent c3b25ce4d050be1439ca48fad2d16063ab9f2c5c
+author andychen <zz60509561@gmail.com> 2025-06-25 11:21:01 +0800
+committer andychen <zz60509561@gmail.com> 2025-06-25 11:21:01 +0800
+
+    feat:修改cicd dockerfile位置
+
+
+:100644 100644 da5052c33f780f681834f82d2a3404b4b5501e15 3179ecd7703485b020d4b4afd9d7c1d609d101d3 M	ci/Jenkinsfile
+commit c3b25ce4d050be1439ca48fad2d16063ab9f2c5c
+tree e93cdd97091446e6065c97a07ec82d3fc2194dfc
+parent 1fa98fff673fe2adc435da14d4e2f01e768eb928
+author andychen <zz60509561@gmail.com> 2025-06-25 11:19:36 +0800
+committer andychen <zz60509561@gmail.com> 2025-06-25 11:19:36 +0800
+
+    feat:修改cicd dockerfile位置
+
+
+:100644 100644 64125f0cf6e40f5b90dd382bf26d9874a8ab7207 da5052c33f780f681834f82d2a3404b4b5501e15 M	ci/Jenkinsfile
+commit 1fa98fff673fe2adc435da14d4e2f01e768eb928
+tree 7e54a1959abacfcb7e54d41707f69413acdb9c09
+parent 6b1623e24c97eeef7484f943734c58ff2a4d884a
+author andychen <zz60509561@gmail.com> 2025-06-25 11:18:15 +0800
+committer andychen <zz60509561@gmail.com> 2025-06-25 11:18:15 +0800
+
+    feat:修改cicd dockerfile位置
+
+
+:100644 100644 0d6140924d8316bf74bb9961c2bee59c8ddd9e15 64125f0cf6e40f5b90dd382bf26d9874a8ab7207 M	ci/Jenkinsfile
+commit 6b1623e24c97eeef7484f943734c58ff2a4d884a
+tree bc0fd5947aa6cc55cbac1c10dc710fd26f8c2dc0
+parent 4b5da5285ad08bd259ba2e92412fae26a1940364
+author andychen <zz60509561@gmail.com> 2025-06-25 11:17:18 +0800
+committer andychen <zz60509561@gmail.com> 2025-06-25 11:17:18 +0800
+
+    feat:修改cicd dockerfile位置
+
+
+:100644 100644 11dd1ad40d3f09906b112905b44f00609de34b3b 0d6140924d8316bf74bb9961c2bee59c8ddd9e15 M	ci/Jenkinsfile

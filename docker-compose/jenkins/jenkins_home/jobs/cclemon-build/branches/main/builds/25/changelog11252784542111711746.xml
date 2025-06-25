@@ -1,0 +1,21 @@
+commit 70cce71d6f317e257c849ac541f1efff825af0d4
+tree 9e5d3bf18d578714eef9603bbe7fcfbcdfe66623
+parent 0fa33444247407cd97d8cb0227947b9ce5cd58ef
+author andychen <zz60509561@gmail.com> 2025-06-25 14:21:33 +0800
+committer andychen <zz60509561@gmail.com> 2025-06-25 14:21:33 +0800
+
+    feat:調整jenkins流程
+
+
+:100644 100644 a682a22e9efd3b36ed0b5f69cee797807ad18643 632421d8722cc47492c55e38369cda270ed5a563 M	ci/Jenkinsfile
+commit 0fa33444247407cd97d8cb0227947b9ce5cd58ef
+tree 85527b942d266ac8c254db03dc9fefdb4df574b7
+parent 900c029667a3bdcc145c4e2be6a505e25d59059e
+author andychen <zz60509561@gmail.com> 2025-06-25 14:20:03 +0800
+committer andychen <zz60509561@gmail.com> 2025-06-25 14:20:03 +0800
+
+    feat:調整jenkins流程
+
+
+:100644 100644 6fe3f0e79129d7363172cce94da8cdd5bb36bcd1 bf440b3f71a8463fba18c4ac85d840c3320a6eeb M	cclemon-auth/docker-compose.yml
+:100644 100644 d64aea873f509262cc5799c8badb5b727a404d14 a682a22e9efd3b36ed0b5f69cee797807ad18643 M	ci/Jenkinsfile

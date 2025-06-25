@@ -1,0 +1,32 @@
+Started by user [8mha:////4FWy+uPd/RECZM/4Su9V8g+pTIzCHbMgCoJQy8MNOhjiAAAAlx+LCAAAAAAAAP9b85aBtbiIQTGjNKU4P08vOT+vOD8nVc83PyU1x6OyILUoJzMv2y+/JJUBAhiZGBgqihhk0NSjKDWzXb3RdlLBUSYGJk8GtpzUvPSSDB8G5tKinBIGIZ+sxLJE/ZzEvHT94JKizLx0a6BxUmjGOUNodHsLgAzWEgZu/dLi1CL9xJTczDwAj6GcLcAAAAA=[0madmin
+[8mha:////4B7hffJVWCOEiI+Z20Ojw2dqrDoixNLeKqX/KziTZT0EAAAAhB+LCAAAAAAAAP9b85aBtbiIwSa/KF0vKzUvOzOvODlTryCnNB3I0kvPLMkoTYpPKkrMS86IL84vLUpO1XPPLPEoTXLOzyvOz0n1yy9JZYAARiYGRi8GzpLM3NTiksTcgooiBqmM0pTi/Dy9ZIhiPayaGCoKgPT0pUaZ3gCwSGZKjgAAAA==[0mConnecting to https://api.github.com using Anderson-chen/******
+[8mha:////4HwiUcNSe8JOtkRga5aY17005PFoKgnrQ9U4rWc0UDxQAAAAhB+LCAAAAAAAAP9b85aBtbiIwSa/KF0vKzUvOzOvODlTryCnNB3I0kvPLMkoTYpPKkrMS86IL84vLUpO1XPPLPEoTXLOzyvOz0n1yy9JZYAARiYGRi8GzpLM3NTiksTcgooiBqmM0pTi/Dy9ZIhiPayaGCoKgPT0pUaZPgAT3QLUjgAAAA==[0mGitHub throttling is disabled, which is not allowed for public GitHub usage, so ThrottleOnOver will be used instead. To configure a different rate limiting strategy, go to "GitHub API usage" under "Configure System" in the Jenkins settings.
+[8mha:////4KXiFpp8QuPPC80dQmSPbAWsvw68cWjO5R5ir9SHuO6NAAAAhB+LCAAAAAAAAP9b85aBtbiIwSa/KF0vKzUvOzOvODlTryCnNB3I0kvPLMkoTYpPKkrMS86IL84vLUpO1XPPLPEoTXLOzyvOz0n1yy9JZYAARiYGRi8GzpLM3NTiksTcgooiBqmM0pTi/Dy9ZIhiPayaGCoKgPT0pUZZjQDdMPoajgAAAA==[0mJenkins is restricting GitHub API requests only when near or above the rate limit. To configure a different rate limiting strategy, such as having Jenkins attempt to evenly distribute GitHub API requests, go to "GitHub API usage" under "Configure System" in the Jenkins settings.
+[8mha:////4KXiFpp8QuPPC80dQmSPbAWsvw68cWjO5R5ir9SHuO6NAAAAhB+LCAAAAAAAAP9b85aBtbiIwSa/KF0vKzUvOzOvODlTryCnNB3I0kvPLMkoTYpPKkrMS86IL84vLUpO1XPPLPEoTXLOzyvOz0n1yy9JZYAARiYGRi8GzpLM3NTiksTcgooiBqmM0pTi/Dy9ZIhiPayaGCoKgPT0pUZZjQDdMPoajgAAAA==[0mJenkins-Imposed API Limiter: Current quota for Github API usage has 14 remaining (1 over budget). Next quota of 60 in 27 min. Sleeping until reset.
+[8mha:////4NA5lgtSx2HsDqy9W6fZmxwxYibCXKvzfiBj+81HPC5FAAAAhB+LCAAAAAAAAP9b85aBtbiIwSa/KF0vKzUvOzOvODlTryCnNB3I0kvPLMkoTYpPKkrMS86IL84vLUpO1XPPLPEoTXLOzyvOz0n1yy9JZYAARiYGRi8GzpLM3NTiksTcgooiBqmM0pTi/Dy9ZIhiPayaGCoKgPT0pab6iwBq7NwwjgAAAA==[0mJenkins-Imposed API Limiter: Still sleeping, now only 25 min remaining.
+[8mha:////4CztMYgSI8gxsN6e0hdkomroWSN9/4MkEtAhOhXSMMevAAAAhR+LCAAAAAAAAP9b85aBtbiIwSa/KF0vKzUvOzOvODlTryCnNB3I0kvPLMkoTYpPKkrMS86IL84vLUpO1XPPLPEoTXLOzyvOz0n1yy9JZYAARiYGRi8GzpLM3NTiksTcgooiBqmM0pTi/Dy9ZIhiPayaGCoKgPT0peZfTgEAus39Eo4AAAA=[0mJenkins-Imposed API Limiter: Still sleeping, now only 22 min remaining.
+[8mha:////4NaeNhD++pa/fwTRUMDo5NFK9T6/gluvFFnDCbR6E3IQAAAAhB+LCAAAAAAAAP9b85aBtbiIwSa/KF0vKzUvOzOvODlTryCnNB3I0kvPLMkoTYpPKkrMS86IL84vLUpO1XPPLPEoTXLOzyvOz0n1yy9JZYAARiYGRi8GzpLM3NTiksTcgooiBqmM0pTi/Dy9ZIhiPayaGCoKgPT0pVa7nABwN7yXjgAAAA==[0mJenkins-Imposed API Limiter: Still sleeping, now only 19 min remaining.
+java.lang.InterruptedException: sleep interrupted
+	at java.base/java.lang.Thread.sleep0(Native Method)
+	at java.base/java.lang.Thread.sleep(Unknown Source)
+	at PluginClassLoader for github-branch-source//org.jenkinsci.plugins.github_branch_source.ApiRateLimitChecker$LocalChecker.waitUntilRateLimit(ApiRateLimitChecker.java:325)
+	at PluginClassLoader for github-branch-source//org.jenkinsci.plugins.github_branch_source.ApiRateLimitChecker$LocalChecker.checkRateLimit(ApiRateLimitChecker.java:264)
+	at PluginClassLoader for github-branch-source//org.jenkinsci.plugins.github_branch_source.ApiRateLimitChecker$RateLimitCheckerAdapter.checkRateLimit(ApiRateLimitChecker.java:244)
+	at PluginClassLoader for github-api//org.kohsuke.github.GitHubRateLimitChecker.checkRateLimit(GitHubRateLimitChecker.java:144)
+Caused: java.io.InterruptedIOException: sleep interrupted
+	at PluginClassLoader for github-api//org.kohsuke.github.GitHubRateLimitChecker.checkRateLimit(GitHubRateLimitChecker.java:158)
+	at PluginClassLoader for github-api//org.kohsuke.github.GitHubClient.sendRequest(GitHubClient.java:460)
+Caused: org.kohsuke.github.HttpException: Server returned HTTP response code: -1, message: 'null' for URL: https://api.github.com/repos/Anderson-chen/cclemon/git/refs/heads/main
+	at PluginClassLoader for github-api//org.kohsuke.github.GitHubClient.interpretApiError(GitHubClient.java:743)
+	at PluginClassLoader for github-api//org.kohsuke.github.GitHubClient.sendRequest(GitHubClient.java:480)
+	at PluginClassLoader for github-api//org.kohsuke.github.GitHubClient.sendRequest(GitHubClient.java:427)
+	at PluginClassLoader for github-api//org.kohsuke.github.Requester.fetch(Requester.java:85)
+	at PluginClassLoader for github-api//org.kohsuke.github.GHRef.read(GHRef.java:111)
+	at PluginClassLoader for github-api//org.kohsuke.github.GHRepository.getRef(GHRepository.java:1993)
+	at PluginClassLoader for github-branch-source//org.jenkinsci.plugins.github_branch_source.GitHubSCMSource.retrieve(GitHubSCMSource.java:1691)
+	at PluginClassLoader for scm-api//jenkins.scm.api.SCMSource.fetch(SCMSource.java:581)
+	at PluginClassLoader for workflow-multibranch//org.jenkinsci.plugins.workflow.multibranch.SCMBinder.create(SCMBinder.java:104)
+	at PluginClassLoader for workflow-job//org.jenkinsci.plugins.workflow.job.WorkflowRun.run(WorkflowRun.java:316)
+	at hudson.model.ResourceController.execute(ResourceController.java:101)
+	at hudson.model.Executor.run(Executor.java:446)
+Finished: FAILURE

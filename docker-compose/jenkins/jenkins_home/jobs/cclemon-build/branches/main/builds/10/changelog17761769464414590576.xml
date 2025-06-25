@@ -1,0 +1,10 @@
+commit 09875a33d13b465f8b377cde208266d05367c040
+tree 3e743eabceaecff13f75bf6ff3e5dcff155608e7
+parent 0094e7ca68d4d0e4eaff8012c2c6756332ca04ae
+author andychen <zz60509561@gmail.com> 2025-06-25 11:30:28 +0800
+committer andychen <zz60509561@gmail.com> 2025-06-25 11:30:28 +0800
+
+    feat:修改cicd dockerfile位置
+
+
+:100644 100644 75c8ef648230093e05d5e8d22d42cb489fdedf73 f3f16cc7b90708f0e0e76b73bb041e70b9ea769b M	ci/Jenkinsfile

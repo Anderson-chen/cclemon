@@ -14,7 +14,7 @@ spring:
       hibernate:
         physical_naming_strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
   datasource:
-    url: jdbc:mysql://cclemon-network:3306/cclemon-auth?allowPublicKeyRetrieval=true&serverTimezone=Asia/Taipei&useSSL=false
+    url: jdbc:mysql://mysql/cclemon-auth?allowPublicKeyRetrieval=true&serverTimezone=Asia/Taipei&useSSL=false
     username: root
     password: P@ssw0rd
     driverClassName: com.mysql.cj.jdbc.Driver

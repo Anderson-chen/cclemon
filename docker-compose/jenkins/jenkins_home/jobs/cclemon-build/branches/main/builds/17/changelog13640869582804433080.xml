@@ -1,0 +1,20 @@
+commit 9fa224c51c24742c6719aff0395eb3b7efe0d8bf
+tree 4aea1992126db546fb5b9085cb79187256e9b27e
+parent e85b69c2750726d320d8835f0b443326a65715b6
+author andychen <zz60509561@gmail.com> 2025-06-25 13:31:13 +0800
+committer andychen <zz60509561@gmail.com> 2025-06-25 13:31:13 +0800
+
+    feat:新增cclemon-health的建置設定
+    
+    1.修正@DATA設定
+    2.將是否選擇僅打包可執行JAR放到各自專案
+
+
+:100644 100644 5f36ad696b4e3c541c4d036b8ead59b76bb57383 fbf50d7c7a396a0acd677509f7c8fec4fee01354 M	build.gradle
+:100644 100644 cf43474c9d17dd4d1e81ffae2f233cc48cecc19f 829c0f58ebe8692775345068410a1c1cd71d8ace M	cclemon-auth/build.gradle
+:100644 100644 8185f216cbbed57214b6f055c63a31bfa9fab281 3dddfcb9d67c0164af0cda527e06f9c4979c2341 M	cclemon-health/build.gradle
+:100644 100644 688a6923d36449904d169a1a0b1e62e944669f5b a44a6643d839b82f4f021f30064de719789bd454 M	cclemon-health/src/main/java/org/cclemon/entity/CclemonUser.java
+:100644 100644 282df109e3133b516667473f494162d86936bb7f b754aef45ad05e60e7bff7eaf0652b3908d6b1f9 M	cclemon-health/src/main/java/org/cclemon/entity/DailyExercise.java
+:100644 100644 4d5c6123d39b27d1036802a6fadb1efe1624d739 6ac97a1ff8cbcb55e3058911eb98a471979963da M	cclemon-health/src/main/java/org/cclemon/entity/DailyFood.java
+:100644 100644 0bd4cf715050f0be2bd1f1308be88a701f4439d0 c94833c6f6c246039bbefe58cd845fcf2e6ab6f0 M	cclemon-health/src/main/java/org/cclemon/entity/DailyInfo.java
+:100644 100644 6eccb133bf55897fb0774025e267036785e63260 0ca2d9ce99a24fc3cc11e3007224eec276289a5b M	cclemon-health/src/main/java/org/cclemon/entity/Food.java

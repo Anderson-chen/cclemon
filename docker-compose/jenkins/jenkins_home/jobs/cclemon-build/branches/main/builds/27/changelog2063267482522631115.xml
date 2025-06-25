@@ -1,0 +1,10 @@
+commit 291799d7da424c15cbbf7f4009a94e973f343c72
+tree fbac018acc2ff53f587ee7b6571a8a91c41201ea
+parent 70cce71d6f317e257c849ac541f1efff825af0d4
+author andychen <zz60509561@gmail.com> 2025-06-25 14:24:50 +0800
+committer andychen <zz60509561@gmail.com> 2025-06-25 14:24:50 +0800
+
+    feat:調整jenkins流程
+
+
+:100644 100644 632421d8722cc47492c55e38369cda270ed5a563 e199d0245df4cac78edd68a83c153f4e1ac5e94d M	ci/Jenkinsfile
