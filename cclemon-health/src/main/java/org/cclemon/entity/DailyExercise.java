@@ -3,7 +3,9 @@ package org.cclemon.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "daily_exercise", uniqueConstraints = {
         @UniqueConstraint(name = "daily_exercise_user_id_exercise_id_date_unique", columnNames = {"user_id", "exercise_id", "date"})
