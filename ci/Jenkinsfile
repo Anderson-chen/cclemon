@@ -11,7 +11,6 @@ pipeline {
   }
 
 parameters {
-    choice(name: 'TYPE', choices: ['build', 'deploy'])
     choice(name: 'PROJECT_NAME', choices: ['cclemon-auth', 'cclemon-health'])
     choice(name: 'PROFILE', choices: ['dev', 'prod'])
 }
@@ -25,9 +24,6 @@ parameters {
     }
 
     stage('Build') {
-      when {
-        expression { return params.TYPE == 'build' }
-      }
       steps {
         dir("${params.PROJECT_NAME}") {
           sh "../gradlew clean build -x test -Pprofile=${params.PROFILE}"
@@ -36,39 +32,18 @@ parameters {
     }
 
     stage('Archive Jar') {
-      when {
-        expression { return params.TYPE == 'build' }
-      }
       steps {
         archiveArtifacts artifacts: "${params.PROJECT_NAME}/build/libs/*.jar", fingerprint: true
       }
     }
 
     stage('Build Docker Image') {
-      when {
-        expression { return params.TYPE == 'build' }
-      }
       steps {
         dir("${params.PROJECT_NAME}") {
           script {
             def imageName = "${params.PROJECT_NAME}"
             def imageTag = "${params.PROFILE}"
             sh "docker build -t ${imageName}:${imageTag} ."
-          }
-        }
-      }
-    }
-
-    stage('Deploy') {
-      when {
-        expression { return params.TYPE == 'deploy' }
-      }
-      steps {
-        dir("${params.PROJECT_NAME}") {
-          script {
-            echo "Deploying ${params.PROJECT_NAME} with profile ${params.PROFILE}"
-            // 可加上實際部署腳本或指令
-            sh "PROJECT_NAME=${params.PROJECT_NAME} PROFILE=${params.PROFILE} docker-compose up -d"
           }
         }
       }

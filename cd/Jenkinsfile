@@ -1,0 +1,27 @@
+pipeline {
+  agent { label 'master' }  // 指定在 master 節點執行
+
+  environment {
+    TZ = 'Asia/Taipei'
+  }
+
+  parameters {
+    choice(name: 'PROJECT_NAME', choices: ['cclemon-auth', 'cclemon-health'])
+    choice(name: 'PROFILE', choices: ['dev', 'prod'])
+  }
+
+  stages {
+    stage('Deploy') {
+      steps {
+        dir("${params.PROJECT_NAME}") {
+          script {
+            echo "Deploying ${params.PROJECT_NAME} with profile ${params.PROFILE}"
+            sh """
+              PROJECT_NAME=${params.PROJECT_NAME} PROFILE=${params.PROFILE} docker-compose up -d
+            """
+          }
+        }
+      }
+    }
+  }
+}
