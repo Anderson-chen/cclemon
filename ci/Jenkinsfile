@@ -1,3 +1,12 @@
+properties([
+  parameters([
+    choice(name: 'TYPE', choices: ['build', 'deploy'], description: '執行類型'),
+    string(name: 'PROJECT_NAME', defaultValue: 'cclemon-auth', description: '專案'),
+    choice(name: 'PROFILE', choices: ['dev', 'prod'], description: '環境')
+  ])
+])
+
+
 pipeline {
   agent {
     dockerfile {
@@ -9,12 +18,6 @@ pipeline {
     TZ = 'Asia/Taipei'
   }
 
-  parameters {
-    string(name: 'PROJECT_DIR', defaultValue: 'cclemon-auth', description: '專案資料夾路徑')
-    choice(name: 'BUILD_PROFILE', choices: ['dev', 'prod'], description: 'Build profile')
-    booleanParam(name: 'DO_DEPLOY', defaultValue: false, description: '是否進行部署')
-  }
-
   stages {
     stage('Checkout') {
       steps {
@@ -24,6 +27,9 @@ pipeline {
     }
 
     stage('Build') {
+      when {
+        expression { return params.BUILD_TYPE == 'build' }
+      }
       steps {
         dir("${params.PROJECT_DIR}") {
           sh "../gradlew clean build -x test -Pprofile=${params.BUILD_PROFILE}"
@@ -32,19 +38,24 @@ pipeline {
     }
 
     stage('Archive Jar') {
+      when {
+        expression { return params.BUILD_TYPE == 'build' }
+      }
       steps {
         archiveArtifacts artifacts: "${params.PROJECT_DIR}/build/libs/*.jar", fingerprint: true
       }
     }
 
     stage('Build Docker Image') {
+      when {
+        expression { return params.BUILD_TYPE == 'build' }
+      }
       steps {
         dir("${params.PROJECT_DIR}") {
           script {
             def imageName = "${params.PROJECT_DIR}"
             def imageTag = "${params.BUILD_PROFILE}"
             sh "docker build -t ${imageName}:${imageTag} ."
-            // 可加入 push registry 的指令
           }
         }
       }
@@ -52,12 +63,12 @@ pipeline {
 
     stage('Deploy') {
       when {
-        expression { return params.DO_DEPLOY }
+        expression { return params.BUILD_TYPE == 'deploy' }
       }
       steps {
         echo "Deploying ${params.PROJECT_DIR} with profile ${params.BUILD_PROFILE}"
-        // 加入你部署的腳本或 ssh 指令
-        // sh "./deploy.sh ${params.BUILD_PROFILE}"
+        // 可加上實際部署腳本或指令
+        sh "docker-compose up"
       }
     }
   }
