@@ -10,11 +10,11 @@ pipeline {
     TZ = 'Asia/Taipei'
   }
 
-  parameters{
+parameters {
     choice(name: '執行類型', choices: ['build', 'deploy'])
-    choice(name: '專案', ['cclemon-auth', 'cclemon-health'])
+    choice(name: '專案', choices: ['cclemon-auth', 'cclemon-health'])
     choice(name: '環境', choices: ['dev', 'prod'])
-  }
+}
 
   stages {
     stage('Checkout') {
