@@ -15,9 +15,22 @@ pipeline {
       steps {
         dir("${params.PROJECT_NAME}") {
           script {
-            echo "Deploying ${params.PROJECT_NAME} with profile ${params.PROFILE}"
+            def containerName = "${params.PROJECT_NAME}_${params.PROFILE}"
+            def imageName = "${params.PROJECT_NAME}:${params.PROFILE}"
+
+            echo "Deploying ${containerName} using image ${imageName}"
+
+            // 安全保險：如果容器已存在，先刪除
             sh """
-              PROJECT_NAME=${params.PROJECT_NAME} PROFILE=${params.PROFILE} docker-compose up -d
+              docker rm -f ${containerName} || true
+            """
+
+            // 執行 docker run（你也可以加上 -p 或 -e 等參數）
+            sh """
+              docker run -d \
+                --name ${containerName} \
+                --network cclemon-network \
+                ${imageName}
             """
           }
         }

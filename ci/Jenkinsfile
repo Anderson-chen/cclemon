@@ -1,7 +1,7 @@
 pipeline {
   agent {
     dockerfile {
-      dir 'ci'
+      dir 'ci/agent'
       args '-v /var/run/docker.sock:/var/run/docker.sock -v $HOME/.gradle:/home/gradle/.gradle'
     }
   }
@@ -43,7 +43,10 @@ parameters {
           script {
             def imageName = "${params.PROJECT_NAME}"
             def imageTag = "${params.PROFILE}"
-            sh "docker build -t ${imageName}:${imageTag} ."
+            sh """
+              docker build -f ../ci/Dockerfile \
+                           -t ${params.PROJECT_NAME}:${params.PROFILE}
+            """
           }
         }
       }
