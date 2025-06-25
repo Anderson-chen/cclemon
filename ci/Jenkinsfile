@@ -26,7 +26,7 @@ parameters {
     stage('Build') {
       steps {
         dir("${params.PROJECT_NAME}") {
-          sh "../gradlew clean build -x test -Pprofile=${params.PROFILE}"
+          sh "../gradlew clean build -x test"
         }
       }
     }
