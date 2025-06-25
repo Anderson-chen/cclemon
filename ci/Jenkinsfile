@@ -26,33 +26,33 @@ pipeline {
 
     stage('Build') {
       when {
-        expression { return params.BUILD_TYPE == 'build' }
+        expression { return params.TYPE == 'build' }
       }
       steps {
-        dir("${params.PROJECT_DIR}") {
-          sh "../gradlew clean build -x test -Pprofile=${params.BUILD_PROFILE}"
+        dir("${params.PROJECT_NAME}") {
+          sh "../gradlew clean build -x test -Pprofile=${params.PROFILE}"
         }
       }
     }
 
     stage('Archive Jar') {
       when {
-        expression { return params.BUILD_TYPE == 'build' }
+        expression { return params.TYPE == 'build' }
       }
       steps {
-        archiveArtifacts artifacts: "${params.PROJECT_DIR}/build/libs/*.jar", fingerprint: true
+        archiveArtifacts artifacts: "${params.PROJECT_NAME}/build/libs/*.jar", fingerprint: true
       }
     }
 
     stage('Build Docker Image') {
       when {
-        expression { return params.BUILD_TYPE == 'build' }
+        expression { return params.TYPE == 'build' }
       }
       steps {
-        dir("${params.PROJECT_DIR}") {
+        dir("${params.PROJECT_NAME}") {
           script {
-            def imageName = "${params.PROJECT_DIR}"
-            def imageTag = "${params.BUILD_PROFILE}"
+            def imageName = "${params.PROJECT_NAME}"
+            def imageTag = "${params.PROFILE}"
             sh "docker build -t ${imageName}:${imageTag} ."
           }
         }
@@ -61,10 +61,10 @@ pipeline {
 
     stage('Deploy') {
       when {
-        expression { return params.BUILD_TYPE == 'deploy' }
+        expression { return params.TYPE == 'deploy' }
       }
       steps {
-        echo "Deploying ${params.PROJECT_DIR} with profile ${params.BUILD_PROFILE}"
+        echo "Deploying ${params.PROJECT_NAME} with profile ${params.PROFILE}"
         // 可加上實際部署腳本或指令
         sh "docker-compose up"
       }
