@@ -64,9 +64,13 @@ pipeline {
         expression { return params.TYPE == 'deploy' }
       }
       steps {
-        echo "Deploying ${params.PROJECT_NAME} with profile ${params.PROFILE}"
-        // 可加上實際部署腳本或指令
-        sh "docker-compose up"
+        dir("${params.PROJECT_NAME}") {
+          script {
+            echo "Deploying ${params.PROJECT_NAME} with profile ${params.PROFILE}"
+            // 可加上實際部署腳本或指令
+            sh "docker-compose up"
+          }
+        }     
       }
     }
   }
