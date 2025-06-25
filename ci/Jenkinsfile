@@ -1,3 +1,5 @@
+pipeline {
+
 properties([
   parameters([
     choice(name: 'TYPE', choices: ['build', 'deploy'], description: '執行類型'),
@@ -6,8 +8,6 @@ properties([
   ])
 ])
 
-
-pipeline {
   agent {
     dockerfile {
       dir 'ci'
