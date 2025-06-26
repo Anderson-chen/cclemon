@@ -34,14 +34,14 @@
         <head class="org.jenkinsci.plugins.github_branch_source.BranchSCMHead" plugin="github-branch-source@1824.v046257273408">
           <name>main</name>
         </head>
-        <hash>45416b4f423b4974ecdc474bab2a9acd80dd4b97</hash>
+        <hash>e665dd4215b6fa1a5fa2df9ed83af92fbc6f9a8a</hash>
       </revision>
     </jenkins.scm.api.SCMRevisionAction>
     <org.jenkinsci.plugins.workflow.libs.LibrariesAction plugin="pipeline-groovy-lib@752.vdddedf804e72">
       <libraries/>
     </org.jenkinsci.plugins.workflow.libs.LibrariesAction>
     <org.jenkinsci.plugins.pipeline.modeldefinition.actions.ExecutionModelAction plugin="pipeline-model-definition@2.2255.v56a_15e805f12">
-      <stagesUUID>eab38a17-4e89-440d-8116-525f308279ed</stagesUUID>
+      <stagesUUID>14cbbdca-98a3-423a-a7ae-351a818be83d</stagesUUID>
       <pipelineDefs>
         <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTPipelineDef plugin="pipeline-model-api@2.2255.v56a_15e805f12">
           <stages>
@@ -99,7 +99,7 @@
                 </branches>
               </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTStage>
             </stages>
-            <uuid>eab38a17-4e89-440d-8116-525f308279ed</uuid>
+            <uuid>14cbbdca-98a3-423a-a7ae-351a818be83d</uuid>
           </stages>
           <environment>
             <variables class="linked-hash-map">
@@ -170,23 +170,72 @@
         </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTPipelineDef>
       </pipelineDefs>
     </org.jenkinsci.plugins.pipeline.modeldefinition.actions.ExecutionModelAction>
-    <jenkins.model.InterruptedBuildAction>
-      <causes>
-        <jenkins.model.CauseOfInterruption_-UserInterruption>
-          <user>admin</user>
-        </jenkins.model.CauseOfInterruption_-UserInterruption>
-      </causes>
-    </jenkins.model.InterruptedBuildAction>
+    <com.cloudbees.plugins.credentials.builds.CredentialsParameterBinder plugin="credentials@1415.v831096eb_5534">
+      <boundCredentials class="concurrent-hash-map"/>
+    </com.cloudbees.plugins.credentials.builds.CredentialsParameterBinder>
+    <hudson.plugins.git.util.BuildData plugin="git@5.7.0">
+      <buildsByBranchName>
+        <entry>
+          <string>origin/main</string>
+          <hudson.plugins.git.util.Build>
+            <marked plugin="git-client@6.2.0">
+              <sha1>ad15ea40809afe4512d59bd76a94057dad5c9c1b</sha1>
+              <branches class="list">
+                <hudson.plugins.git.Branch>
+                  <sha1 reference="../../../sha1"/>
+                  <name>origin/main</name>
+                </hudson.plugins.git.Branch>
+              </branches>
+            </marked>
+            <revision plugin="git-client@6.2.0">
+              <sha1 reference="../../marked/sha1"/>
+              <branches class="list">
+                <hudson.plugins.git.Branch reference="../../../marked/branches/hudson.plugins.git.Branch"/>
+              </branches>
+            </revision>
+            <hudsonBuildNumber>5</hudsonBuildNumber>
+          </hudson.plugins.git.util.Build>
+        </entry>
+        <entry>
+          <string>main</string>
+          <hudson.plugins.git.util.Build>
+            <marked plugin="git-client@6.2.0">
+              <sha1>e665dd4215b6fa1a5fa2df9ed83af92fbc6f9a8a</sha1>
+              <branches class="singleton-set">
+                <hudson.plugins.git.Branch>
+                  <sha1 reference="../../../sha1"/>
+                  <name>main</name>
+                </hudson.plugins.git.Branch>
+              </branches>
+            </marked>
+            <revision reference="../marked"/>
+            <hudsonBuildNumber>10</hudsonBuildNumber>
+          </hudson.plugins.git.util.Build>
+        </entry>
+      </buildsByBranchName>
+      <lastBuild reference="../buildsByBranchName/entry[2]/hudson.plugins.git.util.Build"/>
+      <remoteUrls>
+        <string>https://github.com/Anderson-chen/cclemon.git</string>
+      </remoteUrls>
+    </hudson.plugins.git.util.BuildData>
+    <org.jenkinsci.plugins.workflow.steps.scm.MultiSCMRevisionState plugin="workflow-scm-step@437.v05a_f66b_e5ef8">
+      <revisionStates>
+        <entry>
+          <string>git https://github.com/Anderson-chen/cclemon.git</string>
+          <hudson.scm.SCMRevisionState_-None/>
+        </entry>
+      </revisionStates>
+    </org.jenkinsci.plugins.workflow.steps.scm.MultiSCMRevisionState>
   </actions>
-  <queueId>10</queueId>
-  <timestamp>1750844177877</timestamp>
-  <startTime>1750844177968</startTime>
-  <result>ABORTED</result>
-  <duration>90517</duration>
+  <queueId>12</queueId>
+  <timestamp>1750844544489</timestamp>
+  <startTime>1750844544576</startTime>
+  <result>SUCCESS</result>
+  <duration>0</duration>
   <charset>UTF-8</charset>
   <keepLog>false</keepLog>
   <execution class="org.jenkinsci.plugins.workflow.cps.CpsFlowExecution">
-    <result>ABORTED</result>
+    <result>SUCCESS</result>
     <script>pipeline {
   agent { label &apos;master&apos; }  // 指定在 master 節點執行
 
@@ -230,41 +279,80 @@
 }
 </script>
     <loadedScripts class="linked-hash-map"/>
+    <persistedClean>true</persistedClean>
     <durabilityHint>MAX_SURVIVABILITY</durabilityHint>
     <timings class="map">
       <entry>
         <string>flowNode</string>
-        <long>437420075</long>
+        <long>1909663884</long>
       </entry>
       <entry>
         <string>classLoad</string>
-        <long>51552836</long>
+        <long>63424125</long>
       </entry>
       <entry>
         <string>runQueue</string>
-        <long>689370583</long>
+        <long>25127353201</long>
       </entry>
       <entry>
         <string>run</string>
-        <long>1024206021</long>
+        <long>12093350354</long>
       </entry>
       <entry>
         <string>parse</string>
-        <long>16430433</long>
+        <long>16527565</long>
       </entry>
       <entry>
         <string>saveProgram</string>
-        <long>420440425</long>
+        <long>9379571161</long>
       </entry>
     </timings>
     <internalCalls class="sorted-set"/>
     <sandbox>true</sandbox>
-    <iota>5</iota>
-    <head>1:5</head>
+    <iota>35</iota>
+    <head>1:35</head>
     <done>true</done>
     <resumeBlocked>false</resumeBlocked>
     <storageDir>workflow-completed</storageDir>
   </execution>
   <completed>true</completed>
-  <checkouts class="hudson.util.PersistedList"/>
+  <checkouts class="hudson.util.PersistedList">
+    <org.jenkinsci.plugins.workflow.job.WorkflowRun_-SCMCheckout>
+      <scm class="hudson.plugins.git.GitSCM" plugin="git@5.7.0">
+        <configVersion>2</configVersion>
+        <userRemoteConfigs>
+          <hudson.plugins.git.UserRemoteConfig>
+            <name>origin</name>
+            <refspec>+refs/heads/main:refs/remotes/origin/main</refspec>
+            <url>https://github.com/Anderson-chen/cclemon.git</url>
+            <credentialsId>e9b2034e-0a2d-430d-97b9-d5a26fa5a434</credentialsId>
+          </hudson.plugins.git.UserRemoteConfig>
+        </userRemoteConfigs>
+        <branches class="singleton-list">
+          <hudson.plugins.git.BranchSpec>
+            <name>main</name>
+          </hudson.plugins.git.BranchSpec>
+        </branches>
+        <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+        <browser class="hudson.plugins.git.browser.GithubWeb">
+          <url>https://github.com/Anderson-chen/cclemon</url>
+        </browser>
+        <submoduleCfg class="empty-list"/>
+        <extensions>
+          <jenkins.plugins.git.GitSCMSourceDefaults>
+            <includeTags>false</includeTags>
+          </jenkins.plugins.git.GitSCMSourceDefaults>
+          <hudson.plugins.git.extensions.impl.BuildChooserSetting>
+            <buildChooser class="jenkins.plugins.git.AbstractGitSCMSource$SpecificRevisionBuildChooser">
+              <revision reference="../../../../../../../actions/hudson.plugins.git.util.BuildData/buildsByBranchName/entry[2]/hudson.plugins.git.util.Build/marked"/>
+            </buildChooser>
+          </hudson.plugins.git.extensions.impl.BuildChooserSetting>
+        </extensions>
+      </scm>
+      <node></node>
+      <workspace>/var/jenkins_home/jobs/cclemon-deploy/branches/main/workspace</workspace>
+      <changelogFile>/var/jenkins_home/jobs/cclemon-deploy/branches/main/builds/10/changelog6897262000203214694.xml</changelogFile>
+      <pollingBaseline class="hudson.scm.SCMRevisionState$None" reference="../../../actions/org.jenkinsci.plugins.workflow.steps.scm.MultiSCMRevisionState/revisionStates/entry/hudson.scm.SCMRevisionState_-None"/>
+    </org.jenkinsci.plugins.workflow.job.WorkflowRun_-SCMCheckout>
+  </checkouts>
 </flow-build>

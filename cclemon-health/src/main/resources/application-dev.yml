@@ -15,7 +15,7 @@ spring:
       ddl-auto: update  # 可選 create / update / none
     show-sql: true
   datasource:
-    url: jdbc:mysql://localhost:3306/cclemon-health?allowPublicKeyRetrieval=true&serverTimezone=Asia/Taipei&useSSL=false
+    url: jdbc:mysql://mysql:3306/cclemon-health?allowPublicKeyRetrieval=true&serverTimezone=Asia/Taipei&useSSL=false
     username: root
     password: P@ssw0rd
     driverClassName: com.mysql.cj.jdbc.Driver
@@ -37,4 +37,4 @@ server:
       max: 10000
 
 authorization-server:
-  url: http://localhost:9000
+  url: http://cclemon-auth_dev

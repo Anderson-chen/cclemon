@@ -1,0 +1,31 @@
+commit e665dd4215b6fa1a5fa2df9ed83af92fbc6f9a8a
+tree 727f68a2cab91ee8e8b16b1870bf3ffbbe2554a3
+parent 45416b4f423b4974ecdc474bab2a9acd80dd4b97
+author andychen <zz60509561@gmail.com> 2025-06-25 17:42:09 +0800
+committer andychen <zz60509561@gmail.com> 2025-06-25 17:42:09 +0800
+
+    feat:修正包板與部版的profile方式
+
+
+:100644 100644 6b4c2622a78ab6ab46d37e81e68ae2b47b9cc48f 7e201fec27c6a3b2240e9115ee1f3ca6c30c0dd9 M	ci/Jenkinsfile
+:000000 100644 0000000000000000000000000000000000000000 5dc8f0acdc680219351be157e66dd70572bd0247 A	docker-compose/jenkins/jenkins_home/jobs/cclemon-build/branches/main/builds/32/build.xml
+:000000 100644 0000000000000000000000000000000000000000 724b650334637fa575517e8e1d926a7a7a4c2265 A	docker-compose/jenkins/jenkins_home/jobs/cclemon-build/branches/main/builds/32/changelog9228244217505988548.xml
+:000000 100644 0000000000000000000000000000000000000000 0690bae23f47d5643a2fd6dfc039d610417d74e6 A	docker-compose/jenkins/jenkins_home/jobs/cclemon-build/branches/main/builds/32/log
+:000000 100644 0000000000000000000000000000000000000000 898daeb631ef3d206c5fdbcdb2758a0140c9acdd A	docker-compose/jenkins/jenkins_home/jobs/cclemon-build/branches/main/builds/32/log-index
+:000000 100644 0000000000000000000000000000000000000000 a8977c3a6cf68bcd20b4c34aa40ec0d23d5f12fe A	docker-compose/jenkins/jenkins_home/jobs/cclemon-build/branches/main/builds/32/workflow-completed/flowNodeStore.xml
+:100644 100644 b87d30097bdd674a1ea07a41d05ec85d899374af 99f960a97eb50c7fd5e139afff021869c663a823 M	docker-compose/jenkins/jenkins_home/jobs/cclemon-build/branches/main/builds/permalinks
+:100644 100644 f5c89552bd3e62bfce023a230e90d141f7a46b2f bb95160cb6e07358f54a28a208ae41e69889c97b M	docker-compose/jenkins/jenkins_home/jobs/cclemon-build/branches/main/nextBuildNumber
+:000000 100644 0000000000000000000000000000000000000000 d10389c017ec28505dad234aefd8cecce97fd430 A	docker-compose/jenkins/jenkins_home/jobs/cclemon-deploy/branches/main/builds/7/build.xml
+:000000 100644 0000000000000000000000000000000000000000 9a772710091480922c2c5c3362b36f4a1335b828 A	docker-compose/jenkins/jenkins_home/jobs/cclemon-deploy/branches/main/builds/7/log
+:000000 100644 0000000000000000000000000000000000000000 97b5ec3d271d8df6a778efbffdde519aa5bc38f5 A	docker-compose/jenkins/jenkins_home/jobs/cclemon-deploy/branches/main/builds/7/log-index
+:000000 100644 0000000000000000000000000000000000000000 59a0ce64eb86e3559f8f487267f3b6fbd84c870e A	docker-compose/jenkins/jenkins_home/jobs/cclemon-deploy/branches/main/builds/7/workflow-completed/flowNodeStore.xml
+:000000 100644 0000000000000000000000000000000000000000 d4fed135f430185c0aa687dee6366a26f691c696 A	docker-compose/jenkins/jenkins_home/jobs/cclemon-deploy/branches/main/builds/8/build.xml
+:000000 100644 0000000000000000000000000000000000000000 7586eedbff5591a7e923f9b1d0a0cfa1bd7a6faf A	docker-compose/jenkins/jenkins_home/jobs/cclemon-deploy/branches/main/builds/8/log
+:000000 100644 0000000000000000000000000000000000000000 97b5ec3d271d8df6a778efbffdde519aa5bc38f5 A	docker-compose/jenkins/jenkins_home/jobs/cclemon-deploy/branches/main/builds/8/log-index
+:000000 100644 0000000000000000000000000000000000000000 dc1bfac97c92d51bf1cb1b79be750e511a60cbdf A	docker-compose/jenkins/jenkins_home/jobs/cclemon-deploy/branches/main/builds/8/workflow-completed/flowNodeStore.xml
+:000000 100644 0000000000000000000000000000000000000000 0a10078bb19faf40003b6442797b83b2fe513aca A	docker-compose/jenkins/jenkins_home/jobs/cclemon-deploy/branches/main/builds/9/build.xml
+:000000 100644 0000000000000000000000000000000000000000 228e30e52dad374bd267ae334fe528f6b4fdec73 A	docker-compose/jenkins/jenkins_home/jobs/cclemon-deploy/branches/main/builds/9/log
+:000000 100644 0000000000000000000000000000000000000000 dc7aacc821cc27bd4313e8c49138eb2c3dbf5774 A	docker-compose/jenkins/jenkins_home/jobs/cclemon-deploy/branches/main/builds/9/log-index
+:000000 100644 0000000000000000000000000000000000000000 27eca4c9751ce19c33339c972b1cbcb36d27f603 A	docker-compose/jenkins/jenkins_home/jobs/cclemon-deploy/branches/main/builds/9/workflow-completed/flowNodeStore.xml
+:100644 100644 cdce7af7b174712642721d8c0544b446c9c17315 62ced963b1280ef076a2995d2e52a8c66b0d38c3 M	docker-compose/jenkins/jenkins_home/jobs/cclemon-deploy/branches/main/builds/permalinks
+:100644 100644 7f8f011eb73d6043d2e6db9d2c101195ae2801f2 f599e28b8ab0d8c9c57a486c89c4a5132dcbd3b2 M	docker-compose/jenkins/jenkins_home/jobs/cclemon-deploy/branches/main/nextBuildNumber

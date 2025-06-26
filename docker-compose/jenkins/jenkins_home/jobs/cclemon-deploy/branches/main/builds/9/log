@@ -11,3 +11,10 @@ Aborted by [8mha:////4Hiq4DRRfEnAPgj2TeXA+qiV0AUdGb6KDNIycaEXc68wAAAAlx+LCAAAAA
 [8mha:////4F/R7Q0/bVbaigPGRlHpQ3tG55lKSQe+1MNeyRqblNrcAAAAoh+LCAAAAAAAAP9tjTEOAiEURD9rLGwtPQRbaGesbAmNJ0AWEZb8zwLrbuWJvJp3kLiJlZNMMm+a93rDOic4UbLcG+wdZu14DKOti0+U+lugiXu6ck2YKRguzSSpM+cFJRUDS1gDKwEbgzpQdmgLbIVXD9UGhba9lFS/o4DGdQM8gYlqLiqVL8wJdvexy4Q/z18BzDEWYIfa/QfNmvKfvAAAAA==[0m[Pipeline] // node
 [8mha:////4DN/65GiBvedlZRO6IxMFOpNyMpRWZLv3fzRp/l8FAKOAAAAox+LCAAAAAAAAP9tjTEOAiEURD9rLGwtPQSbmFgZK1tC4wmQRYQl/7PAult5Iq/mHSRuYuUkk8yb5r3esM4JTpQs9wZ7h1k7HsNo6+ITpf4WaOKerlwTZgqGSzNJ6sx5QUnFwBLWwErAxqAOlB3aAlvh1UO1QaFtLyXV7yigcd0AT2CimotK5Qtzgt197DLhz/NXAHOMBdihdv8B64OV1bwAAAA=[0m[Pipeline] End of Pipeline
 org.jenkinsci.plugins.workflow.actions.ErrorAction$ErrorId: 9957b8b6-31e5-4339-abb0-4ef775b9e162
+
+Could not update commit status, please check if your scan credentials belong to a member of the organization or a collaborator of the repository and repo:status scope is selected
+
+
+GitHub has been notified of this commit’s build result
+
+Finished: ABORTED

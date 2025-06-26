@@ -1,5 +1,6 @@
 package org.cclemon.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -17,17 +18,20 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @Configuration
 public class ResourceSecurityConfig {
 
+    private final String authorizationServerUrl;
+
+    public ResourceSecurityConfig(@Value("${authorization-server.url}") String authorizationServerUrl) {
+        this.authorizationServerUrl = authorizationServerUrl;
+    }
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/test","/user-events").permitAll()
+                        .requestMatchers("/test", "/user-events").permitAll()
                         .anyRequest().authenticated()
                 )
-                .oauth2ResourceServer(oauth2ResourceServer ->
-                        oauth2ResourceServer.jwt(Customizer.withDefaults()
-                        )
-                )
+                .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
                 .csrf(AbstractHttpConfigurer::disable);
 
         return http.cors(Customizer.withDefaults()).build();
@@ -35,7 +39,7 @@ public class ResourceSecurityConfig {
 
     @Bean
     JwtDecoder jwtDecoder() {
-        return JwtDecoders.fromIssuerLocation("http://localhost:9000");
+        return JwtDecoders.fromIssuerLocation(authorizationServerUrl);
     }
 
     @Bean
@@ -49,6 +53,4 @@ public class ResourceSecurityConfig {
         source.registerCorsConfiguration("/**", config);
         return source;
     }
-
-
 }
