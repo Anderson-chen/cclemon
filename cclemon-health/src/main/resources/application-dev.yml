@@ -29,4 +29,4 @@ server:
       max: 10000
 
 authorization-server:
-  url: http://cclemon-auth_dev:9000
+  url: http://cclemon-auth-dev:9000
