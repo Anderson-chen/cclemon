@@ -1,2 +1,0 @@
-CREATE DATABASE IF NOT EXISTS `cclemon-auth`;
-CREATE DATABASE IF NOT EXISTS `cclemon-health`;
