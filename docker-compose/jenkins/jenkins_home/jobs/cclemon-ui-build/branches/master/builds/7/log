@@ -1,6 +1,6 @@
 Started by user [8mha:////4Hiq4DRRfEnAPgj2TeXA+qiV0AUdGb6KDNIycaEXc68wAAAAlx+LCAAAAAAAAP9b85aBtbiIQTGjNKU4P08vOT+vOD8nVc83PyU1x6OyILUoJzMv2y+/JJUBAhiZGBgqihhk0NSjKDWzXb3RdlLBUSYGJk8GtpzUvPSSDB8G5tKinBIGIZ+sxLJE/ZzEvHT94JKizLx0a6BxUmjGOUNodHsLgAzWEgZu/dLi1CL9xJTczDwAj6GcLcAAAAA=[0madmin
-[8mha:////4Be5ooW70FtZ1oDEsm8RFLq2vFzixvuj2nom3e+LzSS8AAAAhB+LCAAAAAAAAP9b85aBtbiIwSa/KF0vKzUvOzOvODlTryCnNB3I0kvPLMkoTYpPKkrMS86IL84vLUpO1XPPLPEoTXLOzyvOz0n1yy9JZYAARiYGRi8GzpLM3NTiksTcgooiBqmM0pTi/Dy9ZIhiPayaGCoKgPT01SoXSwFa2W9fjgAAAA==[0mConnecting to https://api.github.com using Anderson-chen/******
-Obtained ci/Jenkinsfile from 7cadeb0621a1baf8d3d7f845b2b9ec6e680598a9
+[8mha:////4H8Y+vAvkkYyWJ0khJno/WVJ3rHvnNKH/qPIkGUiFDKKAAAAhR+LCAAAAAAAAP9b85aBtbiIwSa/KF0vKzUvOzOvODlTryCnNB3I0kvPLMkoTYpPKkrMS86IL84vLUpO1XPPLPEoTXLOzyvOz0n1yy9JZYAARiYGRi8GzpLM3NTiksTcgooiBqmM0pTi/Dy9ZIhiPayaGCoKgPT01Q6rnwAACIhpQo4AAAA=[0mConnecting to https://api.github.com using Anderson-chen/******
+Obtained ci/Jenkinsfile from 969d19a02d914eb94f8840bb9c4bdca2c1e8935a
 [8mha:////4FLsg/pkM6Copb0SQ3WWkOkzpSqxOxdVOlEMvfzByUbqAAAAoh+LCAAAAAAAAP9tjTEOwjAQBM8BClpKHuFItIiK1krDC0x8GCfWnbEdkooX8TX+gCESFVvtrLSa5wtWKcKBo5UdUu8otU4GP9jS5Mixv3geZcdn2TIl9igbHBs2eJyx4YwwR1SwULBGaj0nRzbDRnX6rmuvydanHMu2V1A5c4MHCFXMWcf8hSnC9jqYxPTz/BXAFEIGsfuclm8zQVqFvQAAAA==[0m[Pipeline] Start of Pipeline
 [8mha:////4L1aaa3/KSKSEUeQ4T+QbEuOBSxF4o3ap6r/iPlmYEuAAAAApR+LCAAAAAAAAP9tjTEOwjAUQ3+KOrAycohUghExsUZZOEFIQkgb/d8mKe3EibgadyBQiQlLlmxL1nu+oE4RjhQdby12HpP2vA+jK4lPFLtroIm3dOGaMFGwXNpJkrGnpUrKFhaxClYC1hZ1oOTRZdiIVt1VExS65pxj2Q4CKm8GeAAThZxVzN8yR9jeRpMIf5y/AJj7DGxXvP/86jduZBmjwAAAAA==[0m[Pipeline] node
 Running on [8mha:////4OXVUP0LndBsG5f0qbn5uwYDyCuskYifisXu7AYsk/QYAAAAoR+LCAAAAAAAAP9b85aBtbiIQTGjNKU4P08vOT+vOD8nVc83PyU1x6OyILUoJzMv2y+/JJUBAhiZGBgqihhk0NSjKDWzXb3RdlLBUSYGJk8GtpzUvPSSDB8G5tKinBIGIZ+sxLJE/ZzEvHT94JKizLx0a6BxUmjGOUNodHsLgAz2EgZR/eT83ILSktQifY2k0sycEt3MPE19AHHxbH3KAAAA[0mJenkins in /var/jenkins_home/jobs/cclemon-ui-build/branches/master/workspace
@@ -19,11 +19,11 @@ Fetching upstream changes from https://github.com/Anderson-chen/cclemon-ui.git
  > git --version # 'git version 2.39.5'
 using GIT_ASKPASS to set credentials 
  > git fetch --no-tags --force --progress -- https://github.com/Anderson-chen/cclemon-ui.git +refs/heads/master:refs/remotes/origin/master # timeout=10
-Checking out Revision 7cadeb0621a1baf8d3d7f845b2b9ec6e680598a9 (master)
+Checking out Revision 969d19a02d914eb94f8840bb9c4bdca2c1e8935a (master)
  > git config core.sparsecheckout # timeout=10
- > git checkout -f 7cadeb0621a1baf8d3d7f845b2b9ec6e680598a9 # timeout=10
-Commit message: "feat:修改dev環境常數和docker對外主機port"
- > git rev-list --no-walk d8a6fe44ea1c617cfa9f96cf269427ce03a4ba1c # timeout=10
+ > git checkout -f 969d19a02d914eb94f8840bb9c4bdca2c1e8935a # timeout=10
+Commit message: "feat:測試改進打包速度"
+ > git rev-list --no-walk 7cadeb0621a1baf8d3d7f845b2b9ec6e680598a9 # timeout=10
 [8mha:////4CpGg4SL9pty25Ym8wLf0LJ11yzZYgbg7KJpQoGfsWCgAAAAoh+LCAAAAAAAAP9tjTEOAiEURD9rLGwtPQTbGRNjZUtoPAGyiLDkfxZYdytP5NW8g8RNrJxkknnTvNcb1jnBiZLl3mDvMGvHYxhtXXyi1N8CTdzTlWvCTMFwaSZJnTkvKKkYWMIaWAnYGNSBskNbYCu8eqg2KLTtpaT6HQU0rhvgCUxUc1GpfGFOsLuPXSb8ef4KYI6xADvU7j9Dg2gqvAAAAA==[0m[Pipeline] }
 [8mha:////4FEYqMohBrVf0RxZo8MQj4ibpmAAdimz+WACWZZmENuNAAAAoh+LCAAAAAAAAP9tjTEOAiEURD9rLGwtPQRbWRhjZUtoPAGyiLDkfxZYdytP5NW8g8RNrJxkknnTvNcb1jnBiZLl3mDvMGvHYxhtXXyi1N8CTdzTlWvCTMFwaSZJnTkvKKkYWMIaWAnYGNSBskNbYCu8eqg2KLTtpaT6HQU0rhvgCUxUc1GpfGFOsLuPXSb8ef4KYI6xADvU7j9J+wGOvAAAAA==[0m[Pipeline] // stage
 [8mha:////4Cvk6wgdj7HSJiZSHtDyMqLkpYjU0phgUYET3vHTV6VgAAAAph+LCAAAAAAAAP9tjTEOwjAQBM9BKWgpeYQDEh2iorXc8AITG+PEugv2haTiRXyNPxCIRMVWOyut5vmCMic4UPKycdgGzHWQXez91ORAqb1EGmRDZ1kTZopOajdosu44oyZ2MEcUsFCwdFhHygE9w0o15m6qaNBXJ07TtldQBHuDBwg1mdkk/sKYYH3tbSb8ef4KYOwYxI6h2G4+x/INtuQqUcEAAAA=[0m[Pipeline] withEnv
@@ -35,16 +35,16 @@ Commit message: "feat:修改dev環境常數和docker對外主機port"
 [8mha:////4K+tQyT7Yw6JrvthiVSRkwANqsaRD/Ipo3Z/RI5oRddNAAAApR+LCAAAAAAAAP9tjTEOwjAQBC9BFLSUPOIihESDqNJabniBiY1xYt0Z2yGpeBFf4w8EIlGxxWpnm3m+YJkiHDlabA11jlLjMPjeTgsHjt3F84Atn7FhSuwNSjNI1qaeUXI2MKcoYSFgZajxnBzZDGvRqruqvCJbnXKcvoOA0ukbPKAQkzmrmL8wRthce52Yfp6/AhhDhnK7+9Q+vAGI1pjGvgAAAA==[0m[Pipeline] sh
 + docker build -t c7a1d71be47e65826b50dc78c3a3b9eceaa2de93 -f ci/agent/Dockerfile ci/agent
 #1 [internal] load build definition from Dockerfile
-#1 sha256:516c0b2b04d03e5dd71d53247490d13d7abc26910ca6b056e66cd04c6c9e2ff3
+#1 sha256:56fd1eedbe9aff5d668b3b708d4975c1e6d93d9d179b7ae8aad9069010f78276
 #1 transferring dockerfile: 219B 0.0s done
 #1 DONE 0.0s
 
 #2 [internal] load metadata for docker.io/library/node:22.14.0-alpine
 #2 sha256:7c870dd41dceb48207e10b07aa1e8a1d98c4e343081939ba3abc24592f91351f
-#2 DONE 2.4s
+#2 DONE 2.7s
 
 #3 [internal] load .dockerignore
-#3 sha256:23a6705f825f1996afa606ddb5a8b602f72ae5b865d4be5fbf7b175bfbcb7eb3
+#3 sha256:0ea4b5784020227c6018504616e70663065443ea1fb23574ccb77537bd9a1644
 #3 transferring context: 2B 0.0s done
 #3 DONE 0.0s
 
@@ -62,11 +62,12 @@ Commit message: "feat:修改dev環境常數和docker對外主機port"
 #4 CACHED
 
 #7 exporting to image
-#7 sha256:2f291d2c7d273bc7552d9f1bce0f5d574ff214de66b42e788e0de268f57b77f6
+#7 sha256:49f11ecf1c9f4db3c08d18b5723d894c7a9518875b1aa0f7edec2cca0e50797b
 #7 exporting layers done
 #7 exporting manifest sha256:5f4950f8123a54f36ac7816c1f865cc70db74876eca3fcb515df4125aacc6e44 done
 #7 exporting config sha256:8d410cc9134196975522e5f703438aee812c6b3ad3accb5c0c065b27a78beaea done
 #7 naming to docker.io/library/c7a1d71be47e65826b50dc78c3a3b9eceaa2de93:latest done
+#7 unpacking to docker.io/library/c7a1d71be47e65826b50dc78c3a3b9eceaa2de93:latest
 #7 unpacking to docker.io/library/c7a1d71be47e65826b50dc78c3a3b9eceaa2de93:latest done
 #7 DONE 0.0s
 [8mha:////4Hk9mgy+3VZI17Ir+CfpDq3l8LbKoz3DFfznh7tD0SsPAAAApR+LCAAAAAAAAP9tjTEOwjAQBC9BFLSUPOIiREGBqNJabniBiY1xYt0Z2yGpeBFf4w8EIlGxxWpnm3m+YJkiHDlabA11jlLjMPjeTgsHjt3F84Atn7FhSuwNSjNI1qaeUXI2MKcoYSFgZajxnBzZDGvRqruqvCJbnXKcvoOA0ukbPKAQkzmrmL8wRthce52Yfp6/AhhDyFBu95/avQG7xuaSvgAAAA==[0m[Pipeline] }
@@ -82,7 +83,7 @@ Commit message: "feat:修改dev環境常數和docker對外主機port"
 [8mha:////4EYBWVabq1OXn10mbmv+zpLKFMrMetk3eHL3WWT34HwyAAAAqB+LCAAAAAAAAP9tjTEOwjAUQ3+LOrAycohURWJCTF2jLpwgNCEkjf4vSUo6cSKuxh0IVGLCg2Vbst7zBVXwcCSvmVU4GAy9YaObdE4skR8ujhKzdGY9YSCnWKdSR1K1S+0oKlhUlLDisFbYOwoGdYQNt+IuaidQ16fo83bgUBp5gwcUPJOj8PFbZg/b6yQD4Y/zFwDzGKFsmmy7/edZvQFKJke3wgAAAA==[0m[Pipeline] withDockerContainer
 Jenkins seems to be running inside container 360107b1ad296a47a411df2974fd5ac83d23bed8092139dc63c66bad22c11cc8
 $ docker run -t -d -u 0:0 -v /var/run/docker.sock:/var/run/docker.sock -v $HOME/.cache:/home/node/.cache -w /var/jenkins_home/jobs/cclemon-ui-build/branches/master/workspace --volumes-from 360107b1ad296a47a411df2974fd5ac83d23bed8092139dc63c66bad22c11cc8 -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** c7a1d71be47e65826b50dc78c3a3b9eceaa2de93 cat
-$ docker top 4880043648f80773269f3e8b64d484456cf300986cb8a4b2e17e9e7699c5ab3d -eo pid,comm
+$ docker top 09875ab1cef55463b7856ac5a2813615dc8197bd49c09157736f94cb33e56405 -eo pid,comm
 [8mha:////4FgvKVAAGJthun0+OthxQSq1TlWL6lLvvPsyuHTqo61RAAAAqB+LCAAAAAAAAP9tjTEOwjAUQ3+LOrAycohUQoIFMXWNsnCC0ISQNvq//KS0EyfiatyBlkpMeLBsS9Z7vaGIDCdiJxqLrcdYe9GF3k1JDMTtNdAgGrqImjBSsELZQZGx1VIVJQuLshxWEtYW60DRo0uwkY1+6DJodOU58bQdJeTe3OEJmZzISXP6lpFhe+tNJPxx/gJg7BLku/1sh/lZfACW9ZT2wgAAAA==[0m[Pipeline] {
 [8mha:////4AKLlTy2qWSUSSDEv8MkndoF/1uQEOaQJHqI7PjOUvdnAAAAqB+LCAAAAAAAAP9tjTEOwjAUQ3+LOrAycohUYoABMXWNsnCC0ISQNvq//KS0EyfiatyBlkpMeLBsS9Z7vaGIDCdiJxqLrcdYe9GF3k1JDMTtNdAgGrqImjBSsELZQZGx1VIVJQuLshxWEtYW60DRo0uwkY1+6DJodOU58bQdJeTe3OEJmZzISXP6lpFhe+tNJPxx/gJg7BLku/1sh/lZfAAyQCqkwgAAAA==[0m[Pipeline] withEnv
 [8mha:////4MFZLduJJMr3rBdZsG7i1RwE9sEhhT36k7I5mjxXI0N0AAAAqB+LCAAAAAAAAP9tjTEOwjAUQ3+LOrAycohUYgEJMXWNsnCC0ISQNvq//KS0EyfiatyBlkpMeLBsS9Z7vaGIDCdiJxqLrcdYe9GF3k1JDMTtNdAgGrqImjBSsELZQZGx1VIVJQuLshxWEtYW60DRo0uwkY1+6DJodOU58bQdJeTe3OEJmZzISXP6lpFhe+tNJPxx/gJg7BLku/1sh/lZfAAnLfKUwgAAAA==[0m[Pipeline] {
@@ -91,7 +92,7 @@ $ docker top 4880043648f80773269f3e8b64d484456cf300986cb8a4b2e17e9e7699c5ab3d -e
 [8mha:////4IoeY+q92fKSEX30bdZwZCENmVVOUjXKK8PhlsTFe5zzAAAAox+LCAAAAAAAAP9tjTEOwjAQBC9BFLSUPOICokRUaS03vMDExjix7oztkFS8iK/xBwKRqNhitbPNPF+wTBGOHC22hjpHqXEYfG+nhQPH7uJ5wJbP2DAl9galGSRrU88oORuYU5SwELAy1HhOjmyGtWjVXVVeka1OOU7fQUDp9A0eUIjJnFXMXxgjbK69Tkw/z18BjCFDud9+ahfewYmQ+b4AAAA=[0m[Pipeline] checkout
 The recommended git tool is: NONE
 using credential 398db9e9-0445-454e-a845-823c66fe5bad
-Warning: JENKINS-30600: special launcher org.jenkinsci.plugins.docker.workflow.WithContainerStep$Decorator$1@1ce1f095; decorates hudson.Launcher$LocalLauncher@20be9b71 will be ignored (a typical symptom is the Git executable not being run inside a designated container)
+Warning: JENKINS-30600: special launcher org.jenkinsci.plugins.docker.workflow.WithContainerStep$Decorator$1@82d3a9f; decorates hudson.Launcher$LocalLauncher@1c4421dd will be ignored (a typical symptom is the Git executable not being run inside a designated container)
  > git rev-parse --resolve-git-dir /var/jenkins_home/jobs/cclemon-ui-build/branches/master/workspace/.git # timeout=10
 Fetching changes from the remote Git repository
  > git config remote.origin.url https://github.com/Anderson-chen/cclemon-ui.git # timeout=10
@@ -101,10 +102,10 @@ Fetching upstream changes from https://github.com/Anderson-chen/cclemon-ui.git
  > git --version # 'git version 2.39.5'
 using GIT_ASKPASS to set credentials 
  > git fetch --no-tags --force --progress -- https://github.com/Anderson-chen/cclemon-ui.git +refs/heads/master:refs/remotes/origin/master # timeout=10
-Checking out Revision 7cadeb0621a1baf8d3d7f845b2b9ec6e680598a9 (master)
+Checking out Revision 969d19a02d914eb94f8840bb9c4bdca2c1e8935a (master)
  > git config core.sparsecheckout # timeout=10
- > git checkout -f 7cadeb0621a1baf8d3d7f845b2b9ec6e680598a9 # timeout=10
-Commit message: "feat:修改dev環境常數和docker對外主機port"
+ > git checkout -f 969d19a02d914eb94f8840bb9c4bdca2c1e8935a # timeout=10
+Commit message: "feat:測試改進打包速度"
 [8mha:////4Ao6oSazTeMZRmGedQbRudIYEesJCfT7teFGI7P2iSR+AAAAox+LCAAAAAAAAP9tjTEOwjAQBC9BFLSUPOKCoERUaS03vMDExjix7oztkFS8iK/xBwKRqNhitbPNPF+wTBGOHC22hjpHqXEYfG+nhQPH7uJ5wJbP2DAl9galGSRrU88oORuYU5SwELAy1HhOjmyGtWjVXVVeka1OOU7fQUDp9A0eUIjJnFXMXxgjbK69Tkw/z18BjCFkKPe7T23fGXWL/r4AAAA=[0m[Pipeline] }
 [8mha:////4EKiFkg7c1a9XHog5LqMYPQgDe+6PoMlN0VXNq80InJQAAAApR+LCAAAAAAAAP9tjTEOwjAQBC9BFLSUPMKRSIUQVVorDS8w8WGcWHfGdkgqXsTX+AMWkajYYrWzzbzesI4BThyM6JEGS7GzwrvR5CUmDsPV8SR6voiOKbJD0eLUssZmwZYTwpKihJWEDVLnOFoyCbayVw9VOUWmOqeQv6OE0uo7PKGQ2ZxUSF+YA+xuo45MP89fAczeJyjrOtf+8AFZLxBVvgAAAA==[0m[Pipeline] // stage
 [8mha:////4OAVCc3sDWP/i0lKbgZhaZ+9h6G/BoYSOlii6LIiAq3nAAAAqB+LCAAAAAAAAP9tjTEOwjAUQ3+LOrAycohUAgYk1Ik16sIJQhNC0uj/kqSkEyfiatyBQCUmPFi2Jes9X1AFDw15zazC3mDoDBvcqHNiiXx/cZSYpTPrCAM5xVqVWpLqONeWooJZRQkLDkuFnaNgUEdYcSvuonYCdX2KPm8HDqWRN3hAwTM5Ch+/ZfKwvo4yEP44fwEwDRHKzT7bdvd5Vm8uEr/WwgAAAA==[0m[Pipeline] stage
@@ -112,7 +113,7 @@ Commit message: "feat:修改dev環境常數和docker對外主機port"
 [8mha:////4JUtWSq194T9b71ny3yTVors1I6goFZitDXWdQMBCzROAAAApB+LCAAAAAAAAP9tjTEOwjAQBC9BFLSUPOJSIGgQVVrLDS8wsTFOrDtjOyQVL+Jr/IFAJCq2WO1sM88XLFOEI0eLraHOUWocBt/baeHAsbt4HrDlMzZMib1BaQbJ2tQzSs4G5hQlLASsDDWekyObYS1adVeVV2SrU47TdxBQOn2DBxRiMmcV8xfGCJtrrxPTz/NXAGPIUG53n9qHN6Ew6eS+AAAA[0m[Pipeline] sh
 + npm install
 
-up to date, audited 535 packages in 7s
+up to date, audited 535 packages in 9s
 
 123 packages are looking for funding
   run `npm fund` for details
@@ -159,22 +160,22 @@ Y88b.Y8b88P Y88b 888 888  888      X88 888  888 888
  App • Using .env files: .env, .env.prod
  App •  WAIT  • Compiling of SPA UI with Vite in progress...
 Vite Environment Variables: {
-  GIT_PREVIOUS_SUCCESSFUL_COMMIT: 'd8a6fe44ea1c617cfa9f96cf269427ce03a4ba1c',
+  GIT_PREVIOUS_SUCCESSFUL_COMMIT: '7cadeb0621a1baf8d3d7f845b2b9ec6e680598a9',
   BRANCH_IS_PRIMARY: 'true',
   npm_config_user_agent: 'npm/10.9.2 node/v22.14.0 linux x64 workspaces/false ci/jenkins',
   CI: 'true',
   NODE_VERSION: '22.14.0',
-  HOSTNAME: '4880043648f8',
-  RUN_CHANGES_DISPLAY_URL: 'http://localhost:3000/job/cclemon-ui-build/job/master/6/display/redirect?page=changes',
+  HOSTNAME: '09875ab1cef5',
+  RUN_CHANGES_DISPLAY_URL: 'http://localhost:3000/job/cclemon-ui-build/job/master/7/display/redirect?page=changes',
   YARN_VERSION: '1.22.22',
   npm_node_execpath: '/usr/local/bin/node',
-  HUDSON_URL: 'http://localhost:3000/',
+  GIT_COMMIT: '969d19a02d914eb94f8840bb9c4bdca2c1e8935a',
   NODE_LABELS: 'built-in master',
-  GIT_COMMIT: '7cadeb0621a1baf8d3d7f845b2b9ec6e680598a9',
+  HUDSON_URL: 'http://localhost:3000/',
   SHLVL: '3',
   npm_config_noproxy: '',
   HOME: '/root',
-  BUILD_URL: 'http://localhost:3000/job/cclemon-ui-build/job/master/6/',
+  BUILD_URL: 'http://localhost:3000/job/cclemon-ui-build/job/master/7/',
   npm_package_json: '/var/jenkins_home/jobs/cclemon-ui-build/branches/master/workspace/package.json',
   npm_package_engines_node: '^24 || ^22 || ^20 || ^18',
   JENKINS_SERVER_COOKIE: 'durable-eca20ab81ce17e5b44c767cc4c66ffe8cf7e5b5979d65400191e6c9588b6261c',
@@ -183,35 +184,35 @@ Vite Environment Variables: {
   npm_config_resolution_mode: 'highest',
   WORKSPACE: '/var/jenkins_home/jobs/cclemon-ui-build/branches/master/workspace',
   COLOR: '0',
-  NODE_NAME: 'built-in',
   PROJECT_NAME: 'cclemon-ui',
   PROFILE: 'dev',
-  RUN_ARTIFACTS_DISPLAY_URL: 'http://localhost:3000/job/cclemon-ui-build/job/master/6/display/redirect?page=artifacts',
+  NODE_NAME: 'built-in',
+  RUN_ARTIFACTS_DISPLAY_URL: 'http://localhost:3000/job/cclemon-ui-build/job/master/7/display/redirect?page=artifacts',
   npm_config_prefix: '/usr/local',
   npm_config_npm_version: '10.9.2',
-  GIT_BRANCH: 'master',
   EXECUTOR_NUMBER: '1',
+  GIT_BRANCH: 'master',
   STAGE_NAME: 'Build Quasar App',
   npm_config_cache: '/root/.npm',
-  RUN_TESTS_DISPLAY_URL: 'http://localhost:3000/job/cclemon-ui-build/job/master/6/display/redirect?page=tests',
-  BUILD_DISPLAY_NAME: '#6',
+  BUILD_DISPLAY_NAME: '#7',
+  RUN_TESTS_DISPLAY_URL: 'http://localhost:3000/job/cclemon-ui-build/job/master/7/display/redirect?page=tests',
   HUDSON_HOME: '/var/jenkins_home',
   JOB_BASE_NAME: 'master',
   npm_config_node_gyp: '/usr/local/lib/node_modules/npm/node_modules/node-gyp/bin/node-gyp.js',
   PATH: '/var/jenkins_home/jobs/cclemon-ui-build/branches/master/workspace/node_modules/.bin:/var/jenkins_home/jobs/cclemon-ui-build/branches/master/node_modules/.bin:/var/jenkins_home/jobs/cclemon-ui-build/branches/node_modules/.bin:/var/jenkins_home/jobs/cclemon-ui-build/node_modules/.bin:/var/jenkins_home/jobs/node_modules/.bin:/var/jenkins_home/node_modules/.bin:/var/node_modules/.bin:/node_modules/.bin:/usr/local/lib/node_modules/npm/node_modules/@npmcli/run-script/lib/node-gyp-bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin',
   NODE: '/usr/local/bin/node',
   npm_package_name: 'cclemon-ui',
-  BUILD_ID: '6',
-  BUILD_TAG: 'jenkins-cclemon-ui-build-master-6',
+  BUILD_ID: '7',
+  BUILD_TAG: 'jenkins-cclemon-ui-build-master-7',
   JENKINS_URL: 'http://localhost:3000/',
-  JOB_URL: 'http://localhost:3000/job/cclemon-ui-build/job/master/',
   GIT_URL: 'https://github.com/Anderson-chen/cclemon-ui.git',
+  JOB_URL: 'http://localhost:3000/job/cclemon-ui-build/job/master/',
   npm_lifecycle_script: 'set ENV_FILE=dev&& quasar build',
-  BUILD_NUMBER: '6',
-  JENKINS_NODE_COOKIE: '0df51678-e37f-4a68-ba06-6dd5fe364226',
+  BUILD_NUMBER: '7',
+  JENKINS_NODE_COOKIE: '38a98822-338e-4f5a-941b-9dd7c933f6bd',
   npm_package_version: '0.0.1',
   npm_lifecycle_event: 'build:dev',
-  RUN_DISPLAY_URL: 'http://localhost:3000/job/cclemon-ui-build/job/master/6/display/redirect',
+  RUN_DISPLAY_URL: 'http://localhost:3000/job/cclemon-ui-build/job/master/7/display/redirect',
   npm_config_strict_peer_dependencies: '',
   npm_package_engines_yarn: '>= 1.21.1',
   HUDSON_SERVER_COOKIE: '8715dfc926745845',
@@ -224,7 +225,7 @@ Vite Environment Variables: {
   npm_execpath: '/usr/local/lib/node_modules/npm/bin/npm-cli.js',
   npm_config_global_prefix: '/usr/local',
   npm_package_engines_npm: '>= 6.13.4',
-  GIT_PREVIOUS_COMMIT: 'd8a6fe44ea1c617cfa9f96cf269427ce03a4ba1c',
+  GIT_PREVIOUS_COMMIT: '7cadeb0621a1baf8d3d7f845b2b9ec6e680598a9',
   npm_command: 'run-script',
   WORKSPACE_TMP: '/var/jenkins_home/jobs/cclemon-ui-build/branches/master/workspace@tmp',
   TZ: 'Asia/Taipei',
@@ -246,7 +247,7 @@ Vite Environment Variables: {
 Browserslist: caniuse-lite is outdated. Please run:
   npx update-browserslist-db@latest
   Why you should do it regularly: https://github.com/browserslist/update-db#readme
- App •  DONE  • SPA UI compiled with success by Vite • 32343ms
+ App •  DONE  • SPA UI compiled with success by Vite • 26165ms
 
  Build summary with important files:
  ╔══════════════════════════════════╤═══════════╤══════════╗
@@ -298,21 +299,21 @@ Browserslist: caniuse-lite is outdated. Please run:
 [8mha:////4Jp7hxg3jNeyDaPffhpUOo2sy6m8Z8JOiR+11mFZ4H1iAAAApx+LCAAAAAAAAP9tjTEOwjAUQ3+LOrAycoh0ARbE1DXKwglCE0La6P/yk9JOnIircQdaKjHhwbItWe/1hiIynIidaCy2HmPtRRd6NyUxELfXQINo6CJqwkjBCmUHRcZWS1WULCzKclhJWFusA0WPLsFGNvqhy6DRlefE03aUkHtzhydkciInzelbRobtrTeR8Mf5C4CxS5Dv9rMd5mfxAUxleXrCAAAA[0m[Pipeline] script
 [8mha:////4NpzG/yoPNeOgZebzAPlzrSMd7W8uotLUiisvKxizF9QAAAApx+LCAAAAAAAAP9tjTEOwjAUQ3+LOrAycoh0QTAgpq5RFk4QmhDSRv+Xn5R24kRcjTvQUokJD5ZtyXqvNxSR4UTsRGOx9RhrL7rQuymJgbi9BhpEQxdRE0YKVig7KDK2WqqiZGFRlsNKwtpiHSh6dAk2stEPXQaNrjwnnrajhNybOzwhkxM5aU7fMjJsb72JhD/OXwCMXYJ8t5/tMD+LD+jQxyjCAAAA[0m[Pipeline] {
 [8mha:////4CvmWzxib3VlR0Z98MI4yCBPuiW8FP9CK+/d/8qAg2t6AAAApR+LCAAAAAAAAP9tjTEOwjAQBC9BFLSUPOLSIIGEqNJabniBiY1xYt0Z2yGpeBFf4w8EIlGxxWpnm3m+YJkiHDlabA11jlLjMPjeTgsHjt3F84Atn7FhSuwNSjNI1qaeUXI2MKcoYSFgZajxnBzZDGvRqruqvCJbnXKcvoOA0ukbPKAQkzmrmL8wRthce52Yfp6/AhhDhnK7+9Q+vAGaE3/ivgAAAA==[0m[Pipeline] sh
-+ docker build -f ci/Dockerfile -t cclemon-ui:dev .
++ docker build -f ci/Dockerfile -t cclemon-ui:dev dist/spa
 DEPRECATED: The legacy builder is deprecated and will be removed in a future release.
             Install the buildx component to build images with BuildKit:
             https://docs.docker.com/go/buildx/
 
-Sending build context to Docker daemon  262.3MB
+Sending build context to Docker daemon  1.069MB
 Step 1/3 : FROM nginx:alpine
  ---> b2e814d28359
-Step 2/3 : COPY /dist/spa /usr/share/nginx/html
- ---> Using cache
- ---> 2f44c8d29243
+Step 2/3 : COPY . /usr/share/nginx/html
+ ---> 52a0ee9caebc
 Step 3/3 : EXPOSE 80
- ---> Using cache
- ---> 949c6c681628
-Successfully built 949c6c681628
+ ---> Running in e6a2b43a5262
+ ---> Removed intermediate container e6a2b43a5262
+ ---> 5e44f8a78626
+Successfully built 5e44f8a78626
 Successfully tagged cclemon-ui:dev
 [8mha:////4Ekd3G13Qhm/8+e12XzAFpm8OvTCdz4tIf2Izu1jODaSAAAApR+LCAAAAAAAAP9tjTEOwjAQBC9BFLSUPOLSICGEqNJabniBiY1xYt0Z2yGpeBFf4w8EIlGxxWpnm3m+YJkiHDlabA11jlLjMPjeTgsHjt3F84Atn7FhSuwNSjNI1qaeUXI2MKcoYSFgZajxnBzZDGvRqruqvCJbnXKcvoOA0ukbPKAQkzmrmL8wRthce52Yfp6/AhhDyFBu95/avQEwuM6AvgAAAA==[0m[Pipeline] }
 [8mha:////4AkI/5FbKaK21EAiYiusfN6OZt91bxtPt5A4RslESlq2AAAApR+LCAAAAAAAAP9tjTEOwjAQBC9BFLSUPOJCATQoFa3lhheYxBgn1l2wHZyKF/E1/oBFJCq2WO1sM683LIOHmr3BTlNvKTQWBzeavDCx76+OE3Z8wYYpsNModZLc6tOMkqOGOUUJCwErTY3jYMlEWItOPVTlFJnqHH3+jgJK297hCYXI5qh8/MLkYXMb28D08/wVwDQMEcr9Ntfu8AHa0rF2vgAAAA==[0m[Pipeline] // script
@@ -321,8 +322,8 @@ Successfully tagged cclemon-ui:dev
 [8mha:////4LG2c2+JWxdhiCW6XvoQ9HilRsIDEGFQG8zUep/WtiGJAAAAph+LCAAAAAAAAP9tjTEOwjAQBC9BFLSUPOIigZCQUCpayw0vMIkxTqy7YDs4FS/ia/wBi0hUbLHa2WZeb1gGDzV7g52m3lJoLA5uNHlhYt9fHSfs+IINU2CnUeokudWnGSVHDXOKEhYCVpoax8GSibAWnXqoyiky1Tn6/B0FlLa9wxMKkc1R+fiFycPmNraB6ef5K4BpGCKU+12u7eED9SrHQb4AAAA=[0m[Pipeline] }
 [8mha:////4MLepuyTeAsGyNqbJznOfor43RpClJ5CvCSDZrHslLTyAAAAph+LCAAAAAAAAP9tjTEOwjAQBC9BFLSUPOIiIRAFSkVrueEFJjHGiXUXbAen4kV8jT9gEYmKLVY728zrDcvgoWZvsNPUWwqNxcGNJi9M7Pur44QdX7BhCuw0Sp0kt/o0o+SoYU5RwkLASlPjOFgyEdaiUw9VOUWmOkefv6OA0rZ3eEIhsjkqH78wedjcxjYw/Tx/BTANQ4Ryv8u1PXwA3Ad9zL4AAAA=[0m[Pipeline] // withEnv
 [8mha:////4AnTq0LsI/yblcFKmOwOqqVawvHCa53DpEkHYw5pVNCZAAAApR+LCAAAAAAAAP9tjTEOwjAQBC9BFLSUPMKRkEKDqNJaaXiBiQ/jxLoztkNS8SK+xh+wiETFFqudbeb1hnUMcOJgRI80WIqdFd6NJi8xcRiujifR80V0TJEdihanljU2C7acEJYUJawkbJA6x9GSSbCVvXqoyiky1TmF/B0llFbf4QmFzOakQvrCHGB3G3Vk+nn+CmD2PkFZ17n2hw/v5CZwvgAAAA==[0m[Pipeline] }
-$ docker stop --time=1 4880043648f80773269f3e8b64d484456cf300986cb8a4b2e17e9e7699c5ab3d
-$ docker rm -f --volumes 4880043648f80773269f3e8b64d484456cf300986cb8a4b2e17e9e7699c5ab3d
+$ docker stop --time=1 09875ab1cef55463b7856ac5a2813615dc8197bd49c09157736f94cb33e56405
+$ docker rm -f --volumes 09875ab1cef55463b7856ac5a2813615dc8197bd49c09157736f94cb33e56405
 [8mha:////4HV5Mzppo+wq5DZsE9cq3UkvQncMhdp7UXtFgQv8Qp7zAAAApR+LCAAAAAAAAP9tjTEOwjAQBC9BFLSUPMKRkEKDqNJaaXiBiQ/jxLoztkNS8SK+xh+wiETFFqudbeb1hnUMcOJgRI80WIqdFd6NJi8xcRiujifR80V0TJEdihanljU2C7acEJYUJawkbJA6x9GSSbCVvXqoyiky1TmF/B0llFbf4QmFzOakQvrCHGB3G3Vk+nn+CmD2PkFZH3Lt6w/7x7tvvgAAAA==[0m[Pipeline] // withDockerContainer
 [8mha:////4BHRrEP+flTIHKwq8EcyTKxzuDWPLZ17hfnUcyAyLyrSAAAApR+LCAAAAAAAAP9tjTEOwjAQBC9BFLSUPOKiFIgCUaW10vACExvjxLoztkNS8SK+xh+wiETFFqudbeb1hnUMcOJgsNc0WIqdRe9GkxdOHIar4wl7vmDHFNlpbPXUstLNgi0nDUuKElYCNpo6x9GSSbAVvXzIykky1TmF/B0FlFbd4QmFyOYkQ/rCHGB3G1Vk+nn+CmD2PkG5P+Sq6w+Eg6eIvgAAAA==[0m[Pipeline] }
 [8mha:////4EjpDYvzxtpvdui0QJWgdglPLpFSQaSRHPbqD15mwVA5AAAAph+LCAAAAAAAAP9tjTEOwjAQBC9BFLSUPOICBRISSkVrueEFJjHGiXUXbAen4kV8jT9gEYmKLVY728zrDcvgoWZvsNPUWwqNxcGNJi9M7Pur44QdX7BhCuw0Sp0kt/o0o+SoYU5RwkLASlPjOFgyEdaiUw9VOUWmOkefv6OA0rZ3eEIhsjkqH78wedjcxjYw/Tx/BTANQ4Ryf8i1234AxwH2Dr4AAAA=[0m[Pipeline] // withEnv

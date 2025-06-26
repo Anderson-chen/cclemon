@@ -34,14 +34,14 @@
         <head class="org.jenkinsci.plugins.github_branch_source.BranchSCMHead" plugin="github-branch-source@1824.v046257273408">
           <name>master</name>
         </head>
-        <hash>7cadeb0621a1baf8d3d7f845b2b9ec6e680598a9</hash>
+        <hash>969d19a02d914eb94f8840bb9c4bdca2c1e8935a</hash>
       </revision>
     </jenkins.scm.api.SCMRevisionAction>
     <org.jenkinsci.plugins.workflow.libs.LibrariesAction plugin="pipeline-groovy-lib@752.vdddedf804e72">
       <libraries/>
     </org.jenkinsci.plugins.workflow.libs.LibrariesAction>
     <org.jenkinsci.plugins.pipeline.modeldefinition.actions.ExecutionModelAction plugin="pipeline-model-definition@2.2255.v56a_15e805f12">
-      <stagesUUID>1aab8e77-6091-4cd6-9b8e-fb4b6edf5e69</stagesUUID>
+      <stagesUUID>1c9503b7-e7f9-456c-aaed-e17ab4fa0b10</stagesUUID>
       <pipelineDefs>
         <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTPipelineDef plugin="pipeline-model-api@2.2255.v56a_15e805f12">
           <stages>
@@ -141,7 +141,7 @@
             sh &quot;&quot;&quot;
               docker build -f ci/Dockerfile \
                            -t ${imageName}:${imageTag} \
-                           .
+                           dist/spa
             &quot;&quot;&quot;</value>
                               </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTValue_-ConstantValue>
                             </entry>
@@ -153,7 +153,7 @@
                 </branches>
               </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTStage>
             </stages>
-            <uuid>1aab8e77-6091-4cd6-9b8e-fb4b6edf5e69</uuid>
+            <uuid>1c9503b7-e7f9-456c-aaed-e17ab4fa0b10</uuid>
           </stages>
           <environment>
             <variables class="linked-hash-map">
@@ -250,7 +250,7 @@
           <string>master</string>
           <hudson.plugins.git.util.Build>
             <marked plugin="git-client@6.2.0">
-              <sha1>7cadeb0621a1baf8d3d7f845b2b9ec6e680598a9</sha1>
+              <sha1>969d19a02d914eb94f8840bb9c4bdca2c1e8935a</sha1>
               <branches class="singleton-set">
                 <hudson.plugins.git.Branch>
                   <sha1 reference="../../../sha1"/>
@@ -259,7 +259,7 @@
               </branches>
             </marked>
             <revision reference="../marked"/>
-            <hudsonBuildNumber>6</hudsonBuildNumber>
+            <hudsonBuildNumber>7</hudsonBuildNumber>
           </hudson.plugins.git.util.Build>
         </entry>
       </buildsByBranchName>
@@ -285,11 +285,11 @@
       </names>
     </org.jenkinsci.plugins.docker.workflow.ImageAction>
   </actions>
-  <queueId>65</queueId>
-  <timestamp>1750923005394</timestamp>
-  <startTime>1750923005473</startTime>
+  <queueId>67</queueId>
+  <timestamp>1750924830228</timestamp>
+  <startTime>1750924830288</startTime>
   <result>SUCCESS</result>
-  <duration>753972</duration>
+  <duration>160993</duration>
   <charset>UTF-8</charset>
   <keepLog>false</keepLog>
   <execution class="org.jenkinsci.plugins.workflow.cps.CpsFlowExecution">
@@ -339,7 +339,7 @@
             sh &quot;&quot;&quot;
               docker build -f ci/Dockerfile \
                            -t ${imageName}:${imageTag} \
-                           .
+                           dist/spa
             &quot;&quot;&quot;
           }
       }
@@ -352,27 +352,27 @@
     <timings class="map">
       <entry>
         <string>flowNode</string>
-        <long>3874981565</long>
+        <long>3843926673</long>
       </entry>
       <entry>
         <string>classLoad</string>
-        <long>291274201</long>
+        <long>340470808</long>
       </entry>
       <entry>
         <string>runQueue</string>
-        <long>55806915461</long>
+        <long>54223212494</long>
       </entry>
       <entry>
         <string>run</string>
-        <long>35412764507</long>
+        <long>34796421804</long>
       </entry>
       <entry>
         <string>parse</string>
-        <long>36042603</long>
+        <long>36534397</long>
       </entry>
       <entry>
         <string>saveProgram</string>
-        <long>26311353079</long>
+        <long>26014888978</long>
       </entry>
     </timings>
     <internalCalls class="sorted-set">
@@ -425,7 +425,7 @@
       </scm>
       <node></node>
       <workspace>/var/jenkins_home/jobs/cclemon-ui-build/branches/master/workspace</workspace>
-      <changelogFile>/var/jenkins_home/jobs/cclemon-ui-build/branches/master/builds/6/changelog2963154309255600828.xml</changelogFile>
+      <changelogFile>/var/jenkins_home/jobs/cclemon-ui-build/branches/master/builds/7/changelog16205335060605431595.xml</changelogFile>
       <pollingBaseline class="hudson.scm.SCMRevisionState$None" reference="../../../actions/org.jenkinsci.plugins.workflow.steps.scm.MultiSCMRevisionState/revisionStates/entry/hudson.scm.SCMRevisionState_-None"/>
     </org.jenkinsci.plugins.workflow.job.WorkflowRun_-SCMCheckout>
     <org.jenkinsci.plugins.workflow.job.WorkflowRun_-SCMCheckout>
@@ -456,7 +456,7 @@
           <hudson.plugins.git.extensions.impl.BuildChooserSetting>
             <buildChooser class="jenkins.plugins.git.AbstractGitSCMSource$SpecificRevisionBuildChooser">
               <revision plugin="git-client@6.2.0">
-                <sha1>7cadeb0621a1baf8d3d7f845b2b9ec6e680598a9</sha1>
+                <sha1>969d19a02d914eb94f8840bb9c4bdca2c1e8935a</sha1>
                 <branches class="singleton-set">
                   <hudson.plugins.git.Branch>
                     <sha1 reference="../../../sha1"/>

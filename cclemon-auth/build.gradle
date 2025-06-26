@@ -4,9 +4,3 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-authorization-server'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 }
-
-
-//不要產生純jar檔案、在打包時僅產生可執行JAR就好
-jar {
-    enabled = false
-}

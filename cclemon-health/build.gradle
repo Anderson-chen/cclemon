@@ -1,8 +1,3 @@
 dependencies {
     implementation project (":cclemon-core")
 }
-
-//不要產生純jar檔案、在打包時僅產生可執行JAR就好
-jar {
-    enabled = false
-}

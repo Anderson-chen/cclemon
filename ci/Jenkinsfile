@@ -46,7 +46,8 @@ parameters {
             sh """
               docker build -f ../ci/Dockerfile \
                            -t ${params.PROJECT_NAME}:${params.PROFILE} \
-                           .
+                           --build-arg PROJECT_NAME=${params.PROJECT_NAME} \
+                           build/libs
             """
           }
         }
