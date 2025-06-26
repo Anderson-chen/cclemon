@@ -44,6 +44,8 @@ parameters {
             def imageName = "${params.PROJECT_NAME}"
             def imageTag = "${params.PROFILE}"
             sh """
+              cp build/libs/${params.PROJECT_NAME}.jar build/libs/app.jar
+
               docker build -f ../ci/Dockerfile \
                            -t ${params.PROJECT_NAME}:${params.PROFILE} \
                            --build-arg PROJECT_NAME=${params.PROJECT_NAME} \
