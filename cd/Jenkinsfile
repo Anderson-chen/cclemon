@@ -15,7 +15,7 @@ pipeline {
       steps {
         dir("${params.PROJECT_NAME}") {
           script {
-            def containerName = "${params.PROJECT_NAME}_${params.PROFILE}"
+            def containerName = "${params.PROJECT_NAME}-${params.PROFILE}"
             def imageName = "${params.PROJECT_NAME}:${params.PROFILE}"
 
             echo "Deploying ${containerName} using image ${imageName}"
