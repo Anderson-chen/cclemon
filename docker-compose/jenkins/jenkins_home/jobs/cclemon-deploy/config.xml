@@ -29,7 +29,7 @@
         <source class="org.jenkinsci.plugins.github_branch_source.GitHubSCMSource" plugin="github-branch-source@1824.v046257273408">
           <id>4e274f2c-2670-4a04-a8f0-96865a588314</id>
           <apiUri>https://api.github.com</apiUri>
-          <credentialsId>e9b2034e-0a2d-430d-97b9-d5a26fa5a434</credentialsId>
+          <credentialsId>398db9e9-0445-454e-a845-823c66fe5bad</credentialsId>
           <repoOwner>Anderson-chen</repoOwner>
           <repository>cclemon</repository>
           <repositoryUrl>https://github.com/Anderson-chen/cclemon.git</repositoryUrl>

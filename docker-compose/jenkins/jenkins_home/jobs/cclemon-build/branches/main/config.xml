@@ -32,7 +32,7 @@
               <name>origin</name>
               <refspec>+refs/heads/main:refs/remotes/origin/main</refspec>
               <url>https://github.com/Anderson-chen/cclemon.git</url>
-              <credentialsId>e9b2034e-0a2d-430d-97b9-d5a26fa5a434</credentialsId>
+              <credentialsId>398db9e9-0445-454e-a845-823c66fe5bad</credentialsId>
             </hudson.plugins.git.UserRemoteConfig>
           </userRemoteConfigs>
           <branches class="singleton-list">
