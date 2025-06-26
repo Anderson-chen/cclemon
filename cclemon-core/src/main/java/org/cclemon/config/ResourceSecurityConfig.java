@@ -19,9 +19,11 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class ResourceSecurityConfig {
 
     private final String authorizationServerUrl;
+    private final String cclemonUiUrl;
 
-    public ResourceSecurityConfig(@Value("${authorization-server.url}") String authorizationServerUrl) {
+    public ResourceSecurityConfig(@Value("${authorization-server.url}") String authorizationServerUrl, @Value("${cclemon-ui.url}") String cclemonUiUrl) {
         this.authorizationServerUrl = authorizationServerUrl;
+        this.cclemonUiUrl = cclemonUiUrl;
     }
 
     @Bean
@@ -48,7 +50,7 @@ public class ResourceSecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
-        config.addAllowedOrigin("http://127.0.0.1:5173");
+        config.addAllowedOrigin(cclemonUiUrl);
         config.setAllowCredentials(true);
         source.registerCorsConfiguration("/**", config);
         return source;

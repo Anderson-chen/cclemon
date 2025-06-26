@@ -38,3 +38,5 @@ server:
 
 authorization-server:
   url: http://localhost:9000
+cclemon-ui:
+  url: http://127.0.0.1:5173

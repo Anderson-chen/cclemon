@@ -7,6 +7,7 @@ import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 import org.cclemon.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -46,6 +47,12 @@ import java.util.function.Function;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+    private final String cclemonUiUrl;
+
+    public SecurityConfig(@Value("${cclemon-ui.url}") String cclemonUiUrl) {
+        this.cclemonUiUrl = cclemonUiUrl;
+    }
 
     private static KeyPair generateRsaKey() {
         KeyPair keyPair;
@@ -155,7 +162,7 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
-        config.addAllowedOrigin("http://127.0.0.1:5173");
+        config.addAllowedOrigin(cclemonUiUrl);
         config.setAllowCredentials(true);
         source.registerCorsConfiguration("/**", config);
         return source;

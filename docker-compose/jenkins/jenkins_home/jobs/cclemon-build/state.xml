@@ -4,14 +4,14 @@
     <entry>
       <string>71bf39ab-4219-4b1f-94bd-9782fc477788</string>
       <list>
-        <org.jenkinsci.plugins.github__branch__source.GitHubRepoMetadataAction plugin="github-branch-source@1822.v9eec8e5e69e3"/>
+        <org.jenkinsci.plugins.github__branch__source.GitHubRepoMetadataAction plugin="github-branch-source@1824.v046257273408"/>
         <jenkins.scm.api.metadata.ObjectMetadataAction plugin="scm-api@704.v3ce5c542825a_">
           <objectDescription>base for cclemon</objectDescription>
         </jenkins.scm.api.metadata.ObjectMetadataAction>
-        <org.jenkinsci.plugins.github__branch__source.GitHubLink plugin="github-branch-source@1822.v9eec8e5e69e3">
+        <org.jenkinsci.plugins.github__branch__source.GitHubLink plugin="github-branch-source@1824.v046257273408">
           <url>https://github.com/Anderson-chen/cclemon</url>
         </org.jenkinsci.plugins.github__branch__source.GitHubLink>
-        <org.jenkinsci.plugins.github__branch__source.GitHubDefaultBranch plugin="github-branch-source@1822.v9eec8e5e69e3">
+        <org.jenkinsci.plugins.github__branch__source.GitHubDefaultBranch plugin="github-branch-source@1824.v046257273408">
           <repoOwner>Anderson-chen</repoOwner>
           <repository>cclemon</repository>
           <defaultBranch>main</defaultBranch>

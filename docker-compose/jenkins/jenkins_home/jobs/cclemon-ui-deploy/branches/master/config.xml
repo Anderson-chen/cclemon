@@ -1,0 +1,85 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<flow-definition plugin="workflow-job@1537.v66038d35fc76">
+  <actions>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@2.2255.v56a_15e805f12"/>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@2.2255.v56a_15e805f12">
+      <jobProperties/>
+      <triggers/>
+      <parameters>
+        <string>PROFILE</string>
+        <string>PROJECT_NAME</string>
+      </parameters>
+      <options/>
+    </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
+  </actions>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <org.jenkinsci.plugins.workflow.multibranch.BranchJobProperty plugin="workflow-multibranch@806.vb_b_688f609ee9">
+      <branch plugin="branch-api@2.1226.ve1e7e0b_4b_95f">
+        <sourceId>e0412612-1209-48aa-b112-60c0c26fb5d3</sourceId>
+        <head class="org.jenkinsci.plugins.github_branch_source.BranchSCMHead" plugin="github-branch-source@1824.v046257273408">
+          <name>master</name>
+        </head>
+        <scm class="hudson.plugins.git.GitSCM" plugin="git@5.7.0">
+          <configVersion>2</configVersion>
+          <userRemoteConfigs>
+            <hudson.plugins.git.UserRemoteConfig>
+              <name>origin</name>
+              <refspec>+refs/heads/master:refs/remotes/origin/master</refspec>
+              <url>https://github.com/Anderson-chen/cclemon-ui.git</url>
+              <credentialsId>398db9e9-0445-454e-a845-823c66fe5bad</credentialsId>
+            </hudson.plugins.git.UserRemoteConfig>
+          </userRemoteConfigs>
+          <branches class="singleton-list">
+            <hudson.plugins.git.BranchSpec>
+              <name>master</name>
+            </hudson.plugins.git.BranchSpec>
+          </branches>
+          <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+          <browser class="hudson.plugins.git.browser.GithubWeb">
+            <url>https://github.com/Anderson-chen/cclemon-ui</url>
+          </browser>
+          <submoduleCfg class="empty-list"/>
+          <extensions>
+            <jenkins.plugins.git.GitSCMSourceDefaults>
+              <includeTags>false</includeTags>
+            </jenkins.plugins.git.GitSCMSourceDefaults>
+          </extensions>
+        </scm>
+        <properties/>
+        <actions>
+          <org.jenkinsci.plugins.github__branch__source.GitHubLink plugin="github-branch-source@1824.v046257273408">
+            <url>https://github.com/Anderson-chen/cclemon-ui/tree/master</url>
+          </org.jenkinsci.plugins.github__branch__source.GitHubLink>
+          <jenkins.scm.api.metadata.ObjectMetadataAction plugin="scm-api@704.v3ce5c542825a_">
+            <objectDisplayName>master</objectDisplayName>
+            <objectUrl>https://github.com/Anderson-chen/cclemon-ui/tree/master</objectUrl>
+          </jenkins.scm.api.metadata.ObjectMetadataAction>
+          <jenkins.scm.api.metadata.PrimaryInstanceMetadataAction plugin="scm-api@704.v3ce5c542825a_"/>
+        </actions>
+      </branch>
+    </org.jenkinsci.plugins.workflow.multibranch.BranchJobProperty>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>PROJECT_NAME</name>
+          <defaultValue>cclemon-ui</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>PROFILE</name>
+          <choices>
+            <string>dev</string>
+            <string>sit</string>
+            <string>prod</string>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <definition class="org.jenkinsci.plugins.workflow.multibranch.SCMBinder" plugin="workflow-multibranch@806.vb_b_688f609ee9">
+    <scriptPath>cd/Jenkinsfile</scriptPath>
+  </definition>
+  <triggers/>
+  <disabled>false</disabled>
+</flow-definition>

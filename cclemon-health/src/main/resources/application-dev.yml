@@ -30,3 +30,6 @@ server:
 
 authorization-server:
   url: http://cclemon-auth-dev:9000
+
+cclemon-ui:
+  url: http://cclemon-ui-dev

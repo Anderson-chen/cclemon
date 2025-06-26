@@ -1,0 +1,10 @@
+commit d8a6fe44ea1c617cfa9f96cf269427ce03a4ba1c
+tree dfe75e1352cf84a46ff75159e6c41b5235a8a7f9
+parent 503a246f1ca00a406d4e0a9daceca2026d182c17
+author andychen <zz60509561@gmail.com> 2025-06-26 15:11:13 +0800
+committer andychen <zz60509561@gmail.com> 2025-06-26 15:11:13 +0800
+
+    fix:修改指令
+
+
+:100644 100644 3c20420189d5a654c874d6492ad9feaece9c2a65 a7df1ea524052f51db98f9bf4e9f4f6558fd579b M	ci/Dockerfile

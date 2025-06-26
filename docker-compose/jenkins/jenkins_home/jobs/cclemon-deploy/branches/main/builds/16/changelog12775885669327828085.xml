@@ -1,0 +1,10 @@
+commit 5b1cc4b6cf6bd3a4e71cb9cfaa29349cbb289db9
+tree b38d490f4570da7b1c7c6e8f733f87a64c8915fb
+parent c2620413b643afba25bf3eb686281890a4c58ad0
+author andychen <zz60509561@gmail.com> 2025-06-26 13:37:16 +0800
+committer andychen <zz60509561@gmail.com> 2025-06-26 13:37:16 +0800
+
+    feat:修改認證中心路徑
+
+
+:100644 100644 51b232ce1ce0f34b5df6f9959d2987288e4756c3 197b135c97c8df9f5d61bba622df956a97cd5f14 M	cclemon-health/src/main/resources/application-dev.yml
