@@ -6,6 +6,6 @@ base for cclemon
 
 ```bash
 
-docker network create my-network
+docker network create cclemon-network
 
 ```
