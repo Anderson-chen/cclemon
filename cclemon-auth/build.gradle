@@ -1,3 +1,9 @@
+configurations {
+    configureEach {
+        exclude group: 'spring-boot-starter-oauth2-authorization-server', module: 'spring-security-cas'
+    }
+}
+
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
