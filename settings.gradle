@@ -6,4 +6,5 @@ include 'cclemon-practice'
 include 'cclemon-eventBus'
 include 'cclemon-stream'
 include 'cclemon-userEvent'
+include 'cclemon-logging'
 

@@ -1,0 +1,6 @@
+dependencies {
+    // 根據需要加入 logging 相關依賴
+    implementation 'org.slf4j:slf4j-api:2.0.13'
+    // 若要支援 Spring Boot Logging
+    implementation 'org.springframework.boot:spring-boot-starter-logging'
+}
