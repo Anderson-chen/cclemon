@@ -5,7 +5,7 @@ spring:
     config:
       server:
         git:
-          uri: https://github.com/spring-cloud-samples/config-repo
+          uri: https://github.com/Anderson-chen/cclemon/tree/main/cclemon-config-repo
           repos:
             - patterns: multi-repo-demo-*
               uri: https://github.com/spring-cloud-samples/config-repo
