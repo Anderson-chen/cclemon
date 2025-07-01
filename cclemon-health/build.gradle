@@ -1,4 +1,5 @@
 dependencies {
     implementation project (":cclemon-core")
     implementation 'org.springframework.cloud:spring-cloud-config-client'
+    implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
 }

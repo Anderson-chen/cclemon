@@ -3,4 +3,4 @@ spring:
     name: cclemon-health
   cloud:
     config:
-      uri: http://localhost:${config.port:8885}
+      uri: http://localhost:${config.port:8555}
