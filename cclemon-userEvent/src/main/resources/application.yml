@@ -1,5 +1,5 @@
 server:
-  port: 8888
+  port: 8884
 
 kafka:
   topic: TEST
@@ -23,3 +23,8 @@ logging:
     org.springframework.web: INFO
     org.springframework.security: DEBUG
     org.springframework.boot.autoconfigure: DEBUG
+
+authorization-server:
+  url: http://localhost:9000
+cclemon-ui:
+  url: http://127.0.0.1:5173

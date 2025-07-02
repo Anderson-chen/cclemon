@@ -9,6 +9,14 @@ spring:
 #          repos:
 #            - patterns: multi-repo-demo-*
 #              uri: https://github.com/spring-cloud-samples/config-repo
+  kafka:
+    bootstrap-servers: localhost:9093,localhost:9095,localhost:9097
 
 server:
   port: 8555
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: busrefresh , busshutdown
