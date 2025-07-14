@@ -107,6 +107,7 @@ public class SecurityConfig {
 
         // request filter for auth
         http.authorizeHttpRequests((authorize) -> authorize
+                .requestMatchers("/actuator/health").permitAll()
                 .anyRequest().authenticated()
         );
         // sso login page

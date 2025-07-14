@@ -19,5 +19,11 @@ spring:
     password: P@ssw0rd
     driverClassName: com.mysql.cj.jdbc.Driver
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+
 cclemon-ui:
   url: http://127.0.0.1:5173
