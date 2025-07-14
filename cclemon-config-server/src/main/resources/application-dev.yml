@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: cclemon-config-server
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/Anderson-chen/cclemon-config-repo
+#          repos:
+#            - patterns: multi-repo-demo-*
+#              uri: https://github.com/spring-cloud-samples/config-repo
+  kafka:
+    bootstrap-servers: kafka1:9093,kafka2:9093,kafka3:9093
+
+server:
+  port: 8555
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: busrefresh , busshutdown

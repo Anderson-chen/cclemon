@@ -11,7 +11,7 @@ pipeline {
   }
 
 parameters {
-    choice(name: 'PROJECT_NAME', choices: ['cclemon-auth', 'cclemon-health'])
+    choice(name: 'PROJECT_NAME', choices: ['cclemon-auth', 'cclemon-health','cclemon-config-server'])
     choice(name: 'PROFILE', choices: ['dev', 'prod'])
 }
 

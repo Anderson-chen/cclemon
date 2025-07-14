@@ -6,7 +6,7 @@ pipeline {
   }
 
   parameters {
-    choice(name: 'PROJECT_NAME', choices: ['cclemon-auth', 'cclemon-health'])
+    choice(name: 'PROJECT_NAME', choices: ['cclemon-auth', 'cclemon-health' ,'cclemon-config-server'])
     choice(name: 'PROFILE', choices: ['dev', 'prod'])
   }
 
@@ -17,7 +17,6 @@ pipeline {
           script {
             def containerName = "${params.PROJECT_NAME}-${params.PROFILE}"
             def imageName = "${params.PROJECT_NAME}:${params.PROFILE}"
-            def port = (params.PROFILE == "dev") ? 8080 : 8081  // 假設 dev/prod 用不同 port
 
             echo "Deploying ${containerName} using image ${imageName}"
 
@@ -30,7 +29,6 @@ pipeline {
                 --name ${containerName} \
                 --network cclemon-network \
                 -e SPRING_PROFILES_ACTIVE=${params.PROFILE} \
-                -p ${port}:8080 \
                 ${imageName}
 
               echo "⌛ 等待應用健康啟動中..."
@@ -38,7 +36,7 @@ pipeline {
               MAX_RETRIES=20
               SLEEP_INTERVAL=3
               for i in \$(seq 1 \$MAX_RETRIES); do
-                STATUS=\$(curl -s http://localhost:${port}/actuator/health | grep -o '"status":"UP"' || true)
+                STATUS=\$(curl -s http://${containerName}/actuator/health | grep -o '"status":"UP"' || true)
                 if [ "\$STATUS" = '"status":"UP"' ]; then
                   echo "✅ 健康檢查通過，應用已啟動"
                   break
