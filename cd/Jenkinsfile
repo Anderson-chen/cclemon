@@ -17,11 +17,12 @@ pipeline {
           script {
             def containerName = "${params.PROJECT_NAME}-${params.PROFILE}"
             def imageName = "${params.PROJECT_NAME}:${params.PROFILE}"
+            def port = (params.PROFILE == "dev") ? 8080 : 8081  // 假設 dev/prod 用不同 port
 
             echo "Deploying ${containerName} using image ${imageName}"
 
             sh """
-              echo "🔄 停止並移除舊容器（如果有）"
+              echo "🔄 停止並刪除舊容器（如果存在）"
               docker rm -f ${containerName} || true
 
               echo "🚀 啟動新容器"
@@ -29,23 +30,31 @@ pipeline {
                 --name ${containerName} \
                 --network cclemon-network \
                 -e SPRING_PROFILES_ACTIVE=${params.PROFILE} \
+                -p ${port}:8080 \
                 ${imageName}
 
-              echo "🔍 確認容器是否啟動中..."
+              echo "⌛ 等待應用健康啟動中..."
 
-              for i in {1..10}; do
-                STATUS=\$(docker inspect -f '{{.State.Running}}' ${containerName} 2>/dev/null || echo "false")
-                if [ "\$STATUS" = "true" ]; then
-                  echo "✅ 容器 ${containerName} 啟動成功"
-                  exit 0
+              MAX_RETRIES=20
+              SLEEP_INTERVAL=3
+              for i in \$(seq 1 \$MAX_RETRIES); do
+                STATUS=\$(curl -s http://localhost:${port}/actuator/health | grep -o '"status":"UP"' || true)
+                if [ "\$STATUS" = '"status":"UP"' ]; then
+                  echo "✅ 健康檢查通過，應用已啟動"
+                  break
+                else
+                  echo "🕒 第 \$i 次重試，應用尚未就緒，等待 \$SLEEP_INTERVAL 秒..."
+                  sleep \$SLEEP_INTERVAL
                 fi
-                echo "⌛ 容器尚未啟動，重試 \$i..."
-                sleep 2
               done
 
-              echo "❌ 容器 ${containerName} 啟動失敗，列出 logs："
-              docker logs ${containerName} || true
-              exit 1
+              # 最終再檢查一次
+              FINAL=\$(curl -s http://localhost:${port}/actuator/health | grep -o '"status":"UP"' || true)
+              if [ "\$FINAL" != '"status":"UP"' ]; then
+                echo "❌ 應用未成功啟動，輸出日誌："
+                docker logs ${containerName} || true
+                exit 1
+              fi
             """
           }
         }
