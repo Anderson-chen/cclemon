@@ -36,7 +36,7 @@ pipeline {
               MAX_RETRIES=20
               SLEEP_INTERVAL=3
               for i in \$(seq 1 \$MAX_RETRIES); do
-                STATUS=\$(curl -s http://${containerName}/actuator/health | grep -o '"status":"UP"' || true)
+                STATUS=\$(curl -s http://${containerName}:8080/actuator/health | grep -o '"status":"UP"' || true)
                 if [ "\$STATUS" = '"status":"UP"' ]; then
                   echo "✅ 健康檢查通過，應用已啟動"
                   break
@@ -47,7 +47,7 @@ pipeline {
               done
 
               # 最終再檢查一次
-              FINAL=\$(curl -s http://localhost:${port}/actuator/health | grep -o '"status":"UP"' || true)
+              FINAL=\$(curl -s http://${containerName}:8080/actuator/health | grep -o '"status":"UP"' || true)
               if [ "\$FINAL" != '"status":"UP"' ]; then
                 echo "❌ 應用未成功啟動，輸出日誌："
                 docker logs ${containerName} || true
