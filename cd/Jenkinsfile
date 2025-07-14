@@ -20,18 +20,32 @@ pipeline {
 
             echo "Deploying ${containerName} using image ${imageName}"
 
-            // 安全保險：如果容器已存在，先刪除
             sh """
+              echo "🔄 停止並移除舊容器（如果有）"
               docker rm -f ${containerName} || true
-            """
 
-            // 執行 docker run（你也可以加上 -p 或 -e 等參數）
-            sh """
+              echo "🚀 啟動新容器"
               docker run -d \
                 --name ${containerName} \
                 --network cclemon-network \
                 -e SPRING_PROFILES_ACTIVE=${params.PROFILE} \
                 ${imageName}
+
+              echo "🔍 確認容器是否啟動中..."
+
+              for i in {1..10}; do
+                STATUS=\$(docker inspect -f '{{.State.Running}}' ${containerName} 2>/dev/null || echo "false")
+                if [ "\$STATUS" = "true" ]; then
+                  echo "✅ 容器 ${containerName} 啟動成功"
+                  exit 0
+                fi
+                echo "⌛ 容器尚未啟動，重試 \$i..."
+                sleep 2
+              done
+
+              echo "❌ 容器 ${containerName} 啟動失敗，列出 logs："
+              docker logs ${containerName} || true
+              exit 1
             """
           }
         }
