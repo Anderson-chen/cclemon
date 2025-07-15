@@ -64,6 +64,7 @@ pipeline {
         script {
           echo "🔁 PROFILE 非 prod，觸發自動部署 Job：cclemon-auto-deploy"
           build job: 'cclemon-auto-deploy',
+          wait: false,
             parameters: [
               string(name: 'PROJECT_NAME', value: params.PROJECT_NAME),
               string(name: 'PROFILE', value: params.PROFILE)
