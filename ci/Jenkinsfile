@@ -10,10 +10,10 @@ pipeline {
     TZ = 'Asia/Taipei'
   }
 
-parameters {
+  parameters {
     choice(name: 'PROJECT_NAME', choices: ['cclemon-auth', 'cclemon-health','cclemon-config-server'])
     choice(name: 'PROFILE', choices: ['dev', 'prod'])
-}
+  }
 
   stages {
     stage('Checkout') {
@@ -52,6 +52,22 @@ parameters {
                            build/libs
             """
           }
+        }
+      }
+    }
+
+    stage('Trigger Auto Deploy') {
+      when {
+        expression { return params.PROFILE != 'prod' }
+      }
+      steps {
+        script {
+          echo "🔁 PROFILE 非 prod，觸發自動部署 Job：cclemon-auto-deploy"
+          build job: 'cclemon-auto-deploy',
+            parameters: [
+              string(name: 'PROJECT_NAME', value: params.PROJECT_NAME),
+              string(name: 'PROFILE', value: params.PROFILE)
+            ]
         }
       }
     }
