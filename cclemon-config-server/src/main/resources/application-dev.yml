@@ -10,7 +10,7 @@ spring:
 #            - patterns: multi-repo-demo-*
 #              uri: https://github.com/spring-cloud-samples/config-repo
   kafka:
-    bootstrap-servers: kafka1:9093,kafka2:9093,kafka3:9093
+    bootstrap-servers: kafka1:9092,kafka2:9092,kafka3:9092
 
 server:
   port: 8555
