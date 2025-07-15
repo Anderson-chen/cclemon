@@ -5,16 +5,13 @@ pipeline {
     TZ = 'Asia/Taipei'
   }
 
-  parameters {
-    choice(name: 'PROJECT_NAME', choices: ['cclemon-auth', 'cclemon-health' ,'cclemon-config-server'])
-    choice(name: 'PROFILE', choices: ['dev', 'prod'])
-  }
-
   stages {
     stage('Deploy') {
       steps {
         dir("${params.PROJECT_NAME}") {
           script {
+            def project = params.PROJECT_NAME
+            def profile = params.PROFILE
             def containerName = "${params.PROJECT_NAME}-${params.PROFILE}"
             def imageName = "${params.PROJECT_NAME}:${params.PROFILE}"
 
