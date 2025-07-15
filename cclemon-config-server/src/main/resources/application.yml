@@ -19,4 +19,4 @@ management:
   endpoints:
     web:
       exposure:
-        include: busrefresh , busshutdown
+        include: busrefresh , busshutdown , health
