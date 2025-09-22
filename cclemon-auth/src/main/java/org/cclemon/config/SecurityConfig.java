@@ -31,6 +31,7 @@ import org.springframework.security.oauth2.server.authorization.token.OAuth2Toke
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -71,16 +72,24 @@ public class SecurityConfig {
     public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
 
         // Enable authorization server
-        OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
-
+        OAuth2AuthorizationServerConfigurer authorizationServerConfigurer =
+                OAuth2AuthorizationServerConfigurer.authorizationServer();
         // Enable OpenID Connect 1.0
         Function<OidcUserInfoAuthenticationContext, OidcUserInfo> userInfoMapper = (context) -> {
             OidcUserInfoAuthenticationToken authentication = context.getAuthentication();
             JwtAuthenticationToken principal = (JwtAuthenticationToken) authentication.getPrincipal();
             return new OidcUserInfo(principal.getToken().getClaims());
         };
-        http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
-                .oidc(oidc -> oidc.userInfoEndpoint((userinfo -> userinfo.userInfoMapper(userInfoMapper))));
+
+        http.securityMatcher(authorizationServerConfigurer.getEndpointsMatcher())
+                .with(authorizationServerConfigurer, (authorizationServer) ->
+                        authorizationServer
+                                .oidc(oidc -> oidc.userInfoEndpoint((userinfo -> userinfo.userInfoMapper(userInfoMapper))))
+                )
+                .authorizeHttpRequests((authorize) ->
+                        authorize.anyRequest().authenticated()
+                );
+
 
         // Accept access tokens for User Info and/or Client Registration
         http.oauth2ResourceServer((resourceServer) -> resourceServer.jwt(Customizer.withDefaults()));
@@ -92,7 +101,7 @@ public class SecurityConfig {
         // authorization endpoint
         http.exceptionHandling((exceptions) -> exceptions
                 .defaultAuthenticationEntryPointFor(
-                        new LoginUrlAuthenticationEntryPoint("/login"),
+                        new LoginUrlAuthenticationEntryPoint(cclemonUiUrl + "/login"),
                         new MediaTypeRequestMatcher(MediaType.TEXT_HTML)
                 )
         );
@@ -107,15 +116,20 @@ public class SecurityConfig {
 
         // request filter for auth
         http.authorizeHttpRequests((authorize) -> authorize
-                .requestMatchers("/actuator/health").permitAll()
+                .requestMatchers("/csrf-token", "/actuator/health").permitAll()
                 .anyRequest().authenticated()
         );
         // sso login page
-        http.formLogin(Customizer.withDefaults());
+//        http.formLogin(Customizer.withDefaults());
+        http.formLogin(login -> login.loginPage(cclemonUiUrl + "/login"));
+        http.formLogin(login -> login.loginProcessingUrl("/login"));
+
         //social login page
-        http.oauth2Login(Customizer.withDefaults());
+//        http.oauth2Login(Customizer.withDefaults());
         //cors
         http.cors(Customizer.withDefaults());
+
+
         return http.build();
     }
 

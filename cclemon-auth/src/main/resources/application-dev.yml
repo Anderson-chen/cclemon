@@ -6,6 +6,9 @@ logging:
     org.springframework.security: trace
 
 spring:
+  threads:
+    virtual:
+      enabled: true
   jpa:
     hibernate:
       ddl-auto: update  # 可選 create / update / none

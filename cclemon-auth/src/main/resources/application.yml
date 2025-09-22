@@ -1,11 +1,20 @@
 server:
   port: 9000
+  servlet:
+    session:
+      cookie:
+        name: JSESSIONID
+        secure: true
+        same-site: None
 
 logging:
   level:
     org.springframework.security: trace
 
 spring:
+  threads:
+    virtual:
+      enabled: true
   jpa:
     hibernate:
       ddl-auto: update  # 可選 create / update / none
