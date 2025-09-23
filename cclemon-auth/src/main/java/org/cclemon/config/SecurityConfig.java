@@ -72,24 +72,16 @@ public class SecurityConfig {
     public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
 
         // Enable authorization server
-        OAuth2AuthorizationServerConfigurer authorizationServerConfigurer =
-                OAuth2AuthorizationServerConfigurer.authorizationServer();
-        // Enable OpenID Connect 1.0
-        Function<OidcUserInfoAuthenticationContext, OidcUserInfo> userInfoMapper = (context) -> {
-            OidcUserInfoAuthenticationToken authentication = context.getAuthentication();
-            JwtAuthenticationToken principal = (JwtAuthenticationToken) authentication.getPrincipal();
-            return new OidcUserInfo(principal.getToken().getClaims());
-        };
+        OAuth2AuthorizationServerConfigurer authorizationServerConfigurer = OAuth2AuthorizationServerConfigurer.authorizationServer();
 
+        // Enable OpenID Connect 1.0
         http.securityMatcher(authorizationServerConfigurer.getEndpointsMatcher())
                 .with(authorizationServerConfigurer, (authorizationServer) ->
-                        authorizationServer
-                                .oidc(oidc -> oidc.userInfoEndpoint((userinfo -> userinfo.userInfoMapper(userInfoMapper))))
+                        authorizationServer.oidc(oidc -> oidc.userInfoEndpoint((userinfo -> userinfo.userInfoMapper(getUserInfoMapper()))))
                 )
                 .authorizeHttpRequests((authorize) ->
                         authorize.anyRequest().authenticated()
                 );
-
 
         // Accept access tokens for User Info and/or Client Registration
         http.oauth2ResourceServer((resourceServer) -> resourceServer.jwt(Customizer.withDefaults()));
@@ -97,8 +89,7 @@ public class SecurityConfig {
         //cors
         http.cors(Customizer.withDefaults());
 
-        // Redirect to the login page when not authenticated from the
-        // authorization endpoint
+        // Redirect to the login page when not authenticated from the authorization endpoint
         http.exceptionHandling((exceptions) -> exceptions
                 .defaultAuthenticationEntryPointFor(
                         new LoginUrlAuthenticationEntryPoint(cclemonUiUrl + "/login"),
@@ -107,6 +98,14 @@ public class SecurityConfig {
         );
 
         return http.build();
+    }
+
+    private static Function<OidcUserInfoAuthenticationContext, OidcUserInfo> getUserInfoMapper() {
+        return (context) -> {
+            OidcUserInfoAuthenticationToken authentication = context.getAuthentication();
+            JwtAuthenticationToken principal = (JwtAuthenticationToken) authentication.getPrincipal();
+            return new OidcUserInfo(principal.getToken().getClaims());
+        };
     }
 
     @Bean
@@ -120,7 +119,6 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
         );
         // sso login page
-//        http.formLogin(Customizer.withDefaults());
         http.formLogin(login -> login.loginPage(cclemonUiUrl + "/login"));
         http.formLogin(login -> login.loginProcessingUrl("/login"));
 
