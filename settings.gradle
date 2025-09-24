@@ -8,4 +8,5 @@ include 'cclemon-stream'
 include 'cclemon-userEvent'
 include 'cclemon-logging'
 include 'cclemon-config-server'
+include 'cclemon-data'
 
