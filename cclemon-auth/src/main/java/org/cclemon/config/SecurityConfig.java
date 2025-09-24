@@ -123,7 +123,7 @@ public class SecurityConfig {
             String username = authentication.getName();
 
             //查詢資料庫，取得該使用者的完整資料
-            Optional<org.cclemon.entity.User> opt = userRepository.findByUsername(authentication.getName());
+            Optional<org.cclemon.entity.User> opt = userRepository.findByUsername(username);
 
             //組裝要回傳的 UserInfo claims
             Map<String, Object> claims = opt.map(user -> Map.<String, Object>of(
