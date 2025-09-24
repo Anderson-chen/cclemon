@@ -16,11 +16,13 @@ import java.util.function.Consumer;
 public final class FederatedIdentityAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
     private final AuthenticationSuccessHandler delegate = new SavedRequestAwareAuthenticationSuccessHandler();
+    private final Consumer<OAuth2User> oauth2UserHandler;
+    private final Consumer<OidcUser> oidcUserHandler;
 
-    private Consumer<OAuth2User> oauth2UserHandler = (user) -> {
-    };
-
-    private Consumer<OidcUser> oidcUserHandler = (user) -> this.oauth2UserHandler.accept(user);
+    public FederatedIdentityAuthenticationSuccessHandler(UserRepositoryOAuth2UserHandler handler) {
+        this.oauth2UserHandler = handler;
+        this.oidcUserHandler = handler::accept;
+    }
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
@@ -31,17 +33,6 @@ public final class FederatedIdentityAuthenticationSuccessHandler implements Auth
                 this.oauth2UserHandler.accept(oauth2User);
             }
         }
-
         this.delegate.onAuthenticationSuccess(request, response, authentication);
     }
-
-    public void setOAuth2UserHandler(UserRepositoryOAuth2UserHandler oauth2UserHandler) {
-        this.oauth2UserHandler = oauth2UserHandler;
-    }
-
-    public void setOidcUserHandler(Consumer<OidcUser> oidcUserHandler) {
-        this.oidcUserHandler = oidcUserHandler;
-    }
-
-
 }
