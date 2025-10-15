@@ -125,6 +125,9 @@ public class SecurityConfig {
             //查詢資料庫，取得該使用者的完整資料
             Optional<org.cclemon.entity.User> opt = userRepository.findByUsername(username);
 
+            //若查無本地使用者使用第三方登入提供的providerId
+            opt = opt.or(() -> userRepository.findByProviderId(username));
+
             //組裝要回傳的 UserInfo claims
             Map<String, Object> claims = opt.map(user -> Map.<String, Object>of(
                     "sub", user.getId(),
