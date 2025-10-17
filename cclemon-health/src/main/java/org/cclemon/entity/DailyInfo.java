@@ -19,6 +19,20 @@ public class DailyInfo extends BaseEntity {
 
     private Long weight;
 
+    @Column(name = "systolic_pressure")
+    private Long systolicPressure;
+
+    @Column(name = "diastolic_pressure")
+    private Long diastolicPressure;
+
+    @Column(name = "blood_sugar")
+    private Long bloodSugar;
+
+    @Column(name = "blood_sugar_type")
+    private String bloodSugarType;
+
+    private String notes;
+
     @Column(name = "photo_path")
     private String photoPath;
 }
