@@ -1,6 +1,5 @@
 package org.cclemon;
 
-import org.cclemon.repository.ExerciseRepository;
 import org.cclemon.service.RedisService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +11,6 @@ class CclemonHealthApplicationTest {
 
     @Autowired
     RedisService redisService;
-
-    ExerciseRepository exerciseRepository;
-
-
 
     @Test
     void testRedis() {
