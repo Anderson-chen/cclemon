@@ -3,4 +3,6 @@ dependencies {
     implementation 'org.slf4j:slf4j-api:2.0.13'
     // 若要支援 Spring Boot Logging
     implementation 'org.springframework.boot:spring-boot-starter-logging'
+    // 啟用 AOP 以支援 @Aspect 攔截
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
 }

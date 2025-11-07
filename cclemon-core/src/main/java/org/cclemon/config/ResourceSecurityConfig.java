@@ -1,8 +1,11 @@
 package org.cclemon.config;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -16,6 +19,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @EnableWebSecurity
 @Configuration
+@Slf4j
 public class ResourceSecurityConfig {
 
     private final String authorizationServerUrl;
@@ -31,7 +35,7 @@ public class ResourceSecurityConfig {
         http
                 .authorizeHttpRequests(authorize -> authorize
 //                        .requestMatchers("/test", "/user-events","/refresh").permitAll()
-                        .anyRequest().permitAll()
+                                .anyRequest().permitAll()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
                 .csrf(AbstractHttpConfigurer::disable);
@@ -40,9 +44,17 @@ public class ResourceSecurityConfig {
     }
 
     @Bean
+    @Retryable(
+            maxAttempts = 5,
+            backoff = @Backoff(delay = 5000)
+    )
     JwtDecoder jwtDecoder() {
-        return JwtDecoders.fromIssuerLocation(authorizationServerUrl);
+        log.info("Attempting to fetch JwtDecoder from issuer: {}", authorizationServerUrl);
+        JwtDecoder decoder = JwtDecoders.fromIssuerLocation(authorizationServerUrl);
+        log.info("Successfully initialized JwtDecoder");
+        return decoder;
     }
+
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
