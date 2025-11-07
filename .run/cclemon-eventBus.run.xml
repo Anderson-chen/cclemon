@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="cclemon-eventBus" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="org.cclemon.CclemonEventBusApplication" />
+    <module name="cclemon.cclemon-eventBus.main" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
