@@ -1,12 +1,13 @@
 package org.cclemon.service;
 
 
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 @Service
 public class KafkaProducerService {
@@ -26,7 +27,7 @@ public class KafkaProducerService {
                 .setHeader("key", "myKey") // 可選 header
                 .build();
 
-        kafkaTemplate.send(topic, message.getPayload()); // 將 payload 送出
+        kafkaTemplate.send(topic, UUID.randomUUID().toString(), message.getPayload()); // 將 payload 送出
     }
 
 }
