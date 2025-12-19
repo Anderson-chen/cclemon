@@ -16,11 +16,12 @@ class CclemonHealthApplicationTest {
     ExerciseRepository exerciseRepository;
 
 
-
     @Test
     void testRedis() {
         redisService.set("test", "hey1");
         System.out.println(redisService.get("test"));
+
+
     }
 
 

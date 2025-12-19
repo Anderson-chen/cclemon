@@ -41,7 +41,7 @@ class KafkaProducerServiceTest {
 
         long start = System.currentTimeMillis();
 
-        ExecutorService executors = Executors.newFixedThreadPool(101);
+        ExecutorService executors = Executors.newFixedThreadPool(5);
 
         List<CompletableFuture<Void>> futures =
                 IntStream.rangeClosed(0, 100)
