@@ -2,6 +2,7 @@ package org.cclemon.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.cclemon.entity.base.BaseEntity;
 
 @Entity
 @Table(name = "exercise", uniqueConstraints = {

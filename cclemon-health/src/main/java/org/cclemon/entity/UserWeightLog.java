@@ -3,6 +3,7 @@ package org.cclemon.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.cclemon.entity.base.BaseEntity;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

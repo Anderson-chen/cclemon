@@ -1,4 +1,4 @@
-package org.cclemon.entity;
+package org.cclemon.entity.base;
 
 import jakarta.persistence.*;
 import lombok.Data;

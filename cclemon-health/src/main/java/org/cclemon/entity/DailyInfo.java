@@ -3,6 +3,7 @@ package org.cclemon.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.cclemon.entity.base.BaseEntity;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
