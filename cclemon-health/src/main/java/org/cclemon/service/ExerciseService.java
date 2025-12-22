@@ -2,6 +2,7 @@ package org.cclemon.service;
 
 import lombok.AllArgsConstructor;
 import org.cclemon.entity.Exercise;
+import org.cclemon.logging.annotation.LogExecutionTime;
 import org.cclemon.repository.CclemonUserRepository;
 import org.cclemon.repository.ExerciseRepository;
 import org.springframework.stereotype.Service;
@@ -17,8 +18,9 @@ public class ExerciseService {
 
     private final CclemonUserRepository cclemonUserRepository;
 
+    @LogExecutionTime
     public Exercise insert() throws InterruptedException {
-        var user = cclemonUserRepository.findById(10L);
+        var user = cclemonUserRepository.findById(1L);
         var insert = new Exercise();
         insert.setCalorie(1000L);
         insert.setName("balls" + UUID.randomUUID());

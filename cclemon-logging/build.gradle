@@ -1,8 +1,7 @@
 dependencies {
-    // 根據需要加入 logging 相關依賴
-    implementation 'org.slf4j:slf4j-api:2.0.13'
-    // 若要支援 Spring Boot Logging
+    // Spring Boot 的 logging starter 已包含 slf4j-api 和 logback 的實現。
+    // 這是提供統一 Logback 配置所需的核心依賴。
     implementation 'org.springframework.boot:spring-boot-starter-logging'
-    // 啟用 AOP 以支援 @Aspect 攔截
+    // 啟用 AOP，以便此模組未來可以提供通用的日誌攔截器 (Logging Aspect)。
     implementation 'org.springframework.boot:spring-boot-starter-aop'
 }
