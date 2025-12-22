@@ -4,6 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
+import org.springframework.core.annotation.Order;
+import org.springframework.core.env.AbstractEnvironment;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.security.config.Customizer;
@@ -24,26 +27,37 @@ public class ResourceSecurityConfig {
 
     private final String authorizationServerUrl;
     private final String cclemonUiUrl;
+    private final String localProfile = AbstractEnvironment.RESERVED_DEFAULT_PROFILE_NAME;
 
-    public ResourceSecurityConfig(@Value("${authorization-server.url}") String authorizationServerUrl, @Value("${cclemon-ui.url}") String cclemonUiUrl) {
+    public ResourceSecurityConfig(@Value("${authorization-server.url}") String authorizationServerUrl,
+                                  @Value("${cclemon-ui.url}") String cclemonUiUrl) {
         this.authorizationServerUrl = authorizationServerUrl;
         this.cclemonUiUrl = cclemonUiUrl;
     }
 
     @Bean
+    @Order(1)
+    @Profile("!" + localProfile)
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-                .authorizeHttpRequests(authorize -> authorize
-//                        .requestMatchers("/test", "/user-events","/refresh").permitAll()
-                                .anyRequest().permitAll()
-                )
+        log.info("PROD/NON-DEV PROFILE ACTIVE: JWT authentication is enabled.");
+        http.authorizeHttpRequests(authorize -> authorize.anyRequest().authenticated())
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
                 .csrf(AbstractHttpConfigurer::disable);
-
         return http.cors(Customizer.withDefaults()).build();
     }
 
     @Bean
+    @Order(2)
+    @Profile(localProfile)
+    public SecurityFilterChain devFilterChain(HttpSecurity http) throws Exception {
+        log.warn("DEV PROFILE ACTIVE: All security checks are disabled. All requests will be permitted.");
+        http.authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll())
+                .csrf(AbstractHttpConfigurer::disable);
+        return http.cors(Customizer.withDefaults()).build();
+    }
+
+    @Bean
+    @Profile("!" + localProfile)
     @Retryable(
             maxAttempts = 5,
             backoff = @Backoff(delay = 5000)
