@@ -20,12 +20,12 @@ public class ExerciseService {
 
     @LogExecutionTime
     public Exercise insert() throws InterruptedException {
-        var user = cclemonUserRepository.findById(1L);
+//        var user = cclemonUserRepository.findById(1L);
         var insert = new Exercise();
         insert.setCalorie(1000L);
         insert.setName("balls" + UUID.randomUUID());
         insert.setUnit("份");
-        insert.setUser(user.orElseThrow());
+//        insert.setUser(user.orElseThrow());
         return exerciseRepository.save(insert);
     }
 }

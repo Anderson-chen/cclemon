@@ -1,9 +1,11 @@
 package org.cclemon.repository;
 
 
-import org.cclemon.config.JpaConfig;
+import org.cclemon.adapter.DelegatingAuditorAware;
+import org.cclemon.config.JpaAuditingConfig;
 import org.cclemon.entity.CclemonUser;
 import org.cclemon.entity.UserWeightLog;
+import org.cclemon.provider.SpringSecurityAuditorProvider;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -17,7 +19,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
-@Import(JpaConfig.class) // 匯入您的審計設定，使其在測試中生效
+@Import({DelegatingAuditorAware.class, JpaAuditingConfig.class, SpringSecurityAuditorProvider.class}) // 匯入您的審計設定，使其在測試中生效
 class UserWeightLogRepositoryTest {
 
     @Autowired
@@ -37,7 +39,7 @@ class UserWeightLogRepositoryTest {
         newLog.setUser(user);
         newLog.setMeasureDate(LocalDate.now());
         newLog.setWeightKg(BigDecimal.valueOf(75.5));
-        
+
         // Act: 執行被測試的邏輯
         UserWeightLog savedLog = userWeightLogRepository.save(newLog);
         Optional<UserWeightLog> foundLogOptional = userWeightLogRepository.findById(savedLog.getId());

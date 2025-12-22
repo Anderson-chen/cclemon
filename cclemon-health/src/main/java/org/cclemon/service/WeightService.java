@@ -6,19 +6,13 @@ import org.cclemon.entity.UserWeightLog;
 import org.cclemon.entity.WeightSource;
 import org.cclemon.repository.CclemonUserRepository;
 import org.cclemon.repository.UserWeightLogRepository;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -29,14 +23,8 @@ public class WeightService {
 
     // TODO: 之後可考慮抽成共用的 Auth 工具類別。
     private CclemonUser getCurrentUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || "anonymousUser".equals(authentication.getName())) {
-            throw new IllegalStateException("No authenticated user in security context");
-        }
 
-        Long userId = Long.valueOf(authentication.getName());
-        return cclemonUserRepository.findById(userId)
-                .orElseThrow(() -> new IllegalStateException("User not found: " + userId));
+        return null;
     }
 
     /**

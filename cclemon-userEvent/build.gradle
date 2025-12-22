@@ -1,4 +1,4 @@
 dependencies {
-    implementation project(":cclemon-core")
+    implementation project(":cclemon-security")
     implementation 'org.springframework.kafka:spring-kafka'
 }

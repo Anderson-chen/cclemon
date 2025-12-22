@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.cclemon.entity.Exercise;
 import org.cclemon.logging.annotation.LogExecutionTime;
 import org.cclemon.service.ExerciseService;
+import org.cclemon.utils.CommonUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,7 +19,6 @@ public class TestController {
     @GetMapping(value = "/test")
     @LogExecutionTime
     public Exercise test() throws InterruptedException {
-        Thread.sleep(1000);
         return exerciseService.insert();
     }
 

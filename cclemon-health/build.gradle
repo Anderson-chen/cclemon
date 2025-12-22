@@ -1,9 +1,13 @@
 dependencies {
-    implementation project (":cclemon-core")
-    implementation project (":cclemon-data")
+    implementation project(":cclemon-security")
+    implementation project(":cclemon-data")
+    implementation project(":cclemon-utils")
+    implementation project(":cclemon-logging")
+    implementation project(":cclemon-cache")
     implementation 'org.springframework.cloud:spring-cloud-starter-config'
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
     implementation 'org.springframework.cloud:spring-cloud-starter-bus-kafka'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.5'
 }
