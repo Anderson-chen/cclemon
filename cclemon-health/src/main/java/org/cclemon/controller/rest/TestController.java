@@ -4,8 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.cclemon.entity.Exercise;
 import org.cclemon.logging.annotation.LogExecutionTime;
+import org.cclemon.producer.KafkaProducerService;
 import org.cclemon.service.ExerciseService;
-import org.cclemon.utils.CommonUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -13,12 +13,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @AllArgsConstructor
 public class TestController {
-
-    ExerciseService exerciseService;
+    private final ExerciseService exerciseService;
+    private final KafkaProducerService kafkaProducerService;
 
     @GetMapping(value = "/test")
     @LogExecutionTime
     public Exercise test() throws InterruptedException {
+        kafkaProducerService.sendMessage("TEST1");
         return exerciseService.insert();
     }
 

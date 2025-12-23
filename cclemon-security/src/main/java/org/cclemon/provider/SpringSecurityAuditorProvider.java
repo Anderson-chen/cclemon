@@ -1,7 +1,6 @@
 package org.cclemon.provider;
 
 import org.apache.commons.lang3.StringUtils;
-import org.cclemon.AuditorProvider;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 

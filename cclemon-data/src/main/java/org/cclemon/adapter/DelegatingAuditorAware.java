@@ -1,6 +1,6 @@
 package org.cclemon.adapter;
 
-import org.cclemon.AuditorProvider;
+import org.cclemon.provider.AuditorProvider;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.stereotype.Component;
 

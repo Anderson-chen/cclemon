@@ -22,7 +22,13 @@ spring:
     driverClassName: com.mysql.cj.jdbc.Driver
   kafka:
     bootstrap-servers: localhost:9093,localhost:9095,localhost:9097
-
+    consumer:
+      group-id: my-consumer-group-1,my-consumer-group-2
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+kafka:
+  topic: test
 
 logging:
   level:
