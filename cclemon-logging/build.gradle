@@ -3,5 +3,5 @@ dependencies {
     // 這是提供統一 Logback 配置所需的核心依賴。
     implementation 'org.springframework.boot:spring-boot-starter-logging'
     // 啟用 AOP，以便此模組未來可以提供通用的日誌攔截器 (Logging Aspect)。
-    implementation 'org.springframework.boot:spring-boot-starter-aop'
+    implementation 'org.springframework.boot:spring-boot-starter-aspectj'
 }
