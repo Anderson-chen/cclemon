@@ -11,4 +11,6 @@ include 'cclemon-utils'
 include 'cclemon-interface'
 include 'cclemon-cache'
 include 'cclemon-kafka'
+include 'cclemon-web'
+include 'cclemon-consumer'
 

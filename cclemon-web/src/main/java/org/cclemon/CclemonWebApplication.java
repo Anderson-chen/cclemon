@@ -1,13 +1,12 @@
 package org.cclemon;
 
-
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class CclemonHealthApplication {
+public class CclemonWebApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(CclemonHealthApplication.class, args);
+        SpringApplication.run(CclemonWebApplication.class, args);
     }
 }

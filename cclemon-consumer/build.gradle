@@ -1,0 +1,4 @@
+dependencies{
+    implementation project(":cclemon-kafka")
+    implementation project(":cclemon-data")
+}

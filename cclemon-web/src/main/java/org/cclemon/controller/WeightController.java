@@ -1,4 +1,4 @@
-package org.cclemon.controller.rest;
+package org.cclemon.controller;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
@@ -160,20 +160,13 @@ public class WeightController {
 
     @lombok.Value
     public static class UserWeightLogResponse {
-        Long id;
         LocalDate measureDate;
         LocalTime measureTime;
         BigDecimal weightKg;
         String note;
 
         public static UserWeightLogResponse from(UserWeightLog log) {
-            return new UserWeightLogResponse(
-                    log.getId(),
-                    log.getMeasureDate(),
-                    log.getMeasureTime(),
-                    log.getWeightKg(),
-                    log.getNote()
-            );
+            return null;
         }
     }
 
