@@ -1,21 +1,19 @@
 package org.cclemon.repository.impl;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.Module;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.AllArgsConstructor;
 import org.cclemon.entity.Client;
 import org.cclemon.repository.ClientRepository;
-import org.springframework.security.jackson2.SecurityJackson2Modules;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
-import org.springframework.security.oauth2.server.authorization.jackson2.OAuth2AuthorizationServerJackson2Module;
 import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
 import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,19 +21,11 @@ import java.util.Map;
 import java.util.Set;
 
 @Component
+@AllArgsConstructor
 public class JpaRegisteredClientRepository implements RegisteredClientRepository {
+
     private final ClientRepository clientRepository;
-    private final ObjectMapper objectMapper = new ObjectMapper();
-
-    public JpaRegisteredClientRepository(ClientRepository clientRepository) {
-        Assert.notNull(clientRepository, "clientRepository cannot be null");
-        this.clientRepository = clientRepository;
-
-        ClassLoader classLoader = JpaRegisteredClientRepository.class.getClassLoader();
-        List<Module> securityModules = SecurityJackson2Modules.getModules(classLoader);
-        this.objectMapper.registerModules(securityModules);
-        this.objectMapper.registerModule(new OAuth2AuthorizationServerJackson2Module());
-    }
+    private final JsonMapper jsonMapper;
 
     @Override
     public void save(RegisteredClient registeredClient) {
@@ -121,7 +111,7 @@ public class JpaRegisteredClientRepository implements RegisteredClientRepository
 
     private Map<String, Object> parseMap(String data) {
         try {
-            return this.objectMapper.readValue(data, new TypeReference<Map<String, Object>>() {
+            return this.jsonMapper.readValue(data, new TypeReference<>() {
             });
         } catch (Exception ex) {
             throw new IllegalArgumentException(ex.getMessage(), ex);
@@ -130,7 +120,7 @@ public class JpaRegisteredClientRepository implements RegisteredClientRepository
 
     private String writeMap(Map<String, Object> data) {
         try {
-            return this.objectMapper.writeValueAsString(data);
+            return this.jsonMapper.writeValueAsString(data);
         } catch (Exception ex) {
             throw new IllegalArgumentException(ex.getMessage(), ex);
         }
