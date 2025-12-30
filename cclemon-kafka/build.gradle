@@ -1,6 +1,6 @@
 dependencies {
     implementation project(":cclemon-interface")
     implementation 'org.springframework.boot:spring-boot-starter-kafka'
-    implementation 'org.springframework.boot:spring-boot-starter-jackson'
+    implementation 'org.springframework.boot:spring-boot-starter-json'
     testImplementation 'org.springframework.kafka:spring-kafka-test'
 }

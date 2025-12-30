@@ -1,0 +1,29 @@
+cclemon:
+  consumers:
+    - topic: topic10
+      group-id: g1
+    - topic: topic10
+      group-id: g1
+    - topic: topic11
+      group-id: g2
+    - topic: CCLEMON_HEALTH_API_LOG
+      group-id: g1
+
+
+spring:
+  kafka:
+    bootstrap-servers: localhost:9093,localhost:9095,localhost:9097
+    consumer:
+      group-id: my-consumer-group-1,my-consumer-group-2
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+  jpa:
+    hibernate:
+      ddl-auto: update  # 可選 create / update / none
+    show-sql: true
+  datasource:
+    url: jdbc:mysql://localhost:3306/cclemon-health?allowPublicKeyRetrieval=true&serverTimezone=Asia/Taipei&useSSL=false
+    username: root
+    password: P@ssw0rd
+    driverClassName: com.mysql.cj.jdbc.Driver
