@@ -1,14 +1,10 @@
 package org.cclemon.service.impl;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.Module;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.security.auth.UserPrincipal;
+
+import lombok.RequiredArgsConstructor;
 import org.cclemon.entity.Authorization;
-import org.cclemon.entity.User;
 import org.cclemon.repository.AuthorizationRepository;
 import org.springframework.dao.DataRetrievalFailureException;
-import org.springframework.security.jackson2.SecurityJackson2Modules;
 import org.springframework.security.oauth2.core.*;
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
@@ -19,34 +15,23 @@ import org.springframework.security.oauth2.server.authorization.OAuth2Authorizat
 import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
-import org.springframework.security.oauth2.server.authorization.jackson2.OAuth2AuthorizationServerJackson2Module;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 
 @Component
+@RequiredArgsConstructor
 public class JpaOAuth2AuthorizationService implements OAuth2AuthorizationService {
     private final AuthorizationRepository authorizationRepository;
     private final RegisteredClientRepository registeredClientRepository;
-    private final ObjectMapper objectMapper = new ObjectMapper();
-
-    public JpaOAuth2AuthorizationService(AuthorizationRepository authorizationRepository, RegisteredClientRepository registeredClientRepository) {
-        Assert.notNull(authorizationRepository, "authorizationRepository cannot be null");
-        Assert.notNull(registeredClientRepository, "registeredClientRepository cannot be null");
-        this.authorizationRepository = authorizationRepository;
-        this.registeredClientRepository = registeredClientRepository;
-
-        ClassLoader classLoader = JpaOAuth2AuthorizationService.class.getClassLoader();
-        List<Module> securityModules = SecurityJackson2Modules.getModules(classLoader);
-        this.objectMapper.registerModules(securityModules);
-            this.objectMapper.registerModule(new OAuth2AuthorizationServerJackson2Module());
-    }
+    private final JsonMapper jsonMapper = new JsonMapper();
 
     @Override
     public void save(OAuth2Authorization authorization) {
@@ -261,7 +246,7 @@ public class JpaOAuth2AuthorizationService implements OAuth2AuthorizationService
 
     private Map<String, Object> parseMap(String data) {
         try {
-            return this.objectMapper.readValue(data, new TypeReference<Map<String, Object>>() {
+            return this.jsonMapper.readValue(data, new TypeReference<>() {
             });
         } catch (Exception ex) {
             throw new IllegalArgumentException(ex.getMessage(), ex);
@@ -270,7 +255,7 @@ public class JpaOAuth2AuthorizationService implements OAuth2AuthorizationService
 
     private String writeMap(Map<String, Object> metadata) {
         try {
-            return this.objectMapper.writeValueAsString(metadata);
+            return this.jsonMapper.writeValueAsString(metadata);
         } catch (Exception ex) {
             throw new IllegalArgumentException(ex.getMessage(), ex);
         }
