@@ -5,4 +5,5 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation project(":cclemon-logging")
     implementation project(":cclemon-utils")
+    implementation project(":cclemon-cache")
 }
