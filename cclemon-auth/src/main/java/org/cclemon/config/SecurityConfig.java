@@ -16,14 +16,13 @@ import org.springframework.http.MediaType;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
-import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.oauth2.server.authorization.oidc.authentication.OidcUserInfoAuthenticationContext;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
 import org.springframework.security.web.SecurityFilterChain;
@@ -68,32 +67,29 @@ public class SecurityConfig {
     @Order(1)
     public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http, UserRepository userRepository) throws Exception {
 
-        // Enable authorization server
-        OAuth2AuthorizationServerConfigurer authorizationServerConfigurer = OAuth2AuthorizationServerConfigurer.authorizationServer();
-
         // Enable OpenID Connect 1.0
-        http.securityMatcher(authorizationServerConfigurer.getEndpointsMatcher())
-                .with(authorizationServerConfigurer, (authorizationServer) ->
-                        authorizationServer.oidc(oidc -> oidc.userInfoEndpoint((userinfo -> userinfo.userInfoMapper(getUserInfoMapper(userRepository)))))
-                )
+        http
+                .oauth2AuthorizationServer((authorizationServer) -> {
+                    http.securityMatcher(authorizationServer.getEndpointsMatcher());
+                    authorizationServer
+                            .oidc(oidc -> oidc.userInfoEndpoint((userinfo -> userinfo.userInfoMapper(getUserInfoMapper(userRepository)))));    // Enable OpenID Connect 1.0
+                })
                 .authorizeHttpRequests((authorize) ->
                         authorize.anyRequest().authenticated()
-                );
-
-        // Accept access tokens for User Info and/or Client Registration
-        http.oauth2ResourceServer((resourceServer) -> resourceServer.jwt(Customizer.withDefaults()));
-
-        //cors
-        http.cors(Customizer.withDefaults());
-
-        // Redirect to the login page when not authenticated from the authorization endpoint
-        http.exceptionHandling((exceptions) -> exceptions
-                .defaultAuthenticationEntryPointFor(
-                        new LoginUrlAuthenticationEntryPoint(cclemonUiUrl + "/login"),
-                        new MediaTypeRequestMatcher(MediaType.TEXT_HTML)
                 )
-        );
+                // Accept access tokens for User Info and/or Client Registration
+                .oauth2ResourceServer((resourceServer) -> resourceServer.jwt(Customizer.withDefaults()))
 
+                //cors
+                .cors(Customizer.withDefaults())
+
+                // Redirect to the login page when not authenticated from the authorization endpoint
+                .exceptionHandling((exceptions) -> exceptions
+                        .defaultAuthenticationEntryPointFor(
+                                new LoginUrlAuthenticationEntryPoint(cclemonUiUrl + "/login"),
+                                new MediaTypeRequestMatcher(MediaType.TEXT_HTML)
+                        )
+                );
         return http.build();
     }
 

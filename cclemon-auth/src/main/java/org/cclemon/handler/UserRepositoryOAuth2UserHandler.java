@@ -1,5 +1,6 @@
 package org.cclemon.handler;
 
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.cclemon.entity.User;
@@ -16,13 +17,10 @@ import java.util.UUID;
 import java.util.function.Consumer;
 
 @Component
-public final class UserRepositoryOAuth2UserHandler implements Consumer<OAuth2User> {
+@RequiredArgsConstructor
+public class UserRepositoryOAuth2UserHandler implements Consumer<OAuth2User> {
 
     private final UserRepository userRepository;
-
-    public UserRepositoryOAuth2UserHandler(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
 
     @Override
     public void accept(OAuth2User oAuth2User) {

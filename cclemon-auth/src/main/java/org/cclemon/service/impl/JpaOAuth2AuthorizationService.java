@@ -31,7 +31,7 @@ import java.util.function.Consumer;
 public class JpaOAuth2AuthorizationService implements OAuth2AuthorizationService {
     private final AuthorizationRepository authorizationRepository;
     private final RegisteredClientRepository registeredClientRepository;
-    private final JsonMapper jsonMapper = new JsonMapper();
+    private final JsonMapper jsonMapper;
 
     @Override
     public void save(OAuth2Authorization authorization) {
