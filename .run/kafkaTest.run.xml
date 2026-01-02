@@ -1,8 +1,0 @@
-<component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="kafkaTest" type="CompoundRunConfigurationType">
-    <toRun name="cclemon-auth" type="Application" />
-    <toRun name="cclemon-eventBus" type="Application" />
-    <toRun name="cclemon-userEvent" type="Application" />
-    <method v="2" />
-  </configuration>
-</component>
