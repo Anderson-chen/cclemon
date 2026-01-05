@@ -83,10 +83,3 @@
 2.  **思考擴展性**: 詢問「如果有 100 萬使用者，這會崩潰嗎？」或「如果 DB 掛了怎麼辦？」。
 3.  **強制一致性**: 確保命名慣例 (`*Repository`, `*Service`, `*Controller`) 和套件結構統一。
 4.  **捍衛核心**: 保護 Domain 模型免受污染 (框架註解, UI 關注點)。
-
----
-
-## 5. 決策日誌 (ADR - 架構決策記錄)
-
-*   **ADR-001**: 將 `User` Entity 移至 `cclemon-data` 以解耦 Auth 與 Domain。
-*   **ADR-002**: 分離 `User` (Entity) 與 `SecurityUser` (UserDetails) 以移除資料層對 Spring Security 的依賴。
