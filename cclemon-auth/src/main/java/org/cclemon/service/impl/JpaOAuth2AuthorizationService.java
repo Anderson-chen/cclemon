@@ -4,7 +4,10 @@ package org.cclemon.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.cclemon.entity.Authorization;
 import org.cclemon.repository.AuthorizationRepository;
+import org.cclemon.repository.impl.JpaRegisteredClientRepository;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.dao.DataRetrievalFailureException;
+import org.springframework.security.jackson.SecurityJacksonModules;
 import org.springframework.security.oauth2.core.*;
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
@@ -18,7 +21,7 @@ import org.springframework.security.oauth2.server.authorization.client.Registere
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
-import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.JavaType;
 import tools.jackson.databind.json.JsonMapper;
 
 import java.time.Instant;
@@ -31,7 +34,10 @@ import java.util.function.Consumer;
 public class JpaOAuth2AuthorizationService implements OAuth2AuthorizationService {
     private final AuthorizationRepository authorizationRepository;
     private final RegisteredClientRepository registeredClientRepository;
-    private final JsonMapper jsonMapper;
+    private static final JsonMapper JSON_MAPPER = JsonMapper.builder()
+            .addModules(SecurityJacksonModules.getModules(
+                    JpaRegisteredClientRepository.class.getClassLoader()))
+            .build();
 
     @Override
     public void save(OAuth2Authorization authorization) {
@@ -246,8 +252,11 @@ public class JpaOAuth2AuthorizationService implements OAuth2AuthorizationService
 
     private Map<String, Object> parseMap(String data) {
         try {
-            return this.jsonMapper.readValue(data, new TypeReference<>() {
-            });
+            final ParameterizedTypeReference<Map<String, Object>> typeReference = new ParameterizedTypeReference<>() {
+            };
+            JavaType javaType = JSON_MAPPER.getTypeFactory()
+                    .constructType(typeReference.getType());
+            return JSON_MAPPER.readValue(data, javaType);
         } catch (Exception ex) {
             throw new IllegalArgumentException(ex.getMessage(), ex);
         }
@@ -255,7 +264,7 @@ public class JpaOAuth2AuthorizationService implements OAuth2AuthorizationService
 
     private String writeMap(Map<String, Object> metadata) {
         try {
-            return this.jsonMapper.writeValueAsString(metadata);
+            return JSON_MAPPER.writeValueAsString(metadata);
         } catch (Exception ex) {
             throw new IllegalArgumentException(ex.getMessage(), ex);
         }

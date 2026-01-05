@@ -1,8 +1,9 @@
 package org.cclemon.repository.impl;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.cclemon.entity.Client;
 import org.cclemon.repository.ClientRepository;
+import org.springframework.security.jackson.SecurityJacksonModules;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
@@ -21,11 +22,14 @@ import java.util.Map;
 import java.util.Set;
 
 @Component
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class JpaRegisteredClientRepository implements RegisteredClientRepository {
 
     private final ClientRepository clientRepository;
-    private final JsonMapper jsonMapper;
+    private static final JsonMapper JSON_MAPPER = JsonMapper.builder()
+            .addModules(SecurityJacksonModules.getModules(
+                    JpaRegisteredClientRepository.class.getClassLoader()))
+            .build();
 
     @Override
     public void save(RegisteredClient registeredClient) {
@@ -111,7 +115,7 @@ public class JpaRegisteredClientRepository implements RegisteredClientRepository
 
     private Map<String, Object> parseMap(String data) {
         try {
-            return this.jsonMapper.readValue(data, new TypeReference<>() {
+            return JSON_MAPPER.readValue(data, new TypeReference<>() {
             });
         } catch (Exception ex) {
             throw new IllegalArgumentException(ex.getMessage(), ex);
@@ -120,7 +124,7 @@ public class JpaRegisteredClientRepository implements RegisteredClientRepository
 
     private String writeMap(Map<String, Object> data) {
         try {
-            return this.jsonMapper.writeValueAsString(data);
+            return JSON_MAPPER.writeValueAsString(data);
         } catch (Exception ex) {
             throw new IllegalArgumentException(ex.getMessage(), ex);
         }
