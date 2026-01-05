@@ -26,7 +26,7 @@ public class KafkaListenerDispatcherImpl implements KafkaListenerDispatcher {
     public void dispatch(String topic, String key, String message) {
         log.debug("Dispatching message for topic: {}, key: {}", topic, key);
 
-        org.cclemon.handler.KafkaMessageHandler handler = handlerMap.get(topic);
+        KafkaMessageHandler handler = handlerMap.get(topic);
         if (handler == null) {
             log.warn("No handler found for topic: {}", topic);
             return;
