@@ -1,6 +1,7 @@
 package org.cclemon.repository;
 
 
+import lombok.RequiredArgsConstructor;
 import org.cclemon.adapter.DelegatingAuditorAware;
 import org.cclemon.config.JpaAuditingConfig;
 import org.cclemon.entity.CclemonUser;
@@ -8,8 +9,8 @@ import org.cclemon.entity.UserWeightLog;
 import org.cclemon.provider.SpringSecurityAuditorProvider;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
+import org.springframework.boot.jpa.test.autoconfigure.TestEntityManager;
 import org.springframework.context.annotation.Import;
 
 import java.math.BigDecimal;
@@ -19,7 +20,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
-@Import({DelegatingAuditorAware.class, JpaAuditingConfig.class, SpringSecurityAuditorProvider.class}) // 匯入您的審計設定，使其在測試中生效
+@Import({DelegatingAuditorAware.class, JpaAuditingConfig.class, SpringSecurityAuditorProvider.class})
 class UserWeightLogRepositoryTest {
 
     @Autowired
