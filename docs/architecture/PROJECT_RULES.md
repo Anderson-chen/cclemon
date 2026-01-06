@@ -34,27 +34,23 @@
 - **訊息佇列**: Kafka
 - **工具**: Lombok
 
-## 4. Agent (Gemini) 開發準則
-協助此專案時，請遵守以下規則：
+## 4. AI Agent 角色
 
-### A. 程式碼風格與標準
-- **Java 25 特性**: 適當使用現代 Java 特性，如 Records, Pattern Matching, Virtual Threads。
-- **Lombok**: 持續使用 Lombok 減少樣板程式碼 (`@Data`, `@RequiredArgsConstructor`, `@Slf4j`)。
-- **依賴注入**: 優先使用建構子注入 (通常透過 `@RequiredArgsConstructor`)。
-- **模組邊界**: 尊重模組依賴關係。嚴禁引入循環依賴。
+本專案定義了三種 AI Agent 角色，各有專屬準則文件：
 
-### B. 檔案操作
-- **驗證**: 讀寫前務必驗證檔案是否存在與路徑正確性。
-- **增量變更**: 可能的話，使用 `replace_text` (若可用) 或在需要大幅變更時寫入完整檔案，但需確保上下文被保留。
-- **路徑處理**: 使用環境提供的絕對路徑。
+| 角色 | 文件 | 職責 |
+|------|------|------|
+| **系統分析師 (SA)** | [SA_GUIDELINES.md](../roles/SA_GUIDELINES.md) | 需求分析、Use Case 撰寫、API 契約設計 |
+| **開發人員 (Developer)** | [DEVELOPER_GUIDELINES.md](../roles/DEVELOPER_GUIDELINES.md) | 架構原則、程式碼實作、Git 工作流程 |
+| **品質保證 (QA)** | [QA_GUIDELINES.md](../roles/QA_GUIDELINES.md) | 測試策略、品質標準、驗收流程 |
 
-### C. 架構一致性
-- **分層方法**: 維持 Controller -> Service -> Repository 的流程。
-- **配置**: 將配置保留在相關模組的 `config` 套件中。
-- **實體 (Entities)**: 將實體持久化於 `cclemon-data` 或特定的領域模組中 (若有分離)。
+### 角色協作流程
 
-### D. 任務執行策略
-1.  **分析**: 在多模組結構的背景下理解請求。
-2.  **定位**: 使用 `list_files` 或 `grep` 尋找相關檔案。
-3.  **計畫**: 決定哪些模組需要修改。
-4.  **執行**: 使用 `write_file` 應用變更。
+```
+SA (做什麼) → Developer (怎麼做) → QA (做對了嗎)
+```
+
+### 通用準則
+- **模組邊界**: 尊重模組依賴關係，嚴禁循環依賴。
+- **分層架構**: 維持 Controller → Service → Repository 的流程。
+- **任務執行**: 先分析請求背景 → 定位相關檔案 → 規劃變更範圍 → 執行修改。
