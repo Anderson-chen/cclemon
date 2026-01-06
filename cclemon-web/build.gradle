@@ -1,5 +1,10 @@
 dependencies {
-    implementation project(":cclemon-health")
+    // 依賴契約層，而非實作層
+    implementation project(":cclemon-api")
+
+    // 在執行期提供業務邏輯的實作
+    runtimeOnly project(":cclemon-health")
+
     implementation project(":cclemon-kafka")
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.5'

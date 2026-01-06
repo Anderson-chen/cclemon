@@ -42,7 +42,17 @@
 *   **Act (執行)**: 呼叫受測方法。
 *   **Assert (斷言)**: 使用 AssertJ (`assertThat(...)`) 驗證結果。
 
-### 2.3. 最佳實踐
+### 2.3. Spring Boot 4.x 測試 Mocking **[重要]**
+*   **規則**: 在 Spring Boot 整合測試中，必須使用 `@MockitoBean` 來建立 Mock 物件。
+*   **註解**: `@org.springframework.test.context.bean.override.mockito.MockitoBean`
+*   **Import 語句**: `import org.springframework.test.context.bean.override.mockito.MockitoBean;`
+*   **注意**: **嚴禁**使用舊版 Spring Boot 的 `@MockBean` (`org.springframework.boot.test.mock.mockito.MockBean`)。這是確保測試與框架版本一致的關鍵。
+
+### 2.4. JSON 處理
+*   **工具**: 一律使用 `com.fasterxml.jackson.databind.json.JsonMapper`。
+*   **禁止**: 避免直接實例化 `ObjectMapper`，以確保配置一致性。
+
+### 2.5. 最佳實踐
 *   **測試中無邏輯**: 避免在測試程式碼中使用迴圈或複雜條件。
 *   **獨立性**: 測試不得依賴執行順序。
 *   **清理**: 執行後重置 Mocks 與資料 (`@AfterEach` 或 `@Transactional`)。

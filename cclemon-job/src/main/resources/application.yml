@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: cclemon-job
+
+logging:
+  level:
+    org.cclemon: INFO

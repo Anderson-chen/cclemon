@@ -4,7 +4,7 @@
 
 | 項目 | 內容 |
 |------|------|
-| 文件版本 | 1.0 |
+| 文件版本 | 1.1 |
 | 更新日期 | 2026-01-06 |
 | 專案名稱 | cclemon 健康管理系統 |
 | 技術框架 | Spring Boot 4.0.1 + Spring Modulith |
@@ -26,6 +26,14 @@
 | **快取** | Redis |
 | **訊息佇列** | Kafka |
 | **建置工具** | Gradle |
+| **測試** | JUnit 5, Mockito, Testcontainers |
+
+#### **架構特別說明：Spring Boot 4.x 測試框架遷移**
+> **警告**: 本專案使用 Spring Boot 4.x，其測試 Mocking 機制與 3.x 有重大差異。所有開發與測試人員必須遵守以下規範：
+> - **應使用**: `@MockitoBean`
+> - **正確 Import**: `import org.springframework.test.context.bean.override.mockito.MockitoBean;`
+> - **禁止使用**: 舊版 `@MockBean` (`org.springframework.boot.test.mock.mockito.MockBean`)
+>
 
 ---
 

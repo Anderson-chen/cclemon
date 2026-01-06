@@ -6,4 +6,5 @@ dependencies {
     implementation project(":cclemon-cache")
     implementation project(":cclemon-kafka")
     implementation project(":cclemon-interface")
+    implementation project(":cclemon-api")
 }
