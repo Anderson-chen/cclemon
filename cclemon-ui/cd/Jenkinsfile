@@ -1,0 +1,39 @@
+pipeline {
+  agent { label 'master' }  // 指定在 master 節點執行
+
+  environment {
+    TZ = 'Asia/Taipei'
+  }
+
+  parameters {
+    string(name:'PROJECT_NAME' ,defaultValue:'cclemon-ui')
+    choice(name: 'PROFILE', choices: ['dev', 'sit' ,'prod'])
+  }
+
+  stages {
+    stage('Deploy') {
+      steps {
+          script {
+            def containerName = "${params.PROJECT_NAME}-${params.PROFILE}"
+            def imageName = "${params.PROJECT_NAME}:${params.PROFILE}"
+
+            echo "Deploying ${containerName} using image ${imageName}"
+
+            // 安全保險：如果容器已存在，先刪除
+            sh """
+              docker rm -f ${containerName} || true
+            """
+
+            // 執行 docker run（你也可以加上 -p 或 -e 等參數）
+            sh """
+              docker run -d \
+                --name ${containerName} \
+                --network cclemon-network \
+                -p 5173:80 \
+                ${imageName}
+            """
+          }
+        }
+    }
+  }
+}

@@ -1,0 +1,52 @@
+pipeline {
+
+  agent {
+    dockerfile {
+      dir 'ci/agent'  // 裡面放 Dockerfile
+      args '-v /var/run/docker.sock:/var/run/docker.sock -v $HOME/.cache:/home/node/.cache'
+    }
+  }
+
+  environment {
+    TZ = 'Asia/Taipei'
+  }
+
+  parameters {
+    string(name:'PROJECT_NAME' , defaultValue:'cclemon-ui')
+    choice(name: 'PROFILE', choices: ['dev', 'sit' ,'prod'])
+  }
+
+  stages {
+    stage('Checkout') {
+      steps {
+        checkout scm
+      }
+    }
+
+    stage('Install Dependencies') {
+      steps {
+          sh 'npm install'
+      }
+    }
+
+    stage('Build Quasar App') {
+      steps {
+          sh "npm run build:${params.PROFILE}"
+      }
+    }
+
+    stage('Build Docker Image') {
+      steps {
+          script {
+            def imageName = "${params.PROJECT_NAME}"
+            def imageTag = "${params.PROFILE}"
+            sh """
+              docker build -f ci/Dockerfile \
+                           -t ${imageName}:${imageTag} \
+                           dist/spa
+            """
+          }
+      }
+    }
+  }
+}
