@@ -17,6 +17,20 @@ const routes: RouteRecordRaw[] = [
     children: [{ path: '', component: () => import('pages/HealthPage.vue') }],
   },
 
+  {
+    path: '/weight',
+    component: () => import('layouts/MainLayout.vue'),
+    children: [{ path: '', component: () => import('pages/WeightPage.vue') }],
+  },
+
+  {
+    path: '/weight/chart',
+    component: () => import('layouts/MainLayout.vue'),
+    children: [
+      { path: '', component: () => import('pages/WeightChartPage.vue') },
+    ],
+  },
+
   // Always leave this as last one,
   // but you can also remove it
   {

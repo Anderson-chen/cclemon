@@ -55,6 +55,18 @@ const linksList: EssentialLinkProps[] = [
     icon: 'school',
     to: '/health',
   },
+  {
+    title: '體重記錄',
+    caption: '記錄和管理體重',
+    icon: 'monitor_weight',
+    to: '/weight',
+  },
+  {
+    title: '體重趨勢',
+    caption: '查看體重變化圖表',
+    icon: 'trending_down',
+    to: '/weight/chart',
+  },
 ];
 
 const leftDrawerOpen = ref(false);

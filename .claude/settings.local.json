@@ -4,7 +4,13 @@
       "Bash(git add:*)",
       "Bash(git commit:*)",
       "Bash(git push:*)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "Bash(ls -la \"C:\\\\project\\\\cclemon\\\\cclemon-health\\\\src\\\\test\\\\resources\"\" 2>/dev/null || echo \"Directory not found \")",
+      "Bash(ls -la \"C:\\\\project\\\\cclemon\\\\cclemon-web\\\\src\\\\test\\\\resources\"\" 2>/dev/null || echo \"No test resources directory \")",
+      "Bash(ls -la \"C:\\\\project\\\\cclemon\\\\cclemon-web\\\\src\\\\main\\\\resources\"\" 2>/dev/null || ls -la C:/project/cclemon/cclemon-web/src/main/resources/ 2>/dev/null || echo \"Checking alternative path \")",
+      "Bash(jar tf:*)",
+      "Bash(./gradlew :cclemon-web:test:*)",
+      "Bash(find:*)"
     ]
   }
 }
