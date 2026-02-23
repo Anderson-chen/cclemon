@@ -10,7 +10,11 @@
       "Bash(ls -la \"C:\\\\project\\\\cclemon\\\\cclemon-web\\\\src\\\\main\\\\resources\"\" 2>/dev/null || ls -la C:/project/cclemon/cclemon-web/src/main/resources/ 2>/dev/null || echo \"Checking alternative path \")",
       "Bash(jar tf:*)",
       "Bash(./gradlew :cclemon-web:test:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(dir:*)",
+      "Bash(findstr:*)",
+      "Bash(ls -la \"C:\\\\project\\\\cclemon\\\\cclemon-health\\\\src\\\\main\\\\java\\\\org\\\\cclemon\\\\controller\"\" 2>/dev/null || echo \"No controller directory \")",
+      "Bash(powershell -Command:*)"
     ]
   }
 }
