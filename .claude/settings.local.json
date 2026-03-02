@@ -14,7 +14,11 @@
       "Bash(dir:*)",
       "Bash(findstr:*)",
       "Bash(ls -la \"C:\\\\project\\\\cclemon\\\\cclemon-health\\\\src\\\\main\\\\java\\\\org\\\\cclemon\\\\controller\"\" 2>/dev/null || echo \"No controller directory \")",
-      "Bash(powershell -Command:*)"
+      "Bash(powershell -Command:*)",
+      "Bash(uipro init:*)",
+      "Bash(python3:*)",
+      "Bash(python:*)",
+      "Bash(npm run:*)"
     ]
   }
 }

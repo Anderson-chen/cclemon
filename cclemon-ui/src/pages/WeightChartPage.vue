@@ -1,7 +1,10 @@
 <template>
   <q-page padding>
     <div class="q-mb-md">
-      <h5 class="q-mt-none q-mb-md">體重趨勢圖表</h5>
+      <div class="row items-center q-mb-md">
+        <q-icon name="trending_up" size="md" color="teal-8" class="q-mr-sm" />
+        <h5 class="q-mt-none q-mb-none">體重趨勢圖表</h5>
+      </div>
 
       <!-- 時間範圍選擇器 -->
       <q-card class="q-mb-md">
@@ -94,58 +97,88 @@
       </q-card>
 
       <!-- 統計資訊 -->
-      <q-card v-if="chartData" class="q-mb-md">
-        <q-card-section>
-          <div class="row q-col-gutter-md">
-            <div class="col-12 col-sm-3">
-              <div class="text-caption text-grey-7">平均體重</div>
-              <div class="text-h6 text-primary">
-                {{ chartData.avgWeight?.toFixed(1) }} kg
+      <div v-if="chartData" class="row q-col-gutter-md q-mb-md">
+        <div class="col-6 col-sm-3">
+          <q-card class="stat-card">
+            <q-card-section class="q-pa-md">
+              <div class="row items-center q-mb-xs">
+                <q-icon name="straighten" color="teal-6" size="xs" class="q-mr-xs" />
+                <span class="text-caption text-grey-6">平均體重</span>
               </div>
-            </div>
-            <div class="col-12 col-sm-3">
-              <div class="text-caption text-grey-7">最高體重</div>
-              <div class="text-h6 text-orange">
-                {{ chartData.maxWeight?.toFixed(1) }} kg
+              <div class="text-h5 text-teal-8 text-weight-bold">
+                {{ chartData.avgWeight?.toFixed(1) }}
+                <span class="text-caption text-grey-6">kg</span>
               </div>
-            </div>
-            <div class="col-12 col-sm-3">
-              <div class="text-caption text-grey-7">最低體重</div>
-              <div class="text-h6 text-green">
-                {{ chartData.minWeight?.toFixed(1) }} kg
+            </q-card-section>
+          </q-card>
+        </div>
+        <div class="col-6 col-sm-3">
+          <q-card class="stat-card">
+            <q-card-section class="q-pa-md">
+              <div class="row items-center q-mb-xs">
+                <q-icon name="arrow_upward" color="orange-6" size="xs" class="q-mr-xs" />
+                <span class="text-caption text-grey-6">最高體重</span>
               </div>
-            </div>
-            <div class="col-12 col-sm-3">
-              <div class="text-caption text-grey-7">體重變化</div>
+              <div class="text-h5 text-orange-8 text-weight-bold">
+                {{ chartData.maxWeight?.toFixed(1) }}
+                <span class="text-caption text-grey-6">kg</span>
+              </div>
+            </q-card-section>
+          </q-card>
+        </div>
+        <div class="col-6 col-sm-3">
+          <q-card class="stat-card">
+            <q-card-section class="q-pa-md">
+              <div class="row items-center q-mb-xs">
+                <q-icon name="arrow_downward" color="green-6" size="xs" class="q-mr-xs" />
+                <span class="text-caption text-grey-6">最低體重</span>
+              </div>
+              <div class="text-h5 text-green-8 text-weight-bold">
+                {{ chartData.minWeight?.toFixed(1) }}
+                <span class="text-caption text-grey-6">kg</span>
+              </div>
+            </q-card-section>
+          </q-card>
+        </div>
+        <div class="col-6 col-sm-3">
+          <q-card class="stat-card">
+            <q-card-section class="q-pa-md">
+              <div class="row items-center q-mb-xs">
+                <q-icon
+                  :name="chartData.weightChange && chartData.weightChange > 0 ? 'trending_up' : 'trending_down'"
+                  :color="chartData.weightChange && chartData.weightChange > 0 ? 'red-6' : 'green-6'"
+                  size="xs"
+                  class="q-mr-xs"
+                />
+                <span class="text-caption text-grey-6">體重變化</span>
+              </div>
               <div
-                class="text-h6"
-                :class="
-                  chartData.weightChange && chartData.weightChange > 0
-                    ? 'text-red'
-                    : 'text-green'
-                "
+                class="text-h5 text-weight-bold"
+                :class="chartData.weightChange && chartData.weightChange > 0 ? 'text-red-8' : 'text-green-8'"
               >
-                {{
-                  chartData.weightChange && chartData.weightChange > 0
-                    ? '+'
-                    : ''
-                }}{{ chartData.weightChange?.toFixed(1) }} kg
+                {{ chartData.weightChange && chartData.weightChange > 0 ? '+' : '' }}{{ chartData.weightChange?.toFixed(1) }}
+                <span class="text-caption text-grey-6">kg</span>
               </div>
-            </div>
-          </div>
-        </q-card-section>
-      </q-card>
+            </q-card-section>
+          </q-card>
+        </div>
+      </div>
 
       <!-- 圖表區域 -->
       <q-card>
-        <q-card-section>
-          <div class="text-h6">體重趨勢</div>
+        <q-card-section class="card-header-accent">
+          <div class="row items-center">
+            <q-icon name="show_chart" color="teal-8" size="sm" class="q-mr-sm" />
+            <span class="text-h6">體重趨勢</span>
+          </div>
         </q-card-section>
-        <q-card-section v-if="loading" class="text-center">
-          <q-spinner color="primary" size="3em" />
+        <q-card-section v-if="loading" class="text-center q-py-xl">
+          <q-spinner color="teal-8" size="3em" />
+          <div class="text-caption text-grey-6 q-mt-sm">載入中...</div>
         </q-card-section>
-        <q-card-section v-else-if="!chartData || chartData.dates.length === 0">
-          <div class="text-center text-grey-6">暫無數據</div>
+        <q-card-section v-else-if="!chartData || chartData.dates.length === 0" class="text-center q-py-xl">
+          <q-icon name="bar_chart" size="4em" color="grey-4" />
+          <div class="text-subtitle1 text-grey-5 q-mt-sm">暫無數據</div>
         </q-card-section>
         <q-card-section v-else>
           <!-- 簡易圖表顯示 - 使用 canvas 或 SVG -->
@@ -210,7 +243,7 @@ const onRangeChange = () => {
   }
 };
 
-// 繪製圖表 (簡易版本)
+// 繪製圖表
 const drawChart = () => {
   if (
     !chartCanvas.value ||
@@ -224,13 +257,25 @@ const drawChart = () => {
   const ctx = canvas.getContext('2d');
   if (!ctx) return;
 
-  const width = canvas.width;
-  const height = canvas.height;
-  const padding = 40;
-  const chartWidth = width - 2 * padding;
-  const chartHeight = height - 2 * padding;
+  // 設定高 DPI 畫布
+  const dpr = window.devicePixelRatio || 1;
+  const displayWidth = canvas.offsetWidth || 800;
+  const displayHeight = 320;
+  canvas.width = displayWidth * dpr;
+  canvas.height = displayHeight * dpr;
+  canvas.style.width = displayWidth + 'px';
+  canvas.style.height = displayHeight + 'px';
+  ctx.scale(dpr, dpr);
 
-  // 清空畫布
+  const width = displayWidth;
+  const height = displayHeight;
+  const paddingLeft = 52;
+  const paddingRight = 16;
+  const paddingTop = 24;
+  const paddingBottom = 36;
+  const chartWidth = width - paddingLeft - paddingRight;
+  const chartHeight = height - paddingTop - paddingBottom;
+
   ctx.clearRect(0, 0, width, height);
 
   const weights = chartData.value.weights;
@@ -238,80 +283,93 @@ const drawChart = () => {
 
   if (weights.length === 0) return;
 
-  // 計算數據範圍
   const minWeight = Math.min(...weights);
   const maxWeight = Math.max(...weights);
   const weightRange = maxWeight - minWeight || 1;
+  const paddedMin = minWeight - weightRange * 0.1;
+  const paddedMax = maxWeight + weightRange * 0.1;
+  const paddedRange = paddedMax - paddedMin;
 
-  // 繪製背景網格
-  ctx.strokeStyle = '#e0e0e0';
+  const toX = (i: number) => paddingLeft + (chartWidth / (weights.length - 1 || 1)) * i;
+  const toY = (w: number) => paddingTop + chartHeight - ((w - paddedMin) / paddedRange) * chartHeight;
+
+  // 背景網格
+  ctx.strokeStyle = '#f0f0f0';
   ctx.lineWidth = 1;
-  for (let i = 0; i <= 5; i++) {
-    const y = padding + (chartHeight / 5) * i;
+  const gridLines = 5;
+  for (let i = 0; i <= gridLines; i++) {
+    const y = paddingTop + (chartHeight / gridLines) * i;
     ctx.beginPath();
-    ctx.moveTo(padding, y);
-    ctx.lineTo(width - padding, y);
+    ctx.moveTo(paddingLeft, y);
+    ctx.lineTo(width - paddingRight, y);
     ctx.stroke();
 
-    // Y軸標籤
-    const value = maxWeight - (weightRange / 5) * i;
-    ctx.fillStyle = '#666';
-    ctx.font = '12px sans-serif';
+    const value = paddedMax - (paddedRange / gridLines) * i;
+    ctx.fillStyle = '#9e9e9e';
+    ctx.font = '11px -apple-system, sans-serif';
     ctx.textAlign = 'right';
-    ctx.fillText(value.toFixed(1), padding - 5, y + 4);
+    ctx.fillText(value.toFixed(1), paddingLeft - 6, y + 4);
   }
 
-  // 繪製折線
-  ctx.strokeStyle = '#1976d2';
-  ctx.lineWidth = 2;
+  // 面積漸層填充
+  const gradient = ctx.createLinearGradient(0, paddingTop, 0, paddingTop + chartHeight);
+  gradient.addColorStop(0, 'rgba(0, 121, 107, 0.25)');
+  gradient.addColorStop(1, 'rgba(0, 121, 107, 0.02)');
+
   ctx.beginPath();
+  ctx.moveTo(toX(0), toY(weights[0]!));
+  weights.forEach((w, i) => {
+    if (i === 0) return;
+    ctx.lineTo(toX(i), toY(w));
+  });
+  ctx.lineTo(toX(weights.length - 1), paddingTop + chartHeight);
+  ctx.lineTo(toX(0), paddingTop + chartHeight);
+  ctx.closePath();
+  ctx.fillStyle = gradient;
+  ctx.fill();
 
-  weights.forEach((weight, index) => {
-    const x = padding + (chartWidth / (weights.length - 1 || 1)) * index;
-    const y =
-      padding +
-      chartHeight -
-      ((weight - minWeight) / weightRange) * chartHeight;
+  // 折線
+  ctx.strokeStyle = '#00796b';
+  ctx.lineWidth = 2.5;
+  ctx.lineJoin = 'round';
+  ctx.beginPath();
+  weights.forEach((w, i) => {
+    i === 0 ? ctx.moveTo(toX(i), toY(w)) : ctx.lineTo(toX(i), toY(w));
+  });
+  ctx.stroke();
 
-    if (index === 0) {
-      ctx.moveTo(x, y);
-    } else {
-      ctx.lineTo(x, y);
+  // 數據點與標籤
+  const showLabel = weights.length <= 20;
+  weights.forEach((w, i) => {
+    const x = toX(i);
+    const y = toY(w);
+
+    // 外圈
+    ctx.beginPath();
+    ctx.arc(x, y, 5, 0, 2 * Math.PI);
+    ctx.fillStyle = '#ffffff';
+    ctx.fill();
+    ctx.strokeStyle = '#00796b';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // 標籤
+    if (showLabel) {
+      ctx.fillStyle = '#546e7a';
+      ctx.font = '10px -apple-system, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(w.toFixed(1), x, y - 10);
     }
   });
 
-  ctx.stroke();
-
-  // 繪製數據點
-  ctx.fillStyle = '#1976d2';
-  weights.forEach((weight, index) => {
-    const x = padding + (chartWidth / (weights.length - 1 || 1)) * index;
-    const y =
-      padding +
-      chartHeight -
-      ((weight - minWeight) / weightRange) * chartHeight;
-
-    ctx.beginPath();
-    ctx.arc(x, y, 4, 0, 2 * Math.PI);
-    ctx.fill();
-
-    // 數值標籤
-    ctx.fillStyle = '#666';
-    ctx.font = '10px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText(weight.toFixed(1), x, y - 8);
-  });
-
-  // 繪製 X 軸日期標籤
-  ctx.fillStyle = '#666';
-  ctx.font = '10px sans-serif';
+  // X 軸日期標籤
+  ctx.fillStyle = '#9e9e9e';
+  ctx.font = '10px -apple-system, sans-serif';
   ctx.textAlign = 'center';
-  const step = Math.ceil(dates.length / 10); // 最多顯示 10 個日期標籤
-  dates.forEach((date, index) => {
-    if (index % step === 0 || index === dates.length - 1) {
-      const x = padding + (chartWidth / (dates.length - 1 || 1)) * index;
-      const shortDate = date.substring(5); // 只顯示 MM-DD
-      ctx.fillText(shortDate, x, height - padding + 15);
+  const step = Math.ceil(dates.length / 8);
+  dates.forEach((date, i) => {
+    if (i % step === 0 || i === dates.length - 1) {
+      ctx.fillText(date.substring(5), toX(i), height - paddingBottom + 16);
     }
   });
 };
@@ -349,7 +407,21 @@ onMounted(() => {
 }
 
 canvas {
-  max-width: 100%;
-  height: auto;
+  width: 100%;
+  display: block;
+}
+
+.stat-card {
+  border-top: 3px solid rgba(0, 150, 136, 0.3);
+  transition: box-shadow 0.2s;
+}
+
+.stat-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.card-header-accent {
+  border-bottom: 1px solid rgba(0, 150, 136, 0.15);
+  padding-bottom: 12px;
 }
 </style>

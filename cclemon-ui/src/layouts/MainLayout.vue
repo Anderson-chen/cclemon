@@ -1,6 +1,6 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-header elevated class="bg-light-green-14">
+    <q-header elevated class="bg-teal-8">
       <q-toolbar>
         <q-btn
           flat
@@ -11,7 +11,10 @@
           @click="toggleLeftDrawer"
         />
 
-        <q-toolbar-title> CCLEMON </q-toolbar-title>
+        <q-toolbar-title>
+          <q-icon name="spa" size="sm" class="q-mr-xs" />
+          CCLEMON
+        </q-toolbar-title>
         <Suspense>
           <UserProfile />
         </Suspense>
@@ -20,7 +23,9 @@
 
     <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
       <q-list>
-        <q-item-label header> Essential Links </q-item-label>
+        <q-item-label header class="text-weight-bold text-grey-7">
+          主選單
+        </q-item-label>
 
         <EssentialLink
           v-for="link in linksList"
@@ -50,9 +55,9 @@ defineOptions({
 
 const linksList: EssentialLinkProps[] = [
   {
-    title: 'health',
-    caption: 'health',
-    icon: 'school',
+    title: '健康追蹤',
+    caption: '健康數據記錄',
+    icon: 'favorite_border',
     to: '/health',
   },
   {
@@ -64,7 +69,7 @@ const linksList: EssentialLinkProps[] = [
   {
     title: '體重趨勢',
     caption: '查看體重變化圖表',
-    icon: 'trending_down',
+    icon: 'trending_up',
     to: '/weight/chart',
   },
 ];

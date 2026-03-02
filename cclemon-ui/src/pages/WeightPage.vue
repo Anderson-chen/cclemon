@@ -1,12 +1,18 @@
 <template>
   <q-page padding>
     <div class="q-mb-md">
-      <h5 class="q-mt-none q-mb-md">體重記錄</h5>
+      <div class="row items-center q-mb-md">
+        <q-icon name="monitor_weight" size="md" color="teal-8" class="q-mr-sm" />
+        <h5 class="q-mt-none q-mb-none">體重記錄</h5>
+      </div>
 
       <!-- 體重記錄表單 -->
-      <q-card class="q-mb-md">
-        <q-card-section>
-          <div class="text-h6">新增記錄</div>
+      <q-card class="q-mb-md form-card">
+        <q-card-section class="card-header-accent">
+          <div class="row items-center">
+            <q-icon name="add_circle_outline" color="teal-8" size="sm" class="q-mr-sm" />
+            <span class="text-h6">新增記錄</span>
+          </div>
         </q-card-section>
         <q-card-section>
           <q-form @submit="onSubmit" class="q-gutter-md">
@@ -87,10 +93,12 @@
 
             <q-btn
               type="submit"
-              label="提交"
-              color="primary"
+              label="儲存記錄"
+              color="teal-8"
+              icon="save"
               class="full-width"
               :loading="submitting"
+              unelevated
             />
           </q-form>
         </q-card-section>
@@ -98,6 +106,12 @@
 
       <!-- 日期範圍選擇器 -->
       <q-card class="q-mb-md">
+        <q-card-section class="card-header-accent">
+          <div class="row items-center">
+            <q-icon name="date_range" color="teal-8" size="sm" class="q-mr-sm" />
+            <span class="text-h6">日期篩選</span>
+          </div>
+        </q-card-section>
         <q-card-section>
           <div class="row q-gutter-md">
             <q-input
@@ -154,9 +168,11 @@
 
             <q-btn
               label="查詢"
-              color="primary"
+              color="teal-8"
+              icon="search"
               @click="loadWeights"
               :loading="loading"
+              unelevated
             />
           </div>
         </q-card-section>
@@ -164,38 +180,59 @@
 
       <!-- 體重記錄列表 -->
       <q-card>
-        <q-card-section>
-          <div class="text-h6">歷史記錄</div>
+        <q-card-section class="card-header-accent">
+          <div class="row items-center justify-between">
+            <div class="row items-center">
+              <q-icon name="history" color="teal-8" size="sm" class="q-mr-sm" />
+              <span class="text-h6">歷史記錄</span>
+            </div>
+            <q-chip
+              v-if="pagination.totalElements > 0"
+              color="teal-1"
+              text-color="teal-9"
+              size="sm"
+              dense
+            >
+              共 {{ pagination.totalElements }} 筆
+            </q-chip>
+          </div>
         </q-card-section>
-        <q-card-section v-if="loading" class="text-center">
-          <q-spinner color="primary" size="3em" />
+        <q-card-section v-if="loading" class="text-center q-py-xl">
+          <q-spinner color="teal-8" size="3em" />
+          <div class="text-caption text-grey-6 q-mt-sm">載入中...</div>
         </q-card-section>
-        <q-card-section v-else-if="weights.length === 0">
-          <div class="text-center text-grey-6">暫無記錄</div>
+        <q-card-section v-else-if="weights.length === 0" class="text-center q-py-xl">
+          <q-icon name="inbox" size="4em" color="grey-4" />
+          <div class="text-subtitle1 text-grey-5 q-mt-sm">暫無記錄</div>
+          <div class="text-caption text-grey-4">試著新增第一筆體重記錄吧</div>
         </q-card-section>
         <q-list v-else separator>
-          <q-item v-for="weight in weights" :key="weight.id">
+          <q-item v-for="weight in weights" :key="weight.id" class="weight-item">
+            <q-item-section avatar>
+              <q-avatar color="teal-1" text-color="teal-8" size="40px" icon="monitor_weight" />
+            </q-item-section>
             <q-item-section>
-              <q-item-label>{{ formatDate(weight.measureDate) }}</q-item-label>
+              <q-item-label class="text-weight-medium">{{ formatDate(weight.measureDate) }}</q-item-label>
               <q-item-label caption v-if="weight.measureTime">
-                {{ weight.measureTime }}
+                <q-icon name="access_time" size="xs" class="q-mr-xs" />{{ weight.measureTime }}
+              </q-item-label>
+              <q-item-label caption v-if="weight.note" class="q-mt-xs text-grey-6">
+                {{ weight.note }}
               </q-item-label>
             </q-item-section>
-            <q-item-section>
-              <q-item-label class="text-h6 text-primary">
-                {{ weight.weightKg }} kg
-              </q-item-label>
-            </q-item-section>
-            <q-item-section v-if="weight.note" side>
-              <q-item-label caption>{{ weight.note }}</q-item-label>
+            <q-item-section side>
+              <div class="text-h5 text-teal-8 text-weight-bold">
+                {{ weight.weightKg }}
+                <span class="text-caption text-grey-6">kg</span>
+              </div>
             </q-item-section>
             <q-item-section side>
               <q-btn
                 flat
                 round
                 dense
-                icon="delete"
-                color="negative"
+                icon="delete_outline"
+                color="red-3"
                 @click="confirmDelete(weight.id)"
               />
             </q-item-section>
@@ -360,7 +397,21 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.q-item {
+.weight-item {
   min-height: 64px;
+  transition: background-color 0.2s;
+}
+
+.weight-item:hover {
+  background-color: rgba(0, 150, 136, 0.04);
+}
+
+.card-header-accent {
+  border-bottom: 1px solid rgba(0, 150, 136, 0.15);
+  padding-bottom: 12px;
+}
+
+.form-card {
+  border-top: 3px solid #00695c;
 }
 </style>
