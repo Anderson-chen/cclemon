@@ -72,6 +72,12 @@ const linksList: EssentialLinkProps[] = [
     icon: 'trending_up',
     to: '/weight/chart',
   },
+  {
+    title: '會員管理',
+    caption: '查詢與管理顧客資料',
+    icon: 'group',
+    to: '/customers',
+  },
 ];
 
 const leftDrawerOpen = ref(false);
