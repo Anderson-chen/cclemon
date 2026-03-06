@@ -1,9 +1,9 @@
 # ShoesReborn 洗鞋店管理系統 - 產品需求文件 (PRD)
 
-**版本**: v1.1.0
-**日期**: 2026-03-04
+**版本**: v1.2.0
+**日期**: 2026-03-06
 **狀態**: 草稿 (Draft)
-**更新**: 2026-03-04 — 依老闆確認答案更新（Q1~Q6 全部確認）
+**更新**: 2026-03-06 — 將 API 契約與資料模型拆分至 SA 文件
 
 ---
 
@@ -16,12 +16,12 @@
 5. [功能需求](#5-功能需求)
 6. [非功能性需求](#6-非功能性需求)
 7. [使用者旅程](#7-使用者旅程)
-8. [API 契約設計](#8-api-契約設計)
-9. [資料模型](#9-資料模型)
-10. [驗收條件](#10-驗收條件)
-11. [MVP 範圍](#11-mvp-範圍)
-12. [未來規劃 (Backlog)](#12-未來規劃-backlog)
-13. [未確認事項](#13-未確認事項)
+8. [驗收條件](#8-驗收條件)
+9. [MVP 範圍](#9-mvp-範圍)
+10. [未來規劃 (Backlog)](#10-未來規劃-backlog)
+11. [未確認事項](#11-未確認事項)
+
+> 技術設計（API 契約、資料模型）請見：[SA-shoesReborn.md](./SA-shoesReborn.md)
 
 ---
 
@@ -31,7 +31,7 @@
 |------|------|
 | 產品名稱 | ShoesReborn 洗鞋店管理系統 |
 | 版本 | v1.0 (MVP) |
-| 文件版本 | 1.0.0 |
+| 文件版本 | 1.2.0 |
 | 建立日期 | 2026-03-04 |
 
 ### 摘要
@@ -208,6 +208,7 @@ ShoesReborn 系統
 - 位置格式：`[區域代碼]-[層架號]-[格位號]`，例如：`A-3-2`（A 區第 3 層架第 2 格）
 - 老闆可自行定義區域代碼與最大層架 / 格位數
 - 每個格位可存放多件物品
+- 一筆訂單支援多個存放位置（如左鞋與右鞋存於不同格位）
 
 ---
 
@@ -231,7 +232,7 @@ ShoesReborn 系統
 |------|------|
 | 截止時間 | 急件訂單必填，精確到日 |
 | 加急費率 | 依服務項目各自設定；未設定時使用系統全域急件費率（預設 50%） |
-| 急件費計算 | 開單時逐項計算：`每項急件費 = 服務小計 × 該服務 urgentFeeRate（或全域費率）`；加總為訂單 `urgentFee` |
+| 急件費計算 | 開單時逐項計算：`每項急件費 = 服務小計 × 該服務 urgentFeeRate（或全域費率）`；加總為訂單急件費 |
 | 優先排序 | 急件列表依截止日升冪排列，截止日相同者依建立時間排列 |
 | 警示條件 | 距截止時間不足 2 小時且狀態非「待取件」或「已取件」 |
 | 費率變更 | 修改任何費率不影響歷史已建立訂單的金額 |
@@ -301,7 +302,7 @@ ShoesReborn 系統
 
 | 需求 | 規格 |
 |------|------|
-| 身份驗證 | JWT Token，整合 cclemon-auth（OAuth2, Port 9000） |
+| 身份驗證 | JWT Token，整合現有 OAuth2 服務 |
 | 密碼規範 | 最少 8 碼，需含英數字 |
 | Session 逾時 | 閒置 30 分鐘自動登出 |
 | 角色授權 | RBAC（老闆 / 員工兩種角色） |
@@ -392,282 +393,9 @@ ShoesReborn 系統
 
 ---
 
-## 8. API 契約設計
+## 8. 驗收條件
 
-遵循 cclemon 平台 REST API 慣例：基本路徑 `/api/v1/{resource}`。
-
-### 8.1 訂單管理 API
-
-| Method | URL | 說明 | 角色 |
-|--------|-----|------|------|
-| `POST` | `/api/v1/orders` | 建立訂單 | 老闆、員工 |
-| `GET` | `/api/v1/orders` | 查詢訂單列表（分頁、篩選） | 老闆、員工 |
-| `GET` | `/api/v1/orders/{id}` | 查詢單筆訂單 | 老闆、員工 |
-| `PUT` | `/api/v1/orders/{id}` | 更新訂單資訊 | 老闆、員工 |
-| `PATCH` | `/api/v1/orders/{id}/status` | 更新訂單狀態 | 老闆、員工 |
-| `DELETE` | `/api/v1/orders/{id}` | 取消 / 軟刪除訂單 | 老闆 |
-
-**GET /api/v1/orders 查詢參數**
-
-| 參數 | 型別 | 說明 |
-|------|------|------|
-| `page` | Integer | 頁碼（從 0 開始） |
-| `size` | Integer | 每頁筆數（預設 20） |
-| `status` | String | 狀態篩選（如 `PENDING`） |
-| `isUrgent` | Boolean | 急件篩選 |
-| `keyword` | String | 顧客姓名 / 電話 / 訂單編號 |
-| `dateFrom` | Date | 建立日期起（yyyy-MM-dd） |
-| `dateTo` | Date | 建立日期迄 |
-
-**POST /api/v1/orders Request Body**
-
-```json
-{
-  "customerId": 1001,
-  "items": [
-    {
-      "serviceCode": "SVC-WASH",
-      "itemDescription": "Nike Air Max 黑色",
-      "quantity": 1,
-      "unitPrice": 500
-    }
-  ],
-  "isUrgent": true,
-  "urgentDeadline": "2026-03-05",
-  "estimatedPickupDate": "2026-03-05",
-  "staffNote": "右鞋底有黃漬，需特別注意",
-  "locations": [
-    { "locationCode": "A-3-2", "note": "左鞋" },
-    { "locationCode": "A-3-3", "note": "右鞋" }
-  ]
-}
-```
-
-**POST /api/v1/orders Response (201 Created)**
-
-```json
-{
-  "success": true,
-  "data": {
-    "orderId": 5001,
-    "orderNo": "SR-20260304-0001",
-    "status": "PENDING",
-    "totalAmount": 750,
-    "urgentFee": 250,
-    "locations": [
-      { "locationCode": "A-3-2", "note": "左鞋" },
-      { "locationCode": "A-3-3", "note": "右鞋" }
-    ],
-    "createdAt": "2026-03-04T10:30:00"
-  }
-}
-```
-
----
-
-### 8.2 鞋物位置 API
-
-| Method | URL | 說明 | 角色 |
-|--------|-----|------|------|
-| `PUT` | `/api/v1/orders/{id}/location` | 更新訂單物品存放位置（支援多位置） | 老闆、員工 |
-| `GET` | `/api/v1/locations` | 查詢所有位置標籤 | 老闆、員工 |
-| `POST` | `/api/v1/locations` | 新增位置標籤 | 老闆 |
-| `DELETE` | `/api/v1/locations/{code}` | 停用位置標籤 | 老闆 |
-
-**PUT /api/v1/orders/{id}/location Request Body**
-
-```json
-{
-  "locations": [
-    { "locationCode": "A-3-2", "note": "左鞋" },
-    { "locationCode": "A-3-3", "note": "右鞋" }
-  ]
-}
-```
-
----
-
-### 8.3 急件管理 API
-
-| Method | URL | 說明 | 角色 |
-|--------|-----|------|------|
-| `GET` | `/api/v1/orders/urgent` | 急件列表（依截止日排序） | 老闆、員工 |
-| `GET` | `/api/v1/orders/urgent/alerts` | 即將超時警示列表 | 老闆、員工 |
-
----
-
-### 8.4 會員管理 API
-
-| Method | URL | 說明 | 角色 |
-|--------|-----|------|------|
-| `POST` | `/api/v1/customers` | 建立會員 | 老闆、員工 |
-| `GET` | `/api/v1/customers` | 查詢會員列表 | 老闆、員工 |
-| `GET` | `/api/v1/customers/{id}` | 查詢單筆會員資料 | 老闆、員工 |
-| `PUT` | `/api/v1/customers/{id}` | 更新會員資料 | 老闆 |
-| `GET` | `/api/v1/customers/{id}/orders` | 查詢會員歷史訂單 | 老闆、員工 |
-| `GET` | `/api/v1/customers/search` | 依電話 / 姓名搜尋會員 | 老闆、員工 |
-
----
-
-### 8.5 財務報表 API
-
-| Method | URL | 說明 | 角色 |
-|--------|-----|------|------|
-| `GET` | `/api/v1/reports/daily` | 每日營收摘要 | 老闆 |
-| `GET` | `/api/v1/reports/monthly` | 月度報表 | 老闆 |
-| `GET` | `/api/v1/reports/services` | 服務項目收益分析 | 老闆 |
-| `GET` | `/api/v1/reports/export` | 匯出報表 CSV | 老闆 |
-
----
-
-### 8.6 系統設定 API
-
-**服務項目**
-
-| Method | URL | 說明 | 角色 |
-|--------|-----|------|------|
-| `GET` | `/api/v1/settings/services` | 查詢服務項目清單 | 老闆、員工 |
-| `POST` | `/api/v1/settings/services` | 新增服務項目 | 老闆 |
-| `PUT` | `/api/v1/settings/services/{code}` | 更新服務項目（含 `urgentFeeRate`） | 老闆 |
-| `PUT` | `/api/v1/settings/urgent-fee-rate` | 設定系統全域急件費率 | 老闆 |
-
-**PUT /api/v1/settings/services/{code} 可更新欄位**
-
-| 欄位 | 型別 | 說明 |
-|------|------|------|
-| name | String | 服務名稱 |
-| defaultPrice | Decimal | 預設售價 |
-| urgentFeeRate | Decimal \| null | 該服務專屬急件費率；傳 null 表示沿用全域設定 |
-| isActive | Boolean | 是否啟用 |
-
-**員工管理（Q5 確認：老闆後台自行開立）**
-
-| Method | URL | 說明 | 角色 |
-|--------|-----|------|------|
-| `GET` | `/api/v1/settings/staff` | 查詢員工列表 | 老闆 |
-| `POST` | `/api/v1/settings/staff` | 建立員工帳號 | 老闆 |
-| `PUT` | `/api/v1/settings/staff/{id}` | 更新員工資料 | 老闆 |
-| `DELETE` | `/api/v1/settings/staff/{id}` | 停用員工帳號（軟刪除） | 老闆 |
-
-### 8.7 錯誤回應格式（RFC 7807）
-
-```json
-{
-  "type": "/errors/order-not-found",
-  "title": "Order Not Found",
-  "status": 404,
-  "detail": "訂單 SR-20260304-0001 不存在",
-  "instance": "/api/v1/orders/SR-20260304-0001"
-}
-```
-
----
-
-## 9. 資料模型
-
-### 9.1 實體關係
-
-```
-Customer ──(1:N)──> Order ──(1:N)──> OrderItem ──(N:1)──> ServiceType
-                      │
-                      └──(1:N)──> OrderLocation ──(N:1)──> Location
-
-Customer ──(N:1)──> MemberTier
-```
-
-> **設計說明**：一筆訂單支援多個存放位置（如左鞋與右鞋存於不同格位），
-> 透過 `OrderLocation` 中間表關聯，取代原本 `Order.locationCode` 單一欄位。
-
-### 9.2 Customer（顧客 / 會員）
-
-| 欄位名稱 | 型別 | 必填 | 說明 |
-|---------|------|:----:|------|
-| id | Long | Y | 主鍵（繼承 BaseEntity） |
-| name | VARCHAR(50) | Y | 顧客姓名 |
-| phone | VARCHAR(20) | Y | 手機號碼（唯一值） |
-| email | VARCHAR(100) | N | 電子郵件 |
-| tierCode | VARCHAR(20) | Y | 會員等級代碼（FK to MemberTier） |
-| totalSpend | DECIMAL(10,2) | Y | 累積消費金額（預設 0） |
-| visitCount | Integer | Y | 到店次數（預設 0） |
-| note | TEXT | N | 特殊偏好 / 注意事項 |
-| deleted | Boolean | Y | 軟刪除旗標（繼承 BaseEntity） |
-| createTime | DATETIME | Y | 建立時間（繼承 BaseEntity） |
-
-### 9.3 Order（訂單）
-
-| 欄位名稱 | 型別 | 必填 | 說明 |
-|---------|------|:----:|------|
-| id | Long | Y | 主鍵 |
-| orderNo | VARCHAR(30) | Y | 訂單編號 `SR-YYYYMMDD-XXXX`（唯一值） |
-| customerId | Long | Y | 顧客 ID（FK to Customer） |
-| status | VARCHAR(20) | Y | 訂單狀態 |
-| isUrgent | Boolean | Y | 是否為急件（預設 false） |
-| urgentDeadline | DATE | N | 急件截止日（isUrgent = true 時必填） |
-| estimatedPickupDate | DATE | Y | 預計取件日 |
-| actualPickupDate | DATE | N | 實際取件日 |
-| totalAmount | DECIMAL(10,2) | Y | 訂單總金額（含急件費） |
-| urgentFee | DECIMAL(10,2) | N | 急件費用（預設 0） |
-| staffNote | TEXT | N | 員工備註 |
-| createUserId | Long | Y | 建立員工 ID（繼承 BaseEntity） |
-
-### 9.4 OrderItem（訂單明細）
-
-| 欄位名稱 | 型別 | 必填 | 說明 |
-|---------|------|:----:|------|
-| id | Long | Y | 主鍵 |
-| orderId | Long | Y | 訂單 ID（FK to Order） |
-| serviceCode | VARCHAR(20) | Y | 服務代碼（FK to ServiceType） |
-| itemDescription | VARCHAR(200) | Y | 物品描述（品牌 / 款式 / 顏色） |
-| quantity | Integer | Y | 數量（最小值 1） |
-| unitPrice | DECIMAL(10,2) | Y | 單價 |
-| subTotal | DECIMAL(10,2) | Y | 小計（quantity x unitPrice） |
-
-### 9.5 ServiceType（服務項目）
-
-| 欄位名稱 | 型別 | 必填 | 說明 |
-|---------|------|:----:|------|
-| code | VARCHAR(20) | Y | 服務代碼（主鍵，如 SVC-WASH） |
-| name | VARCHAR(50) | Y | 服務名稱 |
-| defaultPrice | DECIMAL(10,2) | Y | 預設售價 |
-| urgentFeeRate | DECIMAL(5,4) | N | 該服務專屬急件費率（如 0.5 = 50%）；null 時沿用系統全域設定 |
-| isActive | Boolean | Y | 是否啟用（預設 true） |
-
-### 9.6 Location（存放位置）
-
-| 欄位名稱 | 型別 | 必填 | 說明 |
-|---------|------|:----:|------|
-| code | VARCHAR(20) | Y | 位置代碼（主鍵，如 A-3-2） |
-| areaCode | VARCHAR(10) | Y | 區域代碼 |
-| shelfNo | VARCHAR(10) | Y | 層架號碼 |
-| slotNo | VARCHAR(10) | Y | 格位號碼 |
-| displayName | VARCHAR(50) | Y | 顯示名稱（如 A 區第 3 層架第 2 格） |
-| isActive | Boolean | Y | 是否啟用 |
-
-### 9.7 OrderLocation（訂單存放位置）
-
-> 一筆訂單可對應多個存放位置（Q6 確認：支援多個位置）。
-
-| 欄位名稱 | 型別 | 必填 | 說明 |
-|---------|------|:----:|------|
-| id | Long | Y | 主鍵（繼承 BaseEntity） |
-| orderId | Long | Y | 訂單 ID（FK to Order） |
-| locationCode | VARCHAR(20) | Y | 位置代碼（FK to Location） |
-| note | VARCHAR(200) | N | 位置備註（如「左鞋在 A-3-2，右鞋在 A-3-3」） |
-
-### 9.8 MemberTier（會員等級）
-
-| 欄位名稱 | 型別 | 必填 | 說明 |
-|---------|------|:----:|------|
-| code | VARCHAR(20) | Y | 等級代碼（主鍵，如 GOLD） |
-| name | VARCHAR(30) | Y | 等級名稱 |
-| spendThreshold | DECIMAL(10,2) | Y | 升級所需累積消費門檻 |
-| benefits | TEXT | N | 等級說明 / 優惠描述 |
-
----
-
-## 10. 驗收條件
-
-### 10.1 開單管理模組
+### 8.1 開單管理模組
 
 - [ ] 員工可在 2 分鐘內完成一筆新訂單的建立
 - [ ] 訂單編號格式符合 `SR-YYYYMMDD-XXXX`，當日流水號不重複
@@ -680,24 +408,24 @@ Customer ──(N:1)──> MemberTier
 - [ ] 搜尋訂單可透過訂單編號、顧客姓名、顧客電話其中任一查詢
 - [ ] 列表支援依狀態、是否急件、建立日期區間篩選
 
-### 10.2 鞋物位置追蹤模組
+### 8.2 鞋物位置追蹤模組
 
-- [ ] 每筆訂單可指定一個或多個位置代碼（透過 OrderLocation 關聯）
+- [ ] 每筆訂單可指定一個或多個位置代碼
 - [ ] 查詢訂單詳情時，清楚顯示所有存放位置的完整描述與備註
 - [ ] 員工可隨時更新位置，更新後立即生效
 - [ ] 老闆可新增 / 停用位置標籤，停用後不可被新訂單選擇
 - [ ] 停用已有訂單存放其中的位置時，系統警示但不強制阻止
 
-### 10.3 急件管理模組
+### 8.3 急件管理模組
 
 - [ ] 急件訂單在所有列表中有明顯視覺標示（如紅色標籤）
 - [ ] 急件列表依截止日升冪排列
 - [ ] 距截止時間不足 2 小時且狀態不為 `READY` 或 `PICKED_UP` 的急件，顯示警示標示
-- [ ] 急件費計算：優先使用各服務項目的 `urgentFeeRate`，未設定者使用系統全域費率
-- [ ] 急件費 = 各 OrderItem 小計 × 對應費率 之加總
+- [ ] 急件費計算：優先使用各服務項目的急件費率，未設定者使用系統全域費率
+- [ ] 急件費 = 各訂單明細小計 × 對應費率之加總
 - [ ] 急件費率變更不影響歷史已建立訂單的金額
 
-### 10.4 會員管理模組
+### 8.4 會員管理模組
 
 - [ ] 同一手機號碼不可重複建立會員
 - [ ] 顧客完成取件後，系統自動更新該會員的累積消費金額與到店次數
@@ -706,7 +434,7 @@ Customer ──(N:1)──> MemberTier
 - [ ] 老闆可修改會員等級門檻設定
 - [ ] 會員搜尋支援模糊比對（電話後 4 碼或姓名部分比對）
 
-### 10.5 財務報表模組
+### 8.5 財務報表模組
 
 - [ ] 每日報表顯示：訂單數、總營收、急件費收入、各服務項目分佈
 - [ ] 月度報表顯示：每日營收趨勢、服務項目佔比
@@ -716,9 +444,9 @@ Customer ──(N:1)──> MemberTier
 
 ---
 
-## 11. MVP 範圍
+## 9. MVP 範圍
 
-### 11.1 第一階段上線功能
+### 9.1 第一階段上線功能
 
 MVP 目標：解決最高優先痛點（P-01 鞋子難找、P-02 急件混亂），並完成基礎數位化。
 
@@ -733,7 +461,7 @@ MVP 目標：解決最高優先痛點（P-01 鞋子難找、P-02 急件混亂）
 | 系統設定 | 服務項目、位置維護 | P1 |
 | 認證授權 | 登入、老闆 / 員工角色 | P0 |
 
-### 11.2 MVP Out of Scope
+### 9.2 MVP Out of Scope
 
 | 功能 | 原因 |
 |------|------|
@@ -742,7 +470,7 @@ MVP 目標：解決最高優先痛點（P-01 鞋子難找、P-02 急件混亂）
 | 行銷活動管理 | 超出 MVP 範圍 |
 | 多門市支援 | 現階段為單一門市 |
 
-### 11.3 MVP 假設與限制
+### 9.3 MVP 假設與限制
 
 | 假設 | 說明 |
 |------|------|
@@ -753,7 +481,7 @@ MVP 目標：解決最高優先痛點（P-01 鞋子難找、P-02 急件混亂）
 
 ---
 
-## 12. 未來規劃 (Backlog)
+## 10. 未來規劃 (Backlog)
 
 | 功能 | 說明 | 預估階段 |
 |------|------|---------|
@@ -769,15 +497,15 @@ MVP 目標：解決最高優先痛點（P-01 鞋子難找、P-02 急件混亂）
 
 ---
 
-## 13. 未確認事項
+## 11. 未確認事項
 
-> ✅ 所有問題已於 2026-03-04 與老闆確認完畢。
+> 所有問題已於 2026-03-04 與老闆確認完畢。
 
-| 編號 | 問題 | 狀態 | 確認答案 | PRD 影響 |
-|------|------|:----:|---------|---------|
-| Q1 | 一筆訂單可以包含不同服務（如同時洗鞋 + 鍍膜）嗎？還是每種服務各開一單？ | ✅ 已確認 | **一單多服務**（同一筆訂單可包含多種服務） | 無需調整，原設計 OrderItem 已支援 |
-| Q2 | 急件費率是統一費率（如加 50%），還是依服務類型有不同費率？ | ✅ 已確認 | **依服務類型不同**（各服務可設定獨立費率，未設定者用全域費率） | ServiceType 新增 `urgentFeeRate`；急件費計算邏輯改為逐項計算（§5.4、§8.6、§9.5） |
-| Q3 | 位置是否需要支援「一件物品跨多個位置」的情況（如大型行李袋）？ | ✅ 已確認 | **支援多個位置**（一筆訂單可有多個存放位置） | Order 移除 `locationCode`；新增 `OrderLocation` 中間表（§8.2、§9.1、§9.7） |
-| Q4 | 是否需要記錄「部分取件」的情況（如一張單有 2 雙鞋，先取 1 雙）？ | ✅ 已確認 | **整單一起取**（不支援部分取件） | 無需調整 |
-| Q5 | 員工帳號如何建立與管理？老闆在系統後台開立，還是另有流程？ | ✅ 已確認 | **老闆後台自行開立** | 新增員工管理 API（§8.6） |
-| Q6 | 取件時是否需要記錄最終實收金額（含可能的現場折扣）？ | ✅ 已確認 | **不需要，以開單金額為準** | 無需調整 |
+| 編號 | 問題 | 狀態 | 確認答案 |
+|------|------|:----:|---------|
+| Q1 | 一筆訂單可以包含不同服務（如同時洗鞋 + 鍍膜）嗎？ | 已確認 | 一單多服務，同一筆訂單可包含多種服務 |
+| Q2 | 急件費率是統一費率，還是依服務類型有不同費率？ | 已確認 | 依服務類型不同，各服務可設定獨立費率，未設定者用全域費率 |
+| Q3 | 位置是否需要支援「一件物品跨多個位置」的情況？ | 已確認 | 支援多個位置，一筆訂單可有多個存放位置 |
+| Q4 | 是否需要記錄「部分取件」的情況？ | 已確認 | 整單一起取，不支援部分取件 |
+| Q5 | 員工帳號如何建立與管理？ | 已確認 | 老闆後台自行開立 |
+| Q6 | 取件時是否需要記錄最終實收金額（含現場折扣）？ | 已確認 | 不需要，以開單金額為準 |
