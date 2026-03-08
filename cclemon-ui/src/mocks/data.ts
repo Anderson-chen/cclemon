@@ -1,4 +1,5 @@
 import type { CustomerResult, CustomerOrderSummary } from '../api/customer/types';
+import type { OrderResult } from '../api/order/types';
 
 // ── 模擬會員資料 ─────────────────────────────────────────
 export const mockCustomers: CustomerResult[] = [
@@ -237,6 +238,144 @@ export const mockOrders: Record<number, CustomerOrderSummary[]> = {
     },
   ],
 };
+
+// ── 模擬訂單列表（開單管理）──────────────────────────────────
+export const mockOrderList: OrderResult[] = [
+  {
+    id: 1001,
+    orderNo: 'SR-20260301-0001',
+    customerId: 1,
+    customerName: '陳雅婷',
+    customerPhone: '0912345678',
+    status: 'READY',
+    isUrgent: false,
+    items: [
+      { id: 1, serviceCode: 'SVC-WASH', serviceName: '洗鞋', quantity: 2, unitPrice: 350, subtotal: 700 },
+      { id: 2, serviceCode: 'SVC-COATING', serviceName: '鍍膜', quantity: 1, unitPrice: 500, subtotal: 500 },
+    ],
+    storageLocations: ['A-2-1'],
+    totalAmount: 1200,
+    urgentFee: 0,
+    estimatedPickupDate: '2026-03-10',
+    note: 'Nike Air Max，請輕柔處理',
+    createTime: '2026-03-01T09:00:00',
+  },
+  {
+    id: 1002,
+    orderNo: 'SR-20260302-0001',
+    customerId: 2,
+    customerName: '林建宏',
+    customerPhone: '0923456789',
+    status: 'IN_PROGRESS',
+    isUrgent: true,
+    urgentDeadline: '2026-03-08',
+    items: [
+      { id: 3, serviceCode: 'SVC-WASH', serviceName: '洗鞋', quantity: 1, unitPrice: 350, subtotal: 350 },
+      { id: 4, serviceCode: 'SVC-RECOLOR', serviceName: '補色', quantity: 1, unitPrice: 800, subtotal: 800 },
+    ],
+    storageLocations: ['B-1-3'],
+    totalAmount: 1725,
+    urgentFee: 575,
+    estimatedPickupDate: '2026-03-08',
+    note: 'Jordan 1，補色部位：前後鞋頭',
+    createTime: '2026-03-02T14:30:00',
+  },
+  {
+    id: 1003,
+    orderNo: 'SR-20260302-0002',
+    customerId: 3,
+    customerName: '王美玲',
+    customerPhone: '0934567890',
+    status: 'PENDING',
+    isUrgent: false,
+    items: [
+      { id: 5, serviceCode: 'SVC-BAG', serviceName: '洗包', quantity: 1, unitPrice: 600, subtotal: 600 },
+    ],
+    storageLocations: [],
+    totalAmount: 600,
+    urgentFee: 0,
+    estimatedPickupDate: '2026-03-12',
+    note: 'LV 帆布包，請特別注意五金配件',
+    createTime: '2026-03-02T16:00:00',
+  },
+  {
+    id: 1004,
+    orderNo: 'SR-20260303-0001',
+    customerId: 4,
+    customerName: '張志明',
+    customerPhone: '0945678901',
+    status: 'PENDING',
+    isUrgent: true,
+    urgentDeadline: '2026-03-09',
+    items: [
+      { id: 6, serviceCode: 'SVC-WASH', serviceName: '洗鞋', quantity: 3, unitPrice: 350, subtotal: 1050 },
+    ],
+    storageLocations: ['C-3-2'],
+    totalAmount: 1575,
+    urgentFee: 525,
+    estimatedPickupDate: '2026-03-09',
+    createTime: '2026-03-03T10:00:00',
+  },
+  {
+    id: 1005,
+    orderNo: 'SR-20260303-0002',
+    customerId: 5,
+    customerName: '李淑芬',
+    customerPhone: '0956789012',
+    status: 'PICKED_UP',
+    isUrgent: false,
+    items: [
+      { id: 7, serviceCode: 'SVC-WASH', serviceName: '洗鞋', quantity: 2, unitPrice: 350, subtotal: 700 },
+    ],
+    storageLocations: ['A-1-1'],
+    totalAmount: 700,
+    urgentFee: 0,
+    estimatedPickupDate: '2026-03-06',
+    actualPickupDate: '2026-03-06',
+    createTime: '2026-03-03T11:30:00',
+  },
+  {
+    id: 1006,
+    orderNo: 'SR-20260304-0001',
+    customerId: 6,
+    customerName: '吳俊達',
+    customerPhone: '0967890123',
+    status: 'IN_PROGRESS',
+    isUrgent: false,
+    items: [
+      { id: 8, serviceCode: 'SVC-COATING', serviceName: '鍍膜', quantity: 2, unitPrice: 500, subtotal: 1000 },
+    ],
+    storageLocations: ['D-2-1'],
+    totalAmount: 1000,
+    urgentFee: 0,
+    estimatedPickupDate: '2026-03-11',
+    createTime: '2026-03-04T09:00:00',
+  },
+  {
+    id: 1007,
+    orderNo: 'SR-20260305-0001',
+    customerId: 8,
+    customerName: '劉宗翰',
+    customerPhone: '0989012345',
+    status: 'CANCELLED',
+    isUrgent: false,
+    items: [
+      { id: 9, serviceCode: 'SVC-RECOLOR', serviceName: '補色', quantity: 1, unitPrice: 800, subtotal: 800 },
+    ],
+    storageLocations: [],
+    totalAmount: 800,
+    urgentFee: 0,
+    estimatedPickupDate: '2026-03-12',
+    note: '顧客臨時取消',
+    createTime: '2026-03-05T13:00:00',
+  },
+];
+
+let nextOrderId = 2000;
+
+export function getNextOrderId() {
+  return ++nextOrderId;
+}
 
 // ── 自動計算會員等級 ──────────────────────────────────────
 function calcTier(totalSpend: number): CustomerResult['tierCode'] {

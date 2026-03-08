@@ -37,6 +37,12 @@ const routes: RouteRecordRaw[] = [
     children: [{ path: '', component: () => import('pages/CustomerPage.vue') }],
   },
 
+  {
+    path: '/orders',
+    component: () => import('layouts/MainLayout.vue'),
+    children: [{ path: '', component: () => import('pages/OrderPage.vue') }],
+  },
+
   // Always leave this as last one,
   // but you can also remove it
   {

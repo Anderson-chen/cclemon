@@ -78,6 +78,12 @@ const linksList: EssentialLinkProps[] = [
     icon: 'group',
     to: '/customers',
   },
+  {
+    title: '開單管理',
+    caption: '建立與追蹤洗鞋訂單',
+    icon: 'receipt_long',
+    to: '/orders',
+  },
 ];
 
 const leftDrawerOpen = ref(false);
