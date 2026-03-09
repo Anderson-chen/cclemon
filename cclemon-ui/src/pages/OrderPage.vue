@@ -719,7 +719,9 @@ import { reactive, ref, computed, onMounted } from 'vue';
 import { useQuasar } from 'quasar';
 import { listOrders, createOrder, updateOrder, updateOrderStatus } from '../api/order/order';
 import { searchCustomers } from '../api/customer/customer';
+import { listServices } from '../api/service/service';
 import type { OrderResult, OrderStatus } from '../api/order/types';
+import type { ServiceTypeResult } from '../api/service/types';
 
 const $q = useQuasar();
 
@@ -778,17 +780,34 @@ const loadOrders = async () => {
 };
 
 // ── 服務項目設定 ───────────────────────────────────────────
-const SERVICE_MAP: Record<string, { name: string; unitPrice: number }> = {
-  'SVC-WASH': { name: '洗鞋', unitPrice: 350 },
-  'SVC-COATING': { name: '鍍膜', unitPrice: 500 },
-  'SVC-BAG': { name: '洗包', unitPrice: 600 },
-  'SVC-RECOLOR': { name: '補色', unitPrice: 800 },
-};
+const FALLBACK_SERVICES: ServiceTypeResult[] = [
+  { code: 'SVC-WASH',    name: '洗鞋', defaultPrice: 350, urgentFeeRate: null, isActive: true },
+  { code: 'SVC-COATING', name: '鍍膜', defaultPrice: 500, urgentFeeRate: null, isActive: true },
+  { code: 'SVC-BAG',     name: '洗包', defaultPrice: 600, urgentFeeRate: null, isActive: true },
+  { code: 'SVC-RECOLOR', name: '補色', defaultPrice: 800, urgentFeeRate: null, isActive: true },
+];
 
-const serviceOptions = Object.entries(SERVICE_MAP).map(([code, svc]) => ({
-  label: `${svc.name}（NT$ ${svc.unitPrice}）`,
-  value: code,
-}));
+const activeServices = ref<ServiceTypeResult[]>([]);
+
+const serviceOptions = computed(() =>
+  activeServices.value.map((svc) => ({
+    label: `${svc.name}（NT$ ${svc.defaultPrice}）`,
+    value: svc.code,
+  }))
+);
+
+const serviceMap = computed(() =>
+  Object.fromEntries(activeServices.value.map((svc) => [svc.code, svc]))
+);
+
+const loadServices = async () => {
+  try {
+    const result = await listServices({ includeInactive: false });
+    activeServices.value = result.length > 0 ? result : FALLBACK_SERVICES;
+  } catch {
+    activeServices.value = FALLBACK_SERVICES;
+  }
+};
 
 // ── 新增 / 編輯 Dialog ────────────────────────────────────
 const formRef = ref();
@@ -865,8 +884,8 @@ const removeServiceItem = (idx: number) => {
 };
 
 const onServiceChange = (idx: number, code: string) => {
-  const svc = SERVICE_MAP[code];
-  if (svc) form.items[idx].unitPrice = svc.unitPrice;
+  const svc = serviceMap.value[code];
+  if (svc) form.items[idx].unitPrice = svc.defaultPrice;
 };
 
 const openCreateDialog = () => {
@@ -1047,7 +1066,7 @@ function formatDate(dateStr: string): string {
   return `${d.getFullYear()}/${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getDate()).padStart(2, '0')}`;
 }
 
-onMounted(loadOrders);
+onMounted(() => Promise.all([loadServices(), loadOrders()]));
 </script>
 
 <style scoped>

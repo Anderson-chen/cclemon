@@ -8,7 +8,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
-    children: [{ path: '', component: () => import('pages/IndexPage.vue') }],
+    children: [{ path: '', component: () => import('pages/OrderDashboardPage.vue') }],
   },
 
   {
@@ -38,9 +38,27 @@ const routes: RouteRecordRaw[] = [
   },
 
   {
+    path: '/orders/dashboard',
+    component: () => import('layouts/MainLayout.vue'),
+    children: [{ path: '', component: () => import('pages/OrderDashboardPage.vue') }],
+  },
+
+  {
     path: '/orders',
     component: () => import('layouts/MainLayout.vue'),
     children: [{ path: '', component: () => import('pages/OrderPage.vue') }],
+  },
+
+  {
+    path: '/reports',
+    component: () => import('layouts/MainLayout.vue'),
+    children: [{ path: '', component: () => import('pages/ReportPage.vue') }],
+  },
+
+  {
+    path: '/settings/services',
+    component: () => import('layouts/MainLayout.vue'),
+    children: [{ path: '', component: () => import('pages/ServiceManagePage.vue') }],
   },
 
   // Always leave this as last one,

@@ -55,22 +55,16 @@ defineOptions({
 
 const linksList: EssentialLinkProps[] = [
   {
-    title: '健康追蹤',
-    caption: '健康數據記錄',
-    icon: 'favorite_border',
-    to: '/health',
+    title: '訂單總覽',
+    caption: '洗鞋店訂單看板',
+    icon: 'dashboard',
+    to: '/orders/dashboard',
   },
   {
-    title: '體重記錄',
-    caption: '記錄和管理體重',
-    icon: 'monitor_weight',
-    to: '/weight',
-  },
-  {
-    title: '體重趨勢',
-    caption: '查看體重變化圖表',
-    icon: 'trending_up',
-    to: '/weight/chart',
+    title: '開單管理',
+    caption: '建立與追蹤洗鞋訂單',
+    icon: 'receipt_long',
+    to: '/orders',
   },
   {
     title: '會員管理',
@@ -79,10 +73,16 @@ const linksList: EssentialLinkProps[] = [
     to: '/customers',
   },
   {
-    title: '開單管理',
-    caption: '建立與追蹤洗鞋訂單',
-    icon: 'receipt_long',
-    to: '/orders',
+    title: '收益報表',
+    caption: '日報表、月報表、CSV 匯出',
+    icon: 'bar_chart',
+    to: '/reports',
+  },
+  {
+    title: '服務設定',
+    caption: '服務項目與費率管理',
+    icon: 'tune',
+    to: '/settings/services',
   },
 ];
 

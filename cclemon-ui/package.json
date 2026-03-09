@@ -9,6 +9,9 @@
     "lint": "eslint --ext .js,.ts,.vue ./",
     "format": "prettier --write \"**/*.{js,ts,vue,scss,html,md,json}\" --ignore-path .gitignore",
     "test": "echo \"No test specified\" && exit 0",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:report": "playwright show-report",
     "dev": "set ENV_FILE=local&& quasar dev",
     "build": "quasar build",
     "build:dev": "set ENV_FILE=dev&& quasar build",
@@ -26,6 +29,7 @@
   },
   "devDependencies": {
     "@intlify/unplugin-vue-i18n": "^2.0.0",
+    "@playwright/test": "^1.58.2",
     "@quasar/app-vite": "^2.0.0-beta.12",
     "@types/node": "^20.5.9",
     "@typescript-eslint/eslint-plugin": "^6.6.0",

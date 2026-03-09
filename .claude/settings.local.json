@@ -18,7 +18,12 @@
       "Bash(uipro init:*)",
       "Bash(python3:*)",
       "Bash(python:*)",
-      "Bash(npm run:*)"
+      "Bash(npm run:*)",
+      "Bash(npm install:*)",
+      "Read(//mnt/c/project/cclemon/**)",
+      "Bash(npx playwright install)",
+      "Bash(npx playwright:*)",
+      "Bash(grep:*)"
     ]
   }
 }
