@@ -15,7 +15,6 @@
 
         <q-toolbar-title>
           <q-icon name="spa" size="sm" class="q-mr-xs" />
-          CCLEMON
         </q-toolbar-title>
         <Suspense> </Suspense>
       </q-toolbar>
@@ -54,6 +53,7 @@
           :to="link.to"
           :icon="link.icon"
           :label="link.shortTitle"
+          :exact="link.exact"
           no-caps
         />
       </q-tabs>
@@ -64,6 +64,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
+import { useQuasar } from 'quasar';
 import EssentialLink, {
   EssentialLinkProps,
 } from 'components/EssentialLink.vue';
@@ -74,6 +75,7 @@ defineOptions({
 
 interface NavLink extends EssentialLinkProps {
   shortTitle: string;
+  exact?: boolean;
 }
 
 const linksList: NavLink[] = [
@@ -90,6 +92,7 @@ const linksList: NavLink[] = [
     caption: '建立與追蹤洗鞋訂單',
     icon: 'receipt_long',
     to: '/orders',
+    exact: true,
   },
   {
     title: '會員管理',
@@ -114,6 +117,7 @@ const linksList: NavLink[] = [
   },
 ];
 
+const $q = useQuasar();
 const route = useRoute();
 const leftDrawerOpen = ref(false);
 
@@ -121,11 +125,13 @@ function toggleLeftDrawer() {
   leftDrawerOpen.value = !leftDrawerOpen.value;
 }
 
-// 桌機切換路由後關閉 drawer
+// 手機版切換路由後關閉 drawer（桌機不自動關閉）
 watch(
   () => route.path,
   () => {
-    leftDrawerOpen.value = false;
+    if ($q.screen.lt.md) {
+      leftDrawerOpen.value = false;
+    }
   },
 );
 </script>
