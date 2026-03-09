@@ -23,7 +23,8 @@
       "Read(//mnt/c/project/cclemon/**)",
       "Bash(npx playwright install)",
       "Bash(npx playwright:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(npx wrangler:*)"
     ]
   }
 }

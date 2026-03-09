@@ -1,7 +1,11 @@
 import { boot } from 'quasar/wrappers';
 
 export default boot(async () => {
-  if (!import.meta.env.DEV) return;
+  const isMswEnabled =
+    import.meta.env.DEV ||
+    import.meta.env.VITE_MSW_ENABLED === 'true';
+
+  if (!isMswEnabled) return;
 
   const { worker } = await import('../mocks/browser');
 
