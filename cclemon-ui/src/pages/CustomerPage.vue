@@ -9,7 +9,7 @@
         unelevated
         color="teal-8"
         icon="person_add"
-        label="新增會員"
+        :label="$q.screen.gt.xs ? '新增會員' : ''"
         @click="openCreateDialog"
         class="cursor-pointer"
       />
@@ -24,7 +24,7 @@
         </div>
       </q-card-section>
       <q-card-section>
-        <div class="row q-gutter-md">
+        <div class="row q-gutter-md wrap">
           <q-input
             v-model="filters.keyword"
             label="姓名 / 電話搜尋"
@@ -205,7 +205,7 @@
 
     <!-- 新增 / 編輯 Dialog -->
     <q-dialog v-model="formDialog.open" persistent>
-      <q-card style="min-width: 400px; max-width: 560px; width: 100%">
+      <q-card style="width: 95vw; max-width: 560px">
         <q-card-section class="card-header-accent">
           <div class="row items-center">
             <q-icon

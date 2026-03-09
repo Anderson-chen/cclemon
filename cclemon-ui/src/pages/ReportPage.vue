@@ -15,7 +15,7 @@
         unelevated
         color="teal-8"
         icon="download"
-        label="匯出 CSV"
+        :label="$q.screen.gt.xs ? '匯出 CSV' : ''"
         :loading="exporting"
         :disable="loading || reportOrders.length === 0"
         @click="exportCsv"
@@ -40,7 +40,7 @@
     <!-- 日期選擇器 -->
     <q-card flat bordered class="q-mb-md">
       <q-card-section class="q-py-sm">
-        <div class="row items-center q-gutter-md">
+        <div class="row items-center q-gutter-md wrap">
           <!-- 日報表：單日選擇 -->
           <template v-if="tab === 'daily'">
             <q-input
@@ -206,6 +206,7 @@
                   共 {{ reportOrders.length }} 筆
                 </q-chip>
               </q-card-section>
+              <div style="overflow-x: auto">
               <q-table
                 :rows="reportOrders"
                 :columns="orderColumns"
@@ -243,6 +244,7 @@
                   </q-td>
                 </template>
               </q-table>
+              </div>
             </q-card>
 
             <!-- 月報表：每日趨勢 -->

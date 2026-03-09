@@ -1,1 +1,11 @@
 // app global css in SCSS form
+
+// 防止手機下拉刷新誤觸
+body {
+  overscroll-behavior-y: contain;
+}
+
+// 提升手機點擊響應速度
+* {
+  touch-action: manipulation;
+}

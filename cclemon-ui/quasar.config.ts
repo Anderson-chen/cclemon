@@ -130,7 +130,7 @@ export default configure((ctx) => {
       // directives: [],
 
       // Quasar plugins
-      plugins: ['LocalStorage', 'SessionStorage', 'Loading', 'Dialog'],
+      plugins: ['LocalStorage', 'SessionStorage', 'Loading', 'Dialog', 'Notify'],
     },
 
     // animations: 'all', // --- includes all animations

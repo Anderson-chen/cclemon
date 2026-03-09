@@ -17,7 +17,7 @@
         </div>
       </q-card-section>
       <q-card-section>
-        <div class="row items-center q-gutter-md">
+        <div class="row items-center q-gutter-md wrap">
           <q-input
             v-model.number="globalRateInput"
             type="number"
@@ -121,7 +121,7 @@
 
     <!-- 新增 Dialog -->
     <q-dialog v-model="addDialog.open" persistent>
-      <q-card style="min-width: 380px">
+      <q-card style="width: 95vw; max-width: 480px">
         <q-card-section class="bg-teal-8 text-white">
           <div class="text-h6">
             <q-icon name="add_circle" class="q-mr-sm" />新增服務項目
@@ -179,7 +179,7 @@
 
     <!-- 編輯 Dialog -->
     <q-dialog v-model="editDialog.open" persistent>
-      <q-card style="min-width: 380px">
+      <q-card style="width: 95vw; max-width: 480px">
         <q-card-section class="bg-teal-8 text-white">
           <div class="text-h6">
             <q-icon name="edit" class="q-mr-sm" />編輯服務項目

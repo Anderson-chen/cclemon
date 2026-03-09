@@ -15,7 +15,7 @@
         unelevated
         color="teal-8"
         icon="receipt_long"
-        label="開單管理"
+        :label="$q.screen.gt.xs ? '開單管理' : ''"
         to="/orders"
         class="cursor-pointer"
       />
@@ -228,7 +228,7 @@ import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
 import { listOrders } from '../api/order/order';
-import type { OrderResult, OrderStatus } from '../api/order/types';
+import type { OrderResult } from '../api/order/types';
 
 const $q = useQuasar();
 const router = useRouter();
@@ -415,7 +415,7 @@ onMounted(loadOrders);
 
 /* KPI 卡片 */
 .kpi-card {
-  min-width: 150px;
+  min-width: 100px;
   background: white;
   border-radius: 12px;
   border-top: 3px solid var(--accent);
