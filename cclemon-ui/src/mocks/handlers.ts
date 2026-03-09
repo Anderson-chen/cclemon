@@ -1,7 +1,8 @@
 import { http, HttpResponse, delay } from 'msw';
-import { mockCustomers, mockOrders, getNextId, mockOrderList, getNextOrderId } from './data';
+import { mockCustomers, mockOrders, getNextId, mockOrderList, getNextOrderId, mockServices } from './data';
 import type { CustomerResult } from '../api/customer/types';
 import type { OrderResult } from '../api/order/types';
+import type { ServiceTypeResult } from '../api/service/types';
 
 // ── 動態讀取 baseURL，確保和 axios 發出的 URL 一致 ────────
 // Vite 在 build time 會把 process.env.VUE_APP_HEALTH_BASE_URL
@@ -13,6 +14,8 @@ const API_ORIGIN = (_rawBase && _rawBase !== 'undefined')
 
 const BASE = `${API_ORIGIN}/api/v1/customers`;
 const ORDER_BASE = `${API_ORIGIN}/api/v1/orders`;
+const SERVICE_SETTINGS_BASE = `${API_ORIGIN}/api/v1/settings/services`;
+const URGENT_FEE_RATE_URL = `${API_ORIGIN}/api/v1/settings/urgent-fee-rate`;
 
 const SERVICE_MAP: Record<string, { name: string; unitPrice: number; urgentFeeRate: number }> = {
   'SVC-WASH': { name: '洗鞋', unitPrice: 350, urgentFeeRate: 0.5 },
@@ -339,5 +342,56 @@ export const handlers = [
       return HttpResponse.json({ message: '訂單不存在' }, { status: 404 });
     }
     return HttpResponse.json(order);
+  }),
+
+  // ── 服務設定 ─────────────────────────────────────────────
+
+  // GET /api/v1/settings/services
+  http.get(SERVICE_SETTINGS_BASE, async ({ request }) => {
+    await delay(DELAY);
+    const url = new URL(request.url);
+    const includeInactive = url.searchParams.get('includeInactive') === 'true';
+    const result = includeInactive
+      ? mockServices
+      : mockServices.filter((s) => s.isActive);
+    return HttpResponse.json(result);
+  }),
+
+  // POST /api/v1/settings/services
+  http.post(SERVICE_SETTINGS_BASE, async ({ request }) => {
+    await delay(DELAY);
+    const body = (await request.json()) as ServiceTypeResult;
+    const exists = mockServices.find((s) => s.code === body.code);
+    if (exists) {
+      return HttpResponse.json({ message: '服務代碼已存在' }, { status: 409 });
+    }
+    const newService: ServiceTypeResult = {
+      code: body.code,
+      name: body.name,
+      defaultPrice: body.defaultPrice,
+      urgentFeeRate: body.urgentFeeRate ?? null,
+      isActive: true,
+    };
+    mockServices.push(newService);
+    return HttpResponse.json(newService, { status: 201 });
+  }),
+
+  // PUT /api/v1/settings/services/:code
+  http.put(`${SERVICE_SETTINGS_BASE}/:code`, async ({ params, request }) => {
+    await delay(DELAY);
+    const code = params.code as string;
+    const body = (await request.json()) as Partial<ServiceTypeResult>;
+    const idx = mockServices.findIndex((s) => s.code === code);
+    if (idx === -1) {
+      return HttpResponse.json({ message: '服務不存在' }, { status: 404 });
+    }
+    mockServices[idx] = { ...mockServices[idx], ...body };
+    return HttpResponse.json(mockServices[idx]);
+  }),
+
+  // PUT /api/v1/settings/urgent-fee-rate
+  http.put(URGENT_FEE_RATE_URL, async () => {
+    await delay(DELAY);
+    return HttpResponse.json({ message: 'ok' });
   }),
 ];

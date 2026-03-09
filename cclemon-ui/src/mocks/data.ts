@@ -1,5 +1,6 @@
 import type { CustomerResult, CustomerOrderSummary } from '../api/customer/types';
 import type { OrderResult } from '../api/order/types';
+import type { ServiceTypeResult } from '../api/service/types';
 
 // ── 模擬會員資料 ─────────────────────────────────────────
 export const mockCustomers: CustomerResult[] = [
@@ -393,3 +394,11 @@ export function getNextId() {
 export function calcTierCode(totalSpend: number) {
   return calcTier(totalSpend);
 }
+
+// ── 模擬服務項目資料 ──────────────────────────────────────
+export const mockServices: ServiceTypeResult[] = [
+  { code: 'SVC-WASH',    name: '洗鞋',  defaultPrice: 350, urgentFeeRate: null, isActive: true },
+  { code: 'SVC-COATING', name: '鍍膜',  defaultPrice: 500, urgentFeeRate: null, isActive: true },
+  { code: 'SVC-BAG',     name: '洗包',  defaultPrice: 600, urgentFeeRate: null, isActive: true },
+  { code: 'SVC-RECOLOR', name: '補色',  defaultPrice: 800, urgentFeeRate: null, isActive: true },
+];
