@@ -24,7 +24,8 @@
       "Bash(npx playwright install)",
       "Bash(npx playwright:*)",
       "Bash(grep:*)",
-      "Bash(npx wrangler:*)"
+      "Bash(npx wrangler:*)",
+      "Bash(ls /c/project/cclemon/cclemon-ui/quasar.config* 2>/dev/null; ls /c/project/cclemon/cclemon-ui/src/boot/ 2>/dev/null)"
     ]
   }
 }

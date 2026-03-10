@@ -76,38 +76,6 @@
       </q-card-section>
     </q-card>
 
-    <!-- 統計卡片 -->
-    <div class="row q-gutter-md q-mb-md">
-      <q-card class="stat-card col">
-        <q-card-section class="text-center">
-          <q-icon name="receipt_long" size="2em" color="teal-8" />
-          <div class="text-h4 text-weight-bold text-teal-8 q-mt-xs">{{ pagination.totalElements }}</div>
-          <div class="text-caption text-grey-6">總訂單數</div>
-        </q-card-section>
-      </q-card>
-      <q-card class="stat-card col">
-        <q-card-section class="text-center">
-          <q-icon name="hourglass_empty" size="2em" color="orange-7" />
-          <div class="text-h4 text-weight-bold text-orange-7 q-mt-xs">{{ pendingCount }}</div>
-          <div class="text-caption text-grey-6">待處理</div>
-        </q-card-section>
-      </q-card>
-      <q-card class="stat-card col">
-        <q-card-section class="text-center">
-          <q-icon name="bolt" size="2em" color="red-6" />
-          <div class="text-h4 text-weight-bold text-red-6 q-mt-xs">{{ urgentCount }}</div>
-          <div class="text-caption text-grey-6">進行中急件</div>
-        </q-card-section>
-      </q-card>
-      <q-card class="stat-card col">
-        <q-card-section class="text-center">
-          <q-icon name="check_circle" size="2em" color="teal-6" />
-          <div class="text-h4 text-weight-bold text-teal-6 q-mt-xs">{{ readyCount }}</div>
-          <div class="text-caption text-grey-6">待取件</div>
-        </q-card-section>
-      </q-card>
-    </div>
-
     <!-- 訂單列表 -->
     <q-card>
       <q-card-section class="card-header-accent">
@@ -232,229 +200,237 @@
     </q-card>
 
     <!-- 新增 / 編輯 Dialog -->
-    <q-dialog v-model="formDialog.open" persistent>
-      <q-card style="width: 95vw; max-width: 680px">
-        <q-card-section class="card-header-accent">
-          <div class="row items-center">
-            <q-icon
-              :name="formDialog.isEdit ? 'edit' : 'add_circle'"
-              color="teal-8"
-              size="sm"
-              class="q-mr-sm"
-            />
-            <span class="text-h6">{{ formDialog.isEdit ? '編輯訂單' : '新增訂單' }}</span>
-          </div>
-        </q-card-section>
-
-        <q-card-section class="q-pa-md">
-          <q-form ref="formRef" @submit.prevent class="q-gutter-md">
-            <!-- 顧客查詢 -->
-            <div class="row q-gutter-sm">
-              <q-input
-                v-model="form.customerPhone"
-                label="顧客電話"
-                outlined
-                dense
-                class="col"
-                :disable="formDialog.isEdit"
-                :rules="[(val) => !!val || '請輸入電話']"
-              >
-                <template v-slot:prepend>
-                  <q-icon name="phone" />
-                </template>
-                <template v-slot:append>
-                  <q-btn
-                    flat
-                    dense
-                    icon="search"
-                    color="teal-8"
-                    @click="lookupCustomer"
-                    :loading="lookingUp"
-                    :disable="formDialog.isEdit"
-                    class="cursor-pointer"
-                  />
-                </template>
-              </q-input>
-              <q-input
-                v-model="form.customerName"
-                label="顧客姓名"
-                outlined
-                dense
-                readonly
-                class="col"
-                :rules="[(val) => !!val || '請先查詢顧客']"
-              >
-                <template v-slot:prepend>
-                  <q-icon name="person" />
-                </template>
-              </q-input>
-            </div>
-
-            <!-- 服務項目 -->
-            <div>
-              <div class="row items-center q-mb-sm">
-                <span class="text-subtitle2 text-weight-medium">服務項目</span>
-                <q-space />
-                <q-btn
-                  flat
-                  dense
-                  icon="add"
-                  color="teal-8"
-                  label="新增服務"
-                  size="sm"
-                  @click="addServiceItem"
-                  :disable="formDialog.isEdit"
-                  class="cursor-pointer"
-                />
-              </div>
-              <div
-                v-for="(item, idx) in form.items"
-                :key="idx"
-                class="row q-gutter-sm q-mb-sm items-center"
-              >
-                <q-select
-                  v-model="item.serviceCode"
-                  :options="serviceOptions"
-                  label="服務項目"
-                  outlined
-                  dense
-                  emit-value
-                  map-options
-                  class="col"
-                  :disable="formDialog.isEdit"
-                  @update:model-value="(val) => onServiceChange(idx, val)"
-                  :rules="[(val) => !!val || '請選擇服務']"
-                />
-                <q-input
-                  v-model.number="item.quantity"
-                  label="數量"
-                  outlined
-                  dense
-                  type="number"
-                  style="width: 80px"
-                  :disable="formDialog.isEdit"
-                  :rules="[(val) => val > 0 || '至少1']"
-                />
-                <div class="text-caption text-teal-8 text-weight-medium" style="min-width: 80px">
-                  NT$ {{ (item.unitPrice * item.quantity).toLocaleString() }}
-                </div>
-                <q-btn
-                  flat
-                  round
-                  dense
-                  icon="remove_circle"
-                  color="red-5"
-                  @click="removeServiceItem(idx)"
-                  :disable="form.items.length === 1 || formDialog.isEdit"
-                  class="cursor-pointer"
-                />
-              </div>
-              <div v-if="!formDialog.isEdit" class="text-right text-weight-bold text-teal-8 q-mt-xs">
-                服務小計：NT$ {{ serviceSubtotal.toLocaleString() }}
-              </div>
-            </div>
-
-            <!-- 急件設定 -->
-            <div class="row q-gutter-md items-center">
-              <q-toggle
-                v-model="form.isUrgent"
-                label="急件"
-                color="red-6"
-                icon="bolt"
-              />
-              <q-input
-                v-if="form.isUrgent"
-                v-model="form.urgentDeadline"
-                label="急件截止日"
-                outlined
-                dense
-                class="col"
-                :rules="[(val) => !form.isUrgent || !!val || '急件必須填截止日期']"
-              >
-                <template v-slot:prepend>
-                  <q-icon name="event" />
-                </template>
-                <template v-slot:append>
-                  <q-icon name="calendar_today" class="cursor-pointer">
-                    <q-popup-proxy>
-                      <q-date v-model="form.urgentDeadline" mask="YYYY-MM-DD" />
-                    </q-popup-proxy>
-                  </q-icon>
-                </template>
-              </q-input>
-            </div>
-
-            <!-- 急件費提示 -->
-            <div v-if="form.isUrgent && !formDialog.isEdit" class="row items-center q-gutter-sm">
-              <q-icon name="info" color="red-5" size="sm" />
-              <span class="text-caption text-red-6">
-                急件費（50%）：NT$ {{ urgentFeeAmount.toLocaleString() }}
-                &nbsp;|&nbsp;
-                <span class="text-weight-bold">總計：NT$ {{ (serviceSubtotal + urgentFeeAmount).toLocaleString() }}</span>
-              </span>
-            </div>
-
-            <!-- 預計取件日 -->
+    <AppFormDialog
+      v-model="formDialog.open"
+      :title="formDialog.isEdit ? '編輯訂單' : '新增訂單'"
+      :icon="formDialog.isEdit ? 'edit' : 'add_circle'"
+      :is-edit="formDialog.isEdit"
+      :submitting="submitting"
+      :submit-label="formDialog.isEdit ? '儲存' : '建立訂單'"
+      max-width="680px"
+      @submit="submitForm"
+    >
+      <q-form ref="formRef" @submit.prevent class="q-gutter-md">
+        <!-- 顧客查詢 -->
+        <div class="row q-col-gutter-sm">
+          <div class="col-12 col-sm-6">
             <q-input
-              v-model="form.estimatedPickupDate"
-              label="預計取件日期"
+              v-model="form.customerPhone"
+              label="顧客電話"
               outlined
               dense
-              :rules="[(val) => !!val || '請填寫預計取件日期']"
+              :disable="formDialog.isEdit"
+              :rules="[(val) => !!val || '請輸入電話']"
+              @keyup.enter="lookupCustomer"
             >
               <template v-slot:prepend>
-                <q-icon name="event_available" />
+                <q-icon name="phone" />
               </template>
               <template v-slot:append>
-                <q-icon name="calendar_today" class="cursor-pointer">
-                  <q-popup-proxy>
-                    <q-date v-model="form.estimatedPickupDate" mask="YYYY-MM-DD" />
-                  </q-popup-proxy>
-                </q-icon>
+                <q-btn
+                  flat
+                  dense
+                  icon="search"
+                  color="teal-8"
+                  @click="lookupCustomer"
+                  :loading="lookingUp"
+                  :disable="formDialog.isEdit"
+                  class="cursor-pointer"
+                />
               </template>
             </q-input>
-
-            <!-- 存放位置 -->
+          </div>
+          <div class="col-12 col-sm-6">
+            <!-- 已找到會員 -->
             <q-input
-              v-model="form.storageLocation"
-              label="存放位置（如：A-3-2，多個用逗號分隔）"
+              v-if="form.customerId"
+              v-model="form.customerName"
+              label="顧客姓名"
               outlined
               dense
+              readonly
             >
               <template v-slot:prepend>
-                <q-icon name="location_on" />
+                <q-icon name="check_circle" color="teal-6" />
               </template>
             </q-input>
 
-            <!-- 備註 -->
+            <!-- 查無會員：顯示立即建立按鈕 -->
+            <div v-else-if="customerNotFound" class="customer-not-found row items-center q-gutter-xs">
+              <q-icon name="person_off" color="grey-5" size="sm" />
+              <span class="text-caption text-grey-6">查無此電話的會員</span>
+              <q-btn
+                flat
+                dense
+                size="sm"
+                color="teal-7"
+                icon="person_add"
+                label="立即建立"
+                @click="customerFormOpen = true"
+                class="cursor-pointer"
+              />
+            </div>
+
+            <!-- 初始狀態：提示欄位 -->
             <q-input
-              v-model="form.note"
-              label="備註 / 鞋物狀況"
+              v-else
+              model-value=""
+              label="顧客姓名"
               outlined
               dense
-              type="textarea"
-              rows="2"
+              readonly
+              :rules="[() => !!form.customerId || '請先查詢顧客']"
             >
               <template v-slot:prepend>
-                <q-icon name="notes" />
+                <q-icon name="person" />
               </template>
             </q-input>
-          </q-form>
-        </q-card-section>
+          </div>
+        </div>
 
-        <q-card-actions align="right" class="q-px-md q-pb-md">
-          <q-btn flat label="取消" color="grey-7" v-close-popup class="cursor-pointer" />
-          <q-btn
-            unelevated
-            :label="formDialog.isEdit ? '儲存' : '建立訂單'"
-            color="teal-8"
-            @click="submitForm"
-            :loading="submitting"
-            class="cursor-pointer"
+        <!-- 服務項目 -->
+        <div>
+          <div class="row items-center q-mb-sm">
+            <span class="text-subtitle2 text-weight-medium">服務項目</span>
+            <q-space />
+            <q-btn
+              flat
+              dense
+              icon="add"
+              color="teal-8"
+              label="新增服務"
+              size="sm"
+              @click="addServiceItem"
+              :disable="formDialog.isEdit"
+              class="cursor-pointer"
+            />
+          </div>
+          <div
+            v-for="(item, idx) in form.items"
+            :key="idx"
+            class="service-item-block q-mb-sm"
+          >
+            <div class="row items-center q-gutter-xs">
+              <q-select
+                v-model="item.serviceCode"
+                :options="serviceOptions"
+                label="服務項目"
+                outlined
+                dense
+                emit-value
+                map-options
+                class="col"
+                :disable="formDialog.isEdit"
+                @update:model-value="(val) => onServiceChange(idx, val)"
+                :rules="[(val) => !!val || '請選擇服務']"
+              />
+              <q-btn
+                flat
+                round
+                dense
+                icon="remove_circle"
+                color="red-5"
+                @click="removeServiceItem(idx)"
+                :disable="form.items.length === 1 || formDialog.isEdit"
+                class="cursor-pointer"
+              />
+            </div>
+            <div v-if="item.serviceCode" class="row items-center q-gutter-sm q-mt-xs q-pl-xs">
+              <q-input
+                v-model.number="item.quantity"
+                label="數量"
+                outlined
+                dense
+                type="number"
+                style="width: 90px"
+                :disable="formDialog.isEdit"
+                :rules="[(val) => val > 0 || '至少1']"
+              />
+              <div class="col text-teal-8 text-weight-medium text-right">
+                小計：NT$ {{ (item.unitPrice * item.quantity).toLocaleString() }}
+              </div>
+            </div>
+          </div>
+          <div v-if="!formDialog.isEdit && serviceSubtotal > 0" class="text-right text-weight-bold text-teal-8 q-mt-xs">
+            服務小計：NT$ {{ serviceSubtotal.toLocaleString() }}
+          </div>
+        </div>
+
+        <!-- 急件設定 -->
+        <div>
+          <q-toggle
+            v-model="form.isUrgent"
+            label="急件"
+            color="red-6"
+            icon="bolt"
           />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
+          <AppDateInput
+            v-if="form.isUrgent"
+            v-model="form.urgentDeadline"
+            label="急件截止日"
+            prepend-icon="event"
+            class="q-mt-sm"
+            :rules="[(val) => !form.isUrgent || !!val || '急件必須填截止日期']"
+          />
+        </div>
+
+        <!-- 急件費提示 -->
+        <q-banner
+          v-if="form.isUrgent && !formDialog.isEdit"
+          dense
+          rounded
+          class="bg-red-1 text-red-8"
+        >
+          <template v-slot:avatar>
+            <q-icon name="bolt" color="red-6" />
+          </template>
+          急件費（50%）：NT$ {{ urgentFeeAmount.toLocaleString() }}
+          &nbsp;|&nbsp;
+          <strong>總計：NT$ {{ (serviceSubtotal + urgentFeeAmount).toLocaleString() }}</strong>
+        </q-banner>
+
+        <!-- 預計取件日 -->
+        <AppDateInput
+          v-model="form.estimatedPickupDate"
+          label="預計取件日期"
+          prepend-icon="event_available"
+          :rules="[(val) => !!val || '請填寫預計取件日期']"
+        />
+
+        <!-- 存放位置 -->
+        <q-input
+          v-model="form.storageLocation"
+          label="存放位置（如：A-3-2，多個用逗號分隔）"
+          outlined
+          dense
+        >
+          <template v-slot:prepend>
+            <q-icon name="location_on" />
+          </template>
+        </q-input>
+
+        <!-- 備註 -->
+        <q-input
+          v-model="form.note"
+          label="備註 / 鞋物狀況"
+          outlined
+          dense
+          type="textarea"
+          rows="2"
+        >
+          <template v-slot:prepend>
+            <q-icon name="notes" />
+          </template>
+        </q-input>
+      </q-form>
+    </AppFormDialog>
+
+    <!-- 新增會員 Dialog（從訂單表單呼叫） -->
+    <CustomerFormDialog
+      v-model="customerFormOpen"
+      :initial-phone="form.customerPhone"
+      @created="onCustomerCreated"
+    />
 
     <!-- 詳情 Dialog -->
     <q-dialog v-model="detailDialog.open" maximized>
@@ -717,6 +693,10 @@
 <script setup lang="ts">
 import { reactive, ref, computed, onMounted } from 'vue';
 import { useQuasar } from 'quasar';
+import AppFormDialog from '../components/AppFormDialog.vue';
+import AppDateInput from '../components/AppDateInput.vue';
+import CustomerFormDialog from '../components/CustomerFormDialog.vue';
+import { useOrderNavStore } from '../stores/orderNavStore';
 import { listOrders, createOrder, updateOrder, updateOrderStatus } from '../api/order/order';
 import { searchCustomers } from '../api/customer/customer';
 import { listServices } from '../api/service/service';
@@ -724,6 +704,7 @@ import type { OrderResult, OrderStatus } from '../api/order/types';
 import type { ServiceTypeResult } from '../api/service/types';
 
 const $q = useQuasar();
+const orderNavStore = useOrderNavStore();
 
 // ── 篩選 ──────────────────────────────────────────────────
 const filters = reactive({
@@ -749,15 +730,6 @@ const urgentOptions = [
 const orders = ref<OrderResult[]>([]);
 const pagination = reactive({ page: 1, size: 20, totalPages: 0, totalElements: 0 });
 const loading = ref(false);
-
-const pendingCount = computed(() => orders.value.filter((o) => o.status === 'PENDING').length);
-const urgentCount = computed(
-  () =>
-    orders.value.filter(
-      (o) => o.isUrgent && o.status !== 'PICKED_UP' && o.status !== 'CANCELLED'
-    ).length
-);
-const readyCount = computed(() => orders.value.filter((o) => o.status === 'READY').length);
 
 const loadOrders = async () => {
   try {
@@ -813,6 +785,8 @@ const loadServices = async () => {
 const formRef = ref();
 const submitting = ref(false);
 const lookingUp = ref(false);
+const customerNotFound = ref(false);
+const customerFormOpen = ref(false);
 
 const formDialog = reactive({
   open: false,
@@ -852,12 +826,14 @@ const resetForm = () => {
   form.estimatedPickupDate = '';
   form.storageLocation = '';
   form.note = '';
+  customerNotFound.value = false;
 };
 
 const lookupCustomer = async () => {
   if (!form.customerPhone) return;
   try {
     lookingUp.value = true;
+    customerNotFound.value = false;
     const results = await searchCustomers(form.customerPhone);
     if (results.length > 0) {
       form.customerId = results[0].id;
@@ -866,13 +842,20 @@ const lookupCustomer = async () => {
     } else {
       form.customerId = null;
       form.customerName = '';
-      $q.notify({ type: 'warning', message: '查無此電話的會員，請先至會員管理建立' });
+      customerNotFound.value = true;
     }
   } catch {
     $q.notify({ type: 'negative', message: '查詢顧客失敗' });
   } finally {
     lookingUp.value = false;
   }
+};
+
+const onCustomerCreated = (customer: { id: number; name: string; phone: string }) => {
+  form.customerId = customer.id;
+  form.customerName = customer.name;
+  form.customerPhone = customer.phone;
+  customerNotFound.value = false;
 };
 
 const addServiceItem = () => {
@@ -1066,7 +1049,14 @@ function formatDate(dateStr: string): string {
   return `${d.getFullYear()}/${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getDate()).padStart(2, '0')}`;
 }
 
-onMounted(() => Promise.all([loadServices(), loadOrders()]));
+onMounted(async () => {
+  const pendingId = orderNavStore.consumePendingOrderId();
+  await Promise.all([loadServices(), loadOrders()]);
+  if (pendingId) {
+    const target = orders.value.find((o) => o.id === pendingId);
+    if (target) openDetailDialog(target);
+  }
+});
 </script>
 
 <style scoped>
@@ -1092,5 +1082,20 @@ onMounted(() => Promise.all([loadServices(), loadOrders()]));
 .stat-mini-card {
   border: 1px solid rgba(0, 150, 136, 0.2);
   border-radius: 8px;
+}
+
+.customer-not-found {
+  min-height: 40px;
+  padding: 4px 8px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.service-item-block {
+  border: 1px solid rgba(0, 150, 136, 0.15);
+  border-radius: 8px;
+  padding: 8px 10px;
+  background: rgba(0, 150, 136, 0.02);
 }
 </style>

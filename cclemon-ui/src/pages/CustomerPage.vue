@@ -204,90 +204,12 @@
     </q-card>
 
     <!-- 新增 / 編輯 Dialog -->
-    <q-dialog v-model="formDialog.open" persistent>
-      <q-card style="width: 95vw; max-width: 560px">
-        <q-card-section class="card-header-accent">
-          <div class="row items-center">
-            <q-icon
-              :name="formDialog.isEdit ? 'edit' : 'person_add'"
-              color="teal-8"
-              size="sm"
-              class="q-mr-sm"
-            />
-            <span class="text-h6">{{ formDialog.isEdit ? '編輯會員資料' : '新增會員' }}</span>
-          </div>
-        </q-card-section>
-        <q-card-section>
-          <q-form ref="formRef" @submit="submitForm" class="q-gutter-md">
-            <q-input
-              v-model="form.name"
-              label="姓名"
-              outlined
-              dense
-              :rules="[(val) => !!val || '請輸入姓名']"
-            >
-              <template v-slot:prepend>
-                <q-icon name="person" />
-              </template>
-            </q-input>
-
-            <q-input
-              v-model="form.phone"
-              label="手機號碼"
-              outlined
-              dense
-              :rules="[
-                (val) => !!val || '請輸入手機號碼',
-                (val) => /^[0-9]{8,15}$/.test(val) || '請輸入有效的手機號碼',
-              ]"
-            >
-              <template v-slot:prepend>
-                <q-icon name="phone" />
-              </template>
-            </q-input>
-
-            <q-input
-              v-model="form.email"
-              label="電子郵件 (選填)"
-              outlined
-              dense
-              type="email"
-              :rules="[
-                (val) => !val || /.+@.+\..+/.test(val) || '請輸入有效的電子郵件',
-              ]"
-            >
-              <template v-slot:prepend>
-                <q-icon name="mail" />
-              </template>
-            </q-input>
-
-            <q-input
-              v-model="form.note"
-              label="特殊偏好 / 注意事項 (選填)"
-              outlined
-              dense
-              type="textarea"
-              rows="3"
-            >
-              <template v-slot:prepend>
-                <q-icon name="notes" />
-              </template>
-            </q-input>
-          </q-form>
-        </q-card-section>
-        <q-card-actions align="right" class="q-px-md q-pb-md">
-          <q-btn flat label="取消" color="grey-7" v-close-popup class="cursor-pointer" />
-          <q-btn
-            unelevated
-            :label="formDialog.isEdit ? '儲存' : '建立'"
-            color="teal-8"
-            @click="submitForm"
-            :loading="submitting"
-            class="cursor-pointer"
-          />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
+    <CustomerFormDialog
+      v-model="formDialog.open"
+      :edit-customer="formDialog.editCustomer"
+      @created="loadCustomers"
+      @updated="loadCustomers"
+    />
 
     <!-- 會員詳情 Dialog -->
     <q-dialog v-model="detailDialog.open" maximized>
@@ -513,10 +435,9 @@
 <script setup lang="ts">
 import { reactive, ref, computed, onMounted } from 'vue';
 import { useQuasar } from 'quasar';
+import CustomerFormDialog from '../components/CustomerFormDialog.vue';
 import {
   listCustomers,
-  createCustomer,
-  updateCustomer,
   getCustomerOrders,
 } from '../api/customer/customer';
 import type {
@@ -571,77 +492,19 @@ const loadCustomers = async () => {
 };
 
 // ── 新增 / 編輯 Dialog ─────────────────────────────────
-const formRef = ref();
-const submitting = ref(false);
-
 const formDialog = reactive({
   open: false,
-  isEdit: false,
-  editId: null as number | null,
+  editCustomer: null as CustomerResult | null,
 });
-
-const form = reactive({
-  name: '',
-  phone: '',
-  email: '',
-  note: '',
-});
-
-const resetForm = () => {
-  form.name = '';
-  form.phone = '';
-  form.email = '';
-  form.note = '';
-};
 
 const openCreateDialog = () => {
-  resetForm();
-  formDialog.isEdit = false;
-  formDialog.editId = null;
+  formDialog.editCustomer = null;
   formDialog.open = true;
 };
 
 const openEditDialog = (customer: CustomerResult) => {
-  form.name = customer.name;
-  form.phone = customer.phone;
-  form.email = customer.email ?? '';
-  form.note = customer.note ?? '';
-  formDialog.isEdit = true;
-  formDialog.editId = customer.id;
+  formDialog.editCustomer = customer;
   formDialog.open = true;
-};
-
-const submitForm = async () => {
-  const valid = await formRef.value?.validate();
-  if (!valid) return;
-
-  try {
-    submitting.value = true;
-    const payload = {
-      name: form.name,
-      phone: form.phone,
-      email: form.email || undefined,
-      note: form.note || undefined,
-    };
-
-    if (formDialog.isEdit && formDialog.editId) {
-      await updateCustomer(formDialog.editId, payload);
-      $q.notify({ type: 'positive', message: '會員資料已更新！' });
-    } else {
-      await createCustomer(payload);
-      $q.notify({ type: 'positive', message: '會員建立成功！' });
-    }
-
-    formDialog.open = false;
-    await loadCustomers();
-  } catch {
-    $q.notify({
-      type: 'negative',
-      message: formDialog.isEdit ? '更新失敗，請稍後再試' : '建立失敗，電話號碼可能已存在',
-    });
-  } finally {
-    submitting.value = false;
-  }
 };
 
 // ── 詳情 Dialog ────────────────────────────────────────
@@ -671,6 +534,7 @@ const openEditFromDetail = () => {
   detailDialog.open = false;
   openEditDialog(detailDialog.customer);
 };
+
 
 // ── 輔助函式 ───────────────────────────────────────────
 const TIER_THRESHOLDS = { STANDARD: 0, SILVER: 3000, GOLD: 10000 };

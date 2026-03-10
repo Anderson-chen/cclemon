@@ -43,56 +43,29 @@
         <div class="row items-center q-gutter-md wrap">
           <!-- 日報表：單日選擇 -->
           <template v-if="tab === 'daily'">
-            <q-input
+            <AppDateInput
               v-model="selectedDate"
               label="選擇日期"
-              outlined
-              dense
-              style="min-width: 180px"
-              readonly
-            >
-              <template v-slot:prepend>
-                <q-icon name="event" />
-              </template>
-              <template v-slot:append>
-                <q-icon name="calendar_today" class="cursor-pointer">
-                  <q-popup-proxy>
-                    <q-date v-model="selectedDate" mask="YYYY-MM-DD" @update:model-value="loadReport" />
-                  </q-popup-proxy>
-                </q-icon>
-              </template>
-            </q-input>
+              prepend-icon="event"
+              input-style="min-width: 180px"
+              @update:model-value="loadReport"
+            />
             <q-btn flat dense label="今日" color="teal-7" @click="setToday" class="cursor-pointer" />
             <q-btn flat dense label="昨日" color="grey-7" @click="setYesterday" class="cursor-pointer" />
           </template>
 
           <!-- 月報表：年月選擇 -->
           <template v-else>
-            <q-input
+            <AppDateInput
               v-model="selectedMonth"
               label="選擇月份"
-              outlined
-              dense
-              style="min-width: 180px"
-              readonly
-            >
-              <template v-slot:prepend>
-                <q-icon name="calendar_month" />
-              </template>
-              <template v-slot:append>
-                <q-icon name="calendar_today" class="cursor-pointer">
-                  <q-popup-proxy>
-                    <q-date
-                      v-model="selectedMonth"
-                      mask="YYYY-MM"
-                      default-view="Months"
-                      emit-immediately
-                      @update:model-value="loadReport"
-                    />
-                  </q-popup-proxy>
-                </q-icon>
-              </template>
-            </q-input>
+              prepend-icon="calendar_month"
+              mask="YYYY-MM"
+              default-view="Months"
+              :emit-immediately="true"
+              input-style="min-width: 180px"
+              @update:model-value="loadReport"
+            />
             <q-btn flat dense label="本月" color="teal-7" @click="setThisMonth" class="cursor-pointer" />
             <q-btn flat dense label="上月" color="grey-7" @click="setLastMonth" class="cursor-pointer" />
           </template>
@@ -290,6 +263,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
 import { useQuasar } from 'quasar';
+import AppDateInput from '../components/AppDateInput.vue';
 import { listOrders } from '../api/order/order';
 import type { OrderResult } from '../api/order/types';
 
@@ -598,6 +572,7 @@ onMounted(loadReport);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
   transform: translateY(-1px);
 }
+
 
 .kpi-inner {
   padding: 14px 16px;

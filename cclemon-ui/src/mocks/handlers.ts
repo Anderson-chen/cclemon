@@ -160,17 +160,6 @@ export const handlers = [
     return HttpResponse.json(orders);
   }),
 
-  // ── GET /api/v1/customers/:id （單筆）─────────────────
-  http.get(`${BASE}/:id`, async ({ params }) => {
-    await delay(DELAY);
-    const id = Number(params.id);
-    const customer = mockCustomers.find((c) => c.id === id);
-    if (!customer) {
-      return HttpResponse.json({ message: '會員不存在' }, { status: 404 });
-    }
-    return HttpResponse.json(customer);
-  }),
-
   // ── GET /api/v1/customers/search （關鍵字搜尋）─────────
   http.get(`${BASE}/search`, async ({ request }) => {
     await delay(DELAY);
@@ -182,6 +171,17 @@ export const handlers = [
         c.phone.includes(keyword)
     );
     return HttpResponse.json(results);
+  }),
+
+  // ── GET /api/v1/customers/:id （單筆）─────────────────
+  http.get(`${BASE}/:id`, async ({ params }) => {
+    await delay(DELAY);
+    const id = Number(params.id);
+    const customer = mockCustomers.find((c) => c.id === id);
+    if (!customer) {
+      return HttpResponse.json({ message: '會員不存在' }, { status: 404 });
+    }
+    return HttpResponse.json(customer);
   }),
 
   // ── GET /api/v1/orders （訂單列表 + 分頁 + 篩選）────────

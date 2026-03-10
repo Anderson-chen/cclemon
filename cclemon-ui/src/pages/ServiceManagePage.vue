@@ -101,7 +101,7 @@
                   round
                   :icon="svc.isActive ? 'toggle_on' : 'toggle_off'"
                   :color="svc.isActive ? 'orange-7' : 'grey-6'"
-                  size="sm"
+                  size="lg"
                   @click="toggleActive(svc)"
                 >
                   <q-tooltip>{{ svc.isActive ? '停用此服務' : '重新啟用' }}</q-tooltip>
@@ -119,127 +119,59 @@
       </q-card-section>
     </q-card>
 
-    <!-- 新增 Dialog -->
-    <q-dialog v-model="addDialog.open" persistent>
-      <q-card style="width: 95vw; max-width: 480px">
-        <q-card-section class="bg-teal-8 text-white">
-          <div class="text-h6">
-            <q-icon name="add_circle" class="q-mr-sm" />新增服務項目
-          </div>
-        </q-card-section>
-
-        <q-card-section class="q-pt-md">
-          <q-form ref="addFormRef" class="q-gutter-md">
-            <q-input
-              v-model="addForm.code"
-              label="服務代碼 *"
-              outlined
-              dense
-              hint="格式建議：SVC-XXXX，全系統唯一"
-              :rules="[(v) => !!v || '服務代碼為必填']"
-            />
-            <q-input
-              v-model="addForm.name"
-              label="服務名稱 *"
-              outlined
-              dense
-              :rules="[(v) => !!v || '服務名稱為必填']"
-            />
-            <q-input
-              v-model.number="addForm.defaultPrice"
-              label="售價 (NT$) *"
-              type="number"
-              outlined
-              dense
-              :rules="[(v) => v > 0 || '售價須大於 0']"
-            />
-            <q-input
-              v-model="addForm.urgentFeeRateInput"
-              label="急件費率 (%) — 選填"
-              type="number"
-              outlined
-              dense
-              hint="留空表示使用全域費率。例：50 代表 50%"
-            />
-          </q-form>
-        </q-card-section>
-
-        <q-card-actions align="right" class="q-pa-md">
-          <q-btn flat label="取消" @click="addDialog.open = false" />
-          <q-btn
-            unelevated
-            color="teal-8"
-            label="新增"
-            :loading="addDialog.submitting"
-            @click="submitAdd"
-          />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
-
-    <!-- 編輯 Dialog -->
-    <q-dialog v-model="editDialog.open" persistent>
-      <q-card style="width: 95vw; max-width: 480px">
-        <q-card-section class="bg-teal-8 text-white">
-          <div class="text-h6">
-            <q-icon name="edit" class="q-mr-sm" />編輯服務項目
-          </div>
-        </q-card-section>
-
-        <q-card-section class="q-pt-md">
-          <q-form ref="editFormRef" class="q-gutter-md">
-            <q-input
-              :model-value="editDialog.code"
-              label="服務代碼"
-              outlined
-              dense
-              readonly
-              disable
-            />
-            <q-input
-              v-model="editForm.name"
-              label="服務名稱 *"
-              outlined
-              dense
-              :rules="[(v) => !!v || '服務名稱為必填']"
-            />
-            <q-input
-              v-model.number="editForm.defaultPrice"
-              label="售價 (NT$) *"
-              type="number"
-              outlined
-              dense
-              :rules="[(v) => v > 0 || '售價須大於 0']"
-            />
-            <q-input
-              v-model="editForm.urgentFeeRateInput"
-              label="急件費率 (%) — 選填"
-              type="number"
-              outlined
-              dense
-              hint="留空表示使用全域費率。例：50 代表 50%"
-            />
-          </q-form>
-        </q-card-section>
-
-        <q-card-actions align="right" class="q-pa-md">
-          <q-btn flat label="取消" @click="editDialog.open = false" />
-          <q-btn
-            unelevated
-            color="teal-8"
-            label="儲存"
-            :loading="editDialog.submitting"
-            @click="submitEdit"
-          />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
+    <!-- 新增 / 編輯 Dialog -->
+    <AppFormDialog
+      v-model="formDialog.open"
+      :title="formDialog.isEdit ? '編輯服務項目' : '新增服務項目'"
+      :icon="formDialog.isEdit ? 'edit' : 'add_circle'"
+      :is-edit="formDialog.isEdit"
+      :submitting="formDialog.submitting"
+      max-width="480px"
+      @submit="submitForm"
+    >
+      <q-form ref="formRef" class="q-gutter-md">
+        <q-input
+          v-model="form.code"
+          label="服務代碼 *"
+          outlined
+          dense
+          :readonly="formDialog.isEdit"
+          :disable="formDialog.isEdit"
+          hint="格式建議：SVC-XXXX，全系統唯一"
+          :rules="[(v) => !!v || '服務代碼為必填']"
+        />
+        <q-input
+          v-model="form.name"
+          label="服務名稱 *"
+          outlined
+          dense
+          :rules="[(v) => !!v || '服務名稱為必填']"
+        />
+        <q-input
+          v-model.number="form.defaultPrice"
+          label="售價 (NT$) *"
+          type="number"
+          outlined
+          dense
+          :rules="[(v) => v > 0 || '售價須大於 0']"
+        />
+        <q-input
+          v-model="form.urgentFeeRateInput"
+          label="急件費率 (%) — 選填"
+          type="number"
+          outlined
+          dense
+          hint="留空表示使用全域費率。例：50 代表 50%"
+        />
+      </q-form>
+    </AppFormDialog>
   </q-page>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { useQuasar } from 'quasar';
+import AppFormDialog from '../components/AppFormDialog.vue';
 import { listServices, createService, updateService, updateGlobalUrgentFeeRate } from '../api/service/service';
 import type { ServiceTypeResult } from '../api/service/types';
 
@@ -278,83 +210,67 @@ const saveGlobalRate = async () => {
   }
 };
 
-// ── 新增 Dialog ───────────────────────────────────────────
-const addFormRef = ref();
-const addDialog = ref({ open: false, submitting: false });
-const addForm = ref({ code: '', name: '', defaultPrice: 0, urgentFeeRateInput: '' });
+// ── 新增 / 編輯 Dialog ────────────────────────────────────
+const formRef = ref();
+const formDialog = ref({ open: false, isEdit: false, submitting: false, editCode: '' });
+const form = ref({ code: '', name: '', defaultPrice: 0, urgentFeeRateInput: '' });
 
 const openAddDialog = () => {
-  addForm.value = { code: '', name: '', defaultPrice: 0, urgentFeeRateInput: '' };
-  addDialog.value.open = true;
+  form.value = { code: '', name: '', defaultPrice: 0, urgentFeeRateInput: '' };
+  formDialog.value.isEdit = false;
+  formDialog.value.editCode = '';
+  formDialog.value.open = true;
 };
-
-const submitAdd = async () => {
-  const valid = await addFormRef.value?.validate();
-  if (!valid) return;
-
-  try {
-    addDialog.value.submitting = true;
-    const rateStr = addForm.value.urgentFeeRateInput;
-    const urgentFeeRate = rateStr !== '' && rateStr !== null
-      ? Number(rateStr) / 100
-      : null;
-
-    await createService({
-      code: addForm.value.code,
-      name: addForm.value.name,
-      defaultPrice: addForm.value.defaultPrice,
-      urgentFeeRate,
-    });
-
-    $q.notify({ type: 'positive', message: `服務項目「${addForm.value.name}」已新增` });
-    addDialog.value.open = false;
-    await loadServices();
-  } catch {
-    $q.notify({ type: 'negative', message: '新增失敗，服務代碼可能重複或請求有誤' });
-  } finally {
-    addDialog.value.submitting = false;
-  }
-};
-
-// ── 編輯 Dialog ───────────────────────────────────────────
-const editFormRef = ref();
-const editDialog = ref({ open: false, submitting: false, code: '' });
-const editForm = ref({ name: '', defaultPrice: 0, urgentFeeRateInput: '' });
 
 const openEditDialog = (svc: ServiceTypeResult) => {
-  editDialog.value.code = svc.code;
-  editForm.value = {
+  form.value = {
+    code: svc.code,
     name: svc.name,
     defaultPrice: svc.defaultPrice,
     urgentFeeRateInput: svc.urgentFeeRate !== null ? String(svc.urgentFeeRate * 100) : '',
   };
-  editDialog.value.open = true;
+  formDialog.value.isEdit = true;
+  formDialog.value.editCode = svc.code;
+  formDialog.value.open = true;
 };
 
-const submitEdit = async () => {
-  const valid = await editFormRef.value?.validate();
+const submitForm = async () => {
+  const valid = await formRef.value?.validate();
   if (!valid) return;
 
+  const rateStr = form.value.urgentFeeRateInput;
+  const urgentFeeRate =
+    rateStr !== '' && rateStr !== null ? Number(rateStr) / 100 : null;
+
   try {
-    editDialog.value.submitting = true;
-    const rateStr = editForm.value.urgentFeeRateInput;
-    const urgentFeeRate = rateStr !== '' && rateStr !== null
-      ? Number(rateStr) / 100
-      : null;
-
-    await updateService(editDialog.value.code, {
-      name: editForm.value.name,
-      defaultPrice: editForm.value.defaultPrice,
-      urgentFeeRate,
-    });
-
-    $q.notify({ type: 'positive', message: '服務項目已更新' });
-    editDialog.value.open = false;
+    formDialog.value.submitting = true;
+    if (formDialog.value.isEdit) {
+      await updateService(formDialog.value.editCode, {
+        name: form.value.name,
+        defaultPrice: form.value.defaultPrice,
+        urgentFeeRate,
+      });
+      $q.notify({ type: 'positive', message: '服務項目已更新' });
+    } else {
+      await createService({
+        code: form.value.code,
+        name: form.value.name,
+        defaultPrice: form.value.defaultPrice,
+        urgentFeeRate,
+      });
+      $q.notify({ type: 'positive', message: `服務項目「${form.value.name}」已新增` });
+    }
+    formDialog.value.open = false;
     await loadServices();
   } catch {
-    $q.notify({ type: 'negative', message: '更新失敗，請稍後再試' });
+    $q.notify({
+      type: 'negative',
+      message: formDialog.value.isEdit
+        ? '更新失敗，請稍後再試'
+        : '新增失敗，服務代碼可能重複或請求有誤',
+    });
   } finally {
-    editDialog.value.submitting = false;
+    formDialog.value.submitting = false;
   }
 };
 

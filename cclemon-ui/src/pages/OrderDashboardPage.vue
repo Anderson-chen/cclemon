@@ -119,7 +119,7 @@
                 :key="order.id"
                 class="urgent-item cursor-pointer"
                 clickable
-                @click="goToOrders()"
+                @click="goToOrder(order.id)"
               >
                 <q-item-section avatar>
                   <q-avatar
@@ -174,7 +174,7 @@
             :key="order.id"
             class="recent-item cursor-pointer"
             clickable
-            @click="goToOrders()"
+            @click="goToOrder(order.id)"
           >
             <q-item-section avatar>
               <q-avatar
@@ -229,9 +229,11 @@ import { useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
 import { listOrders } from '../api/order/order';
 import type { OrderResult } from '../api/order/types';
+import { useOrderNavStore } from '../stores/orderNavStore';
 
 const $q = useQuasar();
 const router = useRouter();
+const orderNavStore = useOrderNavStore();
 
 // ── 資料 ──────────────────────────────────────────────────
 const orders = ref<OrderResult[]>([]);
@@ -386,6 +388,11 @@ function goToOrders() {
   router.push('/orders');
 }
 
+function goToOrder(orderId: number) {
+  orderNavStore.setPendingOrderId(orderId);
+  router.push('/orders');
+}
+
 // ── 格式化 ────────────────────────────────────────────────
 function formatDate(dateStr: string): string {
   const d = new Date(dateStr);
@@ -428,6 +435,7 @@ onMounted(loadOrders);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
   transform: translateY(-1px);
 }
+
 
 .kpi-inner {
   padding: 16px;
