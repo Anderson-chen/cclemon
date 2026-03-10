@@ -39,15 +39,11 @@
             </template>
           </q-input>
 
-          <q-select
+          <AppSelect
             v-model="filters.tierCode"
             :options="tierOptions"
             label="會員等級"
-            outlined
-            dense
             clearable
-            emit-value
-            map-options
             style="min-width: 150px"
           />
 
@@ -435,6 +431,7 @@
 <script setup lang="ts">
 import { reactive, ref, computed, onMounted } from 'vue';
 import { useQuasar } from 'quasar';
+import AppSelect from '../components/AppSelect.vue';
 import CustomerFormDialog from '../components/CustomerFormDialog.vue';
 import {
   listCustomers,

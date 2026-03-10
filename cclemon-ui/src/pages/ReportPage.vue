@@ -91,16 +91,16 @@
 
     <template v-else>
       <!-- KPI 卡片 -->
-      <div class="row q-gutter-md q-mb-lg">
+      <div class="kpi-grid q-mb-lg">
         <div
           v-for="kpi in kpiCards"
           :key="kpi.label"
-          class="kpi-card col"
+          :class="['kpi-card', { 'kpi-card--wide': kpi.featured }]"
           :style="`--accent: ${kpi.accentColor}`"
         >
-          <div class="kpi-inner">
+          <div :class="['kpi-inner', { 'kpi-inner--wide': kpi.featured }]">
             <div class="kpi-icon-wrap" :style="`background: ${kpi.iconBg}`">
-              <q-icon :name="kpi.icon" size="1.4em" :style="`color: ${kpi.accentColor}`" />
+              <q-icon :name="kpi.icon" :size="kpi.featured ? '1.8em' : '1.4em'" :style="`color: ${kpi.accentColor}`" />
             </div>
             <div class="kpi-body">
               <div class="kpi-value">{{ kpi.value }}</div>
@@ -367,18 +367,19 @@ const urgentCount = computed(
 
 const kpiCards = computed(() => [
   {
-    label: '訂單數',
-    value: reportOrders.value.length,
-    icon: 'receipt_long',
-    accentColor: '#0f766e',
-    iconBg: '#ccfbf1',
-  },
-  {
     label: '總營收',
     value: `NT$ ${totalRevenue.value.toLocaleString()}`,
     icon: 'payments',
     accentColor: '#065f46',
     iconBg: '#d1fae5',
+    featured: true,
+  },
+  {
+    label: '訂單數',
+    value: reportOrders.value.length,
+    icon: 'receipt_long',
+    accentColor: '#0f766e',
+    iconBg: '#ccfbf1',
   },
   {
     label: '急件費收入',
@@ -393,6 +394,7 @@ const kpiCards = computed(() => [
     icon: 'calculate',
     accentColor: '#1d4ed8',
     iconBg: '#dbeafe',
+    featured: true,
   },
   {
     label: '急件筆數',
@@ -400,6 +402,7 @@ const kpiCards = computed(() => [
     icon: 'priority_high',
     accentColor: '#7c3aed',
     iconBg: '#ede9fe',
+    featured: true,
   },
 ]);
 
@@ -544,6 +547,7 @@ onMounted(loadReport);
 .report-page {
   max-width: 1200px;
   margin: 0 auto;
+  overflow-x: hidden;
 }
 
 /* 標題圖示 */
@@ -558,9 +562,21 @@ onMounted(loadReport);
   box-shadow: 0 2px 8px rgba(15, 118, 110, 0.3);
 }
 
+/* KPI Grid */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+@media (max-width: 1023px) {
+  .kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 /* KPI 卡片 */
 .kpi-card {
-  min-width: 130px;
   background: white;
   border-radius: 12px;
   border-top: 3px solid var(--accent);
@@ -568,17 +584,25 @@ onMounted(loadReport);
   transition: box-shadow 0.2s, transform 0.2s;
 }
 
+.kpi-card--wide {
+  grid-column: span 2;
+}
+
 .kpi-card:hover {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
   transform: translateY(-1px);
 }
-
 
 .kpi-inner {
   padding: 14px 16px;
   display: flex;
   align-items: center;
   gap: 12px;
+}
+
+.kpi-inner--wide {
+  padding: 20px 24px;
+  gap: 18px;
 }
 
 .kpi-icon-wrap {
@@ -591,11 +615,21 @@ onMounted(loadReport);
   flex-shrink: 0;
 }
 
+.kpi-card--wide .kpi-icon-wrap {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+}
+
 .kpi-value {
   font-size: 1.35rem;
   font-weight: 700;
   color: #1e293b;
   line-height: 1.2;
+}
+
+.kpi-card--wide .kpi-value {
+  font-size: 1.9rem;
 }
 
 .kpi-label {

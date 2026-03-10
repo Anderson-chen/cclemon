@@ -295,7 +295,7 @@ export const mockOrderList: OrderResult[] = [
     storageLocations: [],
     totalAmount: 600,
     urgentFee: 0,
-    estimatedPickupDate: '2026-03-12',
+    estimatedPickupDate: daysFromNow(1),
     note: 'LV 帆布包，請特別注意五金配件',
     createTime: '2026-03-02T16:00:00',
   },
@@ -307,15 +307,71 @@ export const mockOrderList: OrderResult[] = [
     customerPhone: '0945678901',
     status: 'PENDING',
     isUrgent: true,
-    urgentDeadline: '2026-03-09',
+    urgentDeadline: daysFromNow(1),
     items: [
       { id: 6, serviceCode: 'SVC-WASH', serviceName: '洗鞋', quantity: 3, unitPrice: 350, subtotal: 1050 },
     ],
     storageLocations: ['C-3-2'],
     totalAmount: 1575,
     urgentFee: 525,
-    estimatedPickupDate: '2026-03-09',
+    estimatedPickupDate: daysFromNow(1),
     createTime: '2026-03-03T10:00:00',
+  },
+  {
+    id: 1008,
+    orderNo: 'SR-20260309-0001',
+    customerId: 5,
+    customerName: '李淑芬',
+    customerPhone: '0956789012',
+    status: 'PENDING',
+    isUrgent: false,
+    items: [
+      { id: 10, serviceCode: 'SVC-WASH', serviceName: '洗鞋', quantity: 1, unitPrice: 350, subtotal: 350 },
+      { id: 11, serviceCode: 'SVC-COATING', serviceName: '鍍膜', quantity: 1, unitPrice: 500, subtotal: 500 },
+    ],
+    storageLocations: ['A-3-2'],
+    totalAmount: 850,
+    urgentFee: 0,
+    estimatedPickupDate: daysFromNow(1),
+    note: 'Adidas Ultraboost，鞋底特別注意',
+    createTime: '2026-03-09T10:00:00',
+  },
+  {
+    id: 1009,
+    orderNo: 'SR-20260309-0002',
+    customerId: 7,
+    customerName: '周雅文',
+    customerPhone: '0978901234',
+    status: 'PENDING',
+    isUrgent: true,
+    urgentDeadline: daysFromNow(1),
+    items: [
+      { id: 12, serviceCode: 'SVC-RECOLOR', serviceName: '補色', quantity: 1, unitPrice: 800, subtotal: 800 },
+    ],
+    storageLocations: ['B-2-4'],
+    totalAmount: 1120,
+    urgentFee: 320,
+    estimatedPickupDate: daysFromNow(1),
+    note: 'Converse 白鞋，鞋頭補白',
+    createTime: '2026-03-09T14:00:00',
+  },
+  {
+    id: 1010,
+    orderNo: 'SR-20260310-0001',
+    customerId: 8,
+    customerName: '劉宗翰',
+    customerPhone: '0989012345',
+    status: 'PENDING',
+    isUrgent: false,
+    items: [
+      { id: 13, serviceCode: 'SVC-BAG', serviceName: '洗包', quantity: 1, unitPrice: 600, subtotal: 600 },
+      { id: 14, serviceCode: 'SVC-WASH', serviceName: '洗鞋', quantity: 2, unitPrice: 350, subtotal: 700 },
+    ],
+    storageLocations: ['C-1-1'],
+    totalAmount: 1300,
+    urgentFee: 0,
+    estimatedPickupDate: daysFromNow(1),
+    createTime: '2026-03-10T09:30:00',
   },
   {
     id: 1005,
@@ -371,6 +427,13 @@ export const mockOrderList: OrderResult[] = [
     createTime: '2026-03-05T13:00:00',
   },
 ];
+
+// ── 動態日期輔助 ─────────────────────────────────────────
+function daysFromNow(n: number): string {
+  const d = new Date();
+  d.setDate(d.getDate() + n);
+  return d.toISOString().slice(0, 10);
+}
 
 let nextOrderId = 2000;
 

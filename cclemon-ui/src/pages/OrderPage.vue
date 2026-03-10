@@ -39,29 +39,42 @@
             </template>
           </q-input>
 
-          <q-select
+          <AppSelect
             v-model="filters.status"
             :options="statusOptions"
             label="狀態"
-            outlined
-            dense
             clearable
-            emit-value
-            map-options
             style="min-width: 130px"
           />
 
-          <q-select
+          <AppSelect
             v-model="filters.isUrgent"
             :options="urgentOptions"
             label="急件"
-            outlined
-            dense
             clearable
-            emit-value
-            map-options
             style="min-width: 100px"
           />
+
+          <AppSelect
+            v-model="filters.sortField"
+            :options="sortOptions"
+            label="排序欄位"
+            prepend-icon="sort"
+            style="min-width: 140px"
+            @update:model-value="loadOrders"
+          />
+
+          <q-btn
+            unelevated
+            dense
+            outline
+            color="teal-8"
+            :icon="filters.sortDir === 'desc' ? 'arrow_downward' : 'arrow_upward'"
+            class="q-px-sm"
+            @click="toggleSortDir"
+          >
+            <q-tooltip>{{ filters.sortDir === 'desc' ? '降冪排序 (從大到小/從新到舊)' : '升冪排序 (從小到大/從舊到新)' }}</q-tooltip>
+          </q-btn>
 
           <q-btn
             unelevated
@@ -109,94 +122,164 @@
         <div class="text-caption text-grey-4">點擊右上角「新增訂單」開始開單</div>
       </q-card-section>
 
-      <!-- 列表 -->
-      <q-list v-else separator>
-        <q-item
-          v-for="order in orders"
-          :key="order.id"
-          class="order-item cursor-pointer"
-          clickable
-          @click="openDetailDialog(order)"
-        >
-          <q-item-section avatar>
-            <q-avatar
-              :color="statusColor(order.status)"
-              text-color="white"
-              size="44px"
-              :icon="statusIcon(order.status)"
+      <!-- 列表 (Table) -->
+      <q-table
+        v-else
+        class="order-table no-shadow"
+        :rows="orders"
+        :columns="columns"
+        row-key="id"
+        :loading="loading"
+        :pagination="tablePagination"
+        @request="onRequest"
+        :grid="$q.screen.lt.md"
+        card-class="bg-grey-1"
+        flat
+        bordered
+        dense
+      >
+        <!-- 狀態欄位 -->
+        <template v-slot:body-cell-status="props">
+          <q-td :props="props">
+            <q-badge v-if="props.row.isUrgent" color="red-6" label="急件" class="q-mr-xs" style="font-size: 13px; padding: 4px 8px;" />
+            <q-badge
+              :color="statusColor(props.value)"
+              :label="statusLabel(props.value)"
+              outline
+              style="font-size: 13px; padding: 4px 8px;"
             />
-          </q-item-section>
+          </q-td>
+        </template>
 
-          <q-item-section>
-            <q-item-label class="text-weight-medium row items-center q-gutter-xs">
-              <span>{{ order.orderNo }}</span>
-              <q-badge v-if="order.isUrgent" color="red-6" label="急件" class="q-ml-xs" />
-              <q-badge
-                :color="statusColor(order.status)"
-                :label="statusLabel(order.status)"
-                outline
-                class="q-ml-xs"
-              />
-            </q-item-label>
-            <q-item-label caption>
-              <q-icon name="person" size="xs" class="q-mr-xs" />{{ order.customerName }}
-              <q-icon name="phone" size="xs" class="q-ml-sm q-mr-xs" />{{ order.customerPhone }}
-            </q-item-label>
-            <q-item-label caption class="q-mt-xs text-grey-6">
-              <q-icon name="cleaning_services" size="xs" class="q-mr-xs" />
-              {{ order.items.map((i) => i.serviceName).join('、') }}
-              <span v-if="order.storageLocations.length > 0" class="q-ml-md">
-                <q-icon name="location_on" size="xs" class="q-mr-xs" />{{ order.storageLocations.join('、') }}
-              </span>
-            </q-item-label>
-          </q-item-section>
+        <!-- 顧客欄位 -->
+        <template v-slot:body-cell-customer="props">
+          <q-td :props="props">
+            <div class="text-weight-medium">{{ props.row.customerName }}</div>
+            <div class="text-caption text-grey-6">{{ props.row.customerPhone }}</div>
+          </q-td>
+        </template>
 
-          <q-item-section side>
-            <div class="text-right">
-              <div class="text-weight-bold text-teal-8">
-                NT$ {{ order.totalAmount.toLocaleString() }}
-              </div>
-              <div v-if="order.urgentFee > 0" class="text-caption text-red-6">
-                含急件費 {{ order.urgentFee.toLocaleString() }}
-              </div>
-              <div class="text-caption text-grey-5 q-mt-xs">
-                取件: {{ order.estimatedPickupDate }}
-              </div>
-              <div v-if="order.isUrgent && order.urgentDeadline" class="text-caption text-red-6">
-                截止: {{ order.urgentDeadline }}
-              </div>
+        <!-- 服務項目欄位 -->
+        <template v-slot:body-cell-items="props">
+          <q-td :props="props">
+            <div class="row q-gutter-xs items-center" style="max-width: 250px; flex-wrap: wrap;">
+              <template v-for="(item, index) in props.value" :key="index">
+                <q-chip v-if="Number(index) < 2" outline color="teal-6">
+                  {{ item.serviceName }}
+                </q-chip>
+              </template>
+              <q-chip v-if="props.value.length > 2" color="grey-3" text-color="grey-8">
+                +{{ props.value.length - 2 }}
+                <q-tooltip>{{ props.value.map((i: OrderItem) => i.serviceName).join('、') }}</q-tooltip>
+              </q-chip>
             </div>
-          </q-item-section>
+          </q-td>
+        </template>
 
-          <q-item-section side>
+        <!-- 總金額欄位 -->
+        <template v-slot:body-cell-amount="props">
+          <q-td :props="props" class="text-right">
+            <div class="text-weight-bold text-teal-8">
+              NT$ {{ props.value.toLocaleString() }}
+            </div>
+            <div v-if="Number(props.row.urgentFee) > 0" class="text-caption text-red-6">
+              含急件費
+              <q-tooltip>加急處理費用：NT$ {{ props.row.urgentFee.toLocaleString() }}</q-tooltip>
+            </div>
+          </q-td>
+        </template>
+
+        <!-- 日期欄位 -->
+        <template v-slot:body-cell-dates="props">
+          <q-td :props="props">
+            <div class="row items-center no-wrap">
+              <q-icon name="event_available" color="teal-7" size="16px" class="q-mr-xs" />
+              <span
+                class="text-weight-bold"
+                :class="props.row.estimatedPickupDate ? 'text-teal-8' : 'text-grey-4'"
+                style="font-size: 0.92rem;"
+              >
+                {{ props.row.estimatedPickupDate || '尚未安排' }}
+              </span>
+            </div>
+            <div v-if="props.row.isUrgent && props.row.urgentDeadline" class="text-caption text-red-6 q-mt-xs">
+              <q-icon name="bolt" size="12px" /> 截止: {{ props.row.urgentDeadline }}
+            </div>
+          </q-td>
+        </template>
+
+        <!-- 操作欄位 -->
+        <template v-slot:body-cell-actions="props">
+          <q-td :props="props" class="text-right">
+            <q-btn
+              flat
+              round
+              dense
+              icon="visibility"
+              color="teal-8"
+              @click.stop="openDetailDialog(props.row)"
+              class="cursor-pointer"
+            >
+              <q-tooltip>檢視詳情</q-tooltip>
+            </q-btn>
             <q-btn
               flat
               round
               dense
               icon="edit"
               color="teal-6"
-              @click.stop="openEditDialog(order)"
-              :disable="order.status === 'PICKED_UP' || order.status === 'CANCELLED'"
+              @click.stop="openEditDialog(props.row)"
+              :disable="props.row.status === 'PICKED_UP' || props.row.status === 'CANCELLED'"
               class="cursor-pointer"
             >
               <q-tooltip>編輯訂單</q-tooltip>
             </q-btn>
-          </q-item-section>
-        </q-item>
-      </q-list>
+          </q-td>
+        </template>
 
-      <!-- 分頁 -->
-      <q-card-section v-if="pagination.totalPages > 1">
-        <div class="row justify-center">
-          <q-pagination
-            v-model="pagination.page"
-            :max="pagination.totalPages"
-            @update:model-value="loadOrders"
-            direction-links
-            boundary-links
-          />
-        </div>
-      </q-card-section>
+        <!-- 手機版 Grid (卡片) 視圖 -->
+        <template v-slot:item="props">
+          <div class="q-pa-xs col-12 col-sm-6 col-md-4">
+            <q-card bordered flat class="cursor-pointer order-grid-card" @click="openDetailDialog(props.row)">
+              <q-card-section class="q-pb-xs flex justify-between items-center">
+                <div class="text-subtitle2 font-mono">{{ props.row.orderNo }}</div>
+                <div>
+                  <q-badge v-if="props.row.isUrgent" color="red-6" label="急件" class="q-mr-xs" style="font-size: 13px; padding: 4px 8px;" />
+                  <q-badge :color="statusColor(props.row.status)" :label="statusLabel(props.row.status)" outline style="font-size: 13px; padding: 4px 8px;" />
+                </div>
+              </q-card-section>
+
+              <q-card-section class="q-py-sm">
+                <div class="row q-col-gutter-sm">
+                  <div class="col-8">
+                    <div class="text-weight-medium">{{ props.row.customerName }}</div>
+                    <div class="text-caption text-grey-6">{{ props.row.customerPhone }}</div>
+                    
+                    <div class="row q-gutter-xs items-center q-mt-sm">
+                      <q-chip v-for="(item, idx) in props.row.items.slice(0, 2)" :key="idx" outline color="teal-6">
+                        {{ item.serviceName }}
+                      </q-chip>
+                      <span v-if="Number(props.row.items.length) > 2" class="text-caption text-grey-6">+{{ props.row.items.length - 2 }} 項</span>
+                    </div>
+                  </div>
+                  
+                  <div class="col-4 text-right">
+                    <div class="text-weight-bold text-teal-8">NT$ {{ props.row.totalAmount.toLocaleString() }}</div>
+                    <div class="text-caption text-grey-6 q-mt-xs">取: {{ props.row.estimatedPickupDate || '-' }}</div>
+                  </div>
+                </div>
+              </q-card-section>
+
+              <q-separator />
+              
+              <q-card-actions align="right" class="q-pa-sm">
+                <q-btn flat dense icon="edit" color="teal-6" label="編輯" @click.stop="openEditDialog(props.row)" :disable="props.row.status === 'PICKED_UP' || props.row.status === 'CANCELLED'" />
+              </q-card-actions>
+            </q-card>
+          </div>
+        </template>
+
+      </q-table>
     </q-card>
 
     <!-- 新增 / 編輯 Dialog -->
@@ -213,78 +296,60 @@
       <q-form ref="formRef" @submit.prevent class="q-gutter-md">
         <!-- 顧客查詢 -->
         <div class="row q-col-gutter-sm">
-          <div class="col-12 col-sm-6">
-            <q-input
-              v-model="form.customerPhone"
-              label="顧客電話"
+          <div class="col-12">
+            <q-select
+              v-model="selectedCustomer"
+              use-input
+              fill-input
+              hide-selected
+              clearable
+              :options="customerOptions"
+              option-value="id"
+              :option-label="opt => opt ? `${opt.name} (${opt.phone})` : ''"
+              label="搜尋顧客（姓名或電話）"
               outlined
               dense
+              @filter="filterCustomers"
+              @update:model-value="onCustomerSelected"
+              @input-value="val => customerSearchText = val"
               :disable="formDialog.isEdit"
-              :rules="[(val) => !!val || '請輸入電話']"
-              @keyup.enter="lookupCustomer"
+              :loading="lookingUp"
+              hide-dropdown-icon
+              behavior="menu"
+              debounce="1500"
+              :rules="[(val: unknown) => !!form.customerId || '請搜尋並選擇顧客']"
             >
               <template v-slot:prepend>
-                <q-icon name="phone" />
+                <q-icon name="search" />
               </template>
               <template v-slot:append>
                 <q-btn
                   flat
+                  round
                   dense
-                  icon="search"
-                  color="teal-8"
-                  @click="lookupCustomer"
-                  :loading="lookingUp"
+                  icon="person_add"
+                  color="teal-7"
+                  @click.stop="customerFormOpen = true"
                   :disable="formDialog.isEdit"
-                  class="cursor-pointer"
-                />
+                >
+                  <q-tooltip>新增顧客</q-tooltip>
+                </q-btn>
               </template>
-            </q-input>
-          </div>
-          <div class="col-12 col-sm-6">
-            <!-- 已找到會員 -->
-            <q-input
-              v-if="form.customerId"
-              v-model="form.customerName"
-              label="顧客姓名"
-              outlined
-              dense
-              readonly
-            >
-              <template v-slot:prepend>
-                <q-icon name="check_circle" color="teal-6" />
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey row flex-center justify-between" horizontal>
+                    <div class="q-pl-sm">查無符合條件的會員</div>
+                    <q-btn flat dense color="teal-7" icon="person_add" label="立即建立" @click="customerFormOpen = true" class="q-ml-md" />
+                  </q-item-section>
+                </q-item>
               </template>
-            </q-input>
-
-            <!-- 查無會員：顯示立即建立按鈕 -->
-            <div v-else-if="customerNotFound" class="customer-not-found row items-center q-gutter-xs">
-              <q-icon name="person_off" color="grey-5" size="sm" />
-              <span class="text-caption text-grey-6">查無此電話的會員</span>
-              <q-btn
-                flat
-                dense
-                size="sm"
-                color="teal-7"
-                icon="person_add"
-                label="立即建立"
-                @click="customerFormOpen = true"
-                class="cursor-pointer"
-              />
-            </div>
-
-            <!-- 初始狀態：提示欄位 -->
-            <q-input
-              v-else
-              model-value=""
-              label="顧客姓名"
-              outlined
-              dense
-              readonly
-              :rules="[() => !!form.customerId || '請先查詢顧客']"
-            >
-              <template v-slot:prepend>
-                <q-icon name="person" />
+              <template v-slot:selected-item="scope">
+                <div class="text-subtitle2" v-if="scope.opt">
+                  <q-icon name="check_circle" color="teal-6" class="q-mr-xs" size="xs" />
+                  {{ scope.opt.name }} ({{ scope.opt.phone }})
+                </div>
               </template>
-            </q-input>
+            </q-select>
           </div>
         </div>
 
@@ -311,18 +376,14 @@
             class="service-item-block q-mb-sm"
           >
             <div class="row items-center q-gutter-xs">
-              <q-select
+              <AppSelect
                 v-model="item.serviceCode"
                 :options="serviceOptions"
                 label="服務項目"
-                outlined
-                dense
-                emit-value
-                map-options
                 class="col"
                 :disable="formDialog.isEdit"
-                @update:model-value="(val) => onServiceChange(idx, val)"
                 :rules="[(val) => !!val || '請選擇服務']"
+                @update:model-value="(val) => onServiceChange(idx, val as string)"
               />
               <q-btn
                 flat
@@ -350,6 +411,60 @@
                 小計：NT$ {{ (item.unitPrice * item.quantity).toLocaleString() }}
               </div>
             </div>
+
+            <!-- 照片上傳區 -->
+            <div class="q-mt-sm q-pl-xs">
+              <div class="row items-center q-mb-xs">
+                <span class="text-caption text-grey-7">商品照片 (可多張)</span>
+              </div>
+              
+              <div class="row q-gutter-sm items-start">
+                <!-- 預覽圖 -->
+                <div 
+                  v-for="(img, imgIdx) in item.imageUrls" 
+                  :key="imgIdx"
+                  class="relative-position"
+                >
+                  <q-img
+                    :src="img"
+                    spinner-color="white"
+                    style="height: 60px; width: 60px; border-radius: 8px"
+                    class="bg-grey-2 shadow-1"
+                  />
+                  <q-btn
+                    round
+                    dense
+                    size="xs"
+                    color="red"
+                    icon="close"
+                    class="absolute-top-right"
+                    style="transform: translate(40%, -40%)"
+                    @click="removeImage(idx, imgIdx)"
+                  />
+                </div>
+
+                <!-- 上傳按鈕 -->
+                <q-file
+                  v-model="tempFiles[idx]"
+                  label="上傳"
+                  outlined
+                  dense
+                  multiple
+                  append
+                  accept="image/*"
+                  style="width: 60px"
+                  @update:model-value="(files) => onFilesPicked(idx, files)"
+                  class="photo-picker-mini"
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="add_a_photo" size="xs" />
+                  </template>
+                  <!-- 隱藏預設標籤與內容 -->
+                  <template v-slot:file> </template>
+
+                </q-file>
+              </div>
+            </div>
           </div>
           <div v-if="!formDialog.isEdit && serviceSubtotal > 0" class="text-right text-weight-bold text-teal-8 q-mt-xs">
             服務小計：NT$ {{ serviceSubtotal.toLocaleString() }}
@@ -370,7 +485,7 @@
             label="急件截止日"
             prepend-icon="event"
             class="q-mt-sm"
-            :rules="[(val) => !form.isUrgent || !!val || '急件必須填截止日期']"
+            :rules="[(val: string | null) => !form.isUrgent || !!val || '急件必須填截止日期']"
           />
         </div>
 
@@ -394,7 +509,7 @@
           v-model="form.estimatedPickupDate"
           label="預計取件日期"
           prepend-icon="event_available"
-          :rules="[(val) => !!val || '請填寫預計取件日期']"
+          :rules="[(val: string | null) => !!val || '請填寫預計取件日期']"
         />
 
         <!-- 存放位置 -->
@@ -428,7 +543,6 @@
     <!-- 新增會員 Dialog（從訂單表單呼叫） -->
     <CustomerFormDialog
       v-model="customerFormOpen"
-      :initial-phone="form.customerPhone"
       @created="onCustomerCreated"
     />
 
@@ -632,27 +746,49 @@
                   </div>
                 </q-card-section>
                 <q-list separator>
-                  <q-item v-for="item in detailDialog.order.items" :key="item.id">
-                    <q-item-section avatar>
-                      <q-avatar
-                        color="teal-1"
-                        text-color="teal-8"
-                        size="40px"
-                        icon="cleaning_services"
-                      />
-                    </q-item-section>
-                    <q-item-section>
-                      <q-item-label class="text-weight-medium">{{ item.serviceName }}</q-item-label>
-                      <q-item-label caption>
-                        NT$ {{ item.unitPrice.toLocaleString() }} × {{ item.quantity }}
-                      </q-item-label>
-                    </q-item-section>
-                    <q-item-section side>
-                      <div class="text-weight-bold text-teal-8">
-                        NT$ {{ item.subtotal.toLocaleString() }}
+                  <template v-for="item in detailDialog.order.items" :key="item.id">
+                    <q-item>
+                      <q-item-section avatar>
+                        <q-avatar
+                          color="teal-1"
+                          text-color="teal-8"
+                          size="40px"
+                          icon="cleaning_services"
+                        />
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label class="text-weight-medium">{{ item.serviceName }}</q-item-label>
+                        <q-item-label caption>
+                          NT$ {{ item.unitPrice.toLocaleString() }} × {{ item.quantity }}
+                        </q-item-label>
+                      </q-item-section>
+                      <q-item-section side>
+                        <div class="text-weight-bold text-teal-8">
+                          NT$ {{ item.subtotal.toLocaleString() }}
+                        </div>
+                      </q-item-section>
+                    </q-item>
+                    
+                    <!-- 服務項目照片 -->
+                    <div v-if="item.imageUrls && item.imageUrls.length > 0" class="q-px-md q-pb-md row q-gutter-sm">
+                      <div 
+                        v-for="(img, idx) in item.imageUrls" 
+                        :key="idx"
+                        class="cursor-pointer"
+                        @click="showFullImage(img)"
+                      >
+                        <q-img
+                          :src="img"
+                          style="height: 80px; width: 80px; border-radius: 8px"
+                          class="bg-grey-2 shadow-1"
+                        >
+                          <template v-slot:loading>
+                            <q-spinner-oval color="white" />
+                          </template>
+                        </q-img>
                       </div>
-                    </q-item-section>
-                  </q-item>
+                    </div>
+                  </template>
 
                   <!-- 急件費行 -->
                   <q-item v-if="detailDialog.order.urgentFee > 0">
@@ -687,20 +823,33 @@
         </q-card-section>
       </q-card>
     </q-dialog>
+
+      <!-- 全螢幕照片預覽 -->
+      <q-dialog v-model="imagePreview.open" transition-show="scale" transition-hide="scale">
+        <q-card style="max-width: 90vw; background: transparent;" flat>
+          <q-img :src="imagePreview.url" style="max-height: 80vh; object-fit: contain;">
+            <div class="absolute-top-right">
+              <q-btn round dense color="black" icon="close" v-close-popup />
+            </div>
+          </q-img>
+        </q-card>
+      </q-dialog>
   </q-page>
 </template>
 
 <script setup lang="ts">
 import { reactive, ref, computed, onMounted } from 'vue';
-import { useQuasar } from 'quasar';
+import { useQuasar, date as qDate } from 'quasar';
 import AppFormDialog from '../components/AppFormDialog.vue';
 import AppDateInput from '../components/AppDateInput.vue';
+import AppSelect from '../components/AppSelect.vue';
 import CustomerFormDialog from '../components/CustomerFormDialog.vue';
 import { useOrderNavStore } from '../stores/orderNavStore';
 import { listOrders, createOrder, updateOrder, updateOrderStatus } from '../api/order/order';
 import { searchCustomers } from '../api/customer/customer';
 import { listServices } from '../api/service/service';
-import type { OrderResult, OrderStatus } from '../api/order/types';
+import type { OrderResult, OrderStatus, OrderItem } from '../api/order/types';
+import type { CustomerResult } from '../api/customer/types';
 import type { ServiceTypeResult } from '../api/service/types';
 
 const $q = useQuasar();
@@ -711,7 +860,20 @@ const filters = reactive({
   keyword: '',
   status: null as OrderStatus | null,
   isUrgent: null as boolean | null,
+  sortField: 'estimatedPickupDate',
+  sortDir: 'asc' as 'asc' | 'desc',
 });
+
+const sortOptions = [
+  { label: '建立時間', value: 'createTime' },
+  { label: '預計取件日', value: 'estimatedPickupDate' },
+  { label: '訂單金額', value: 'totalAmount' },
+];
+
+const toggleSortDir = () => {
+  filters.sortDir = filters.sortDir === 'desc' ? 'asc' : 'desc';
+  loadOrders();
+};
 
 const statusOptions = [
   { label: '待處理', value: 'PENDING' },
@@ -728,7 +890,38 @@ const urgentOptions = [
 
 // ── 列表 ──────────────────────────────────────────────────
 const orders = ref<OrderResult[]>([]);
-const pagination = reactive({ page: 1, size: 20, totalPages: 0, totalElements: 0 });
+const pagination = reactive({
+  page: 1,
+  size: 15,
+  totalPages: 1,
+  totalElements: 0,
+});
+
+// q-table 專用的分頁格式
+const tablePagination = computed(() => ({
+  page: pagination.page,
+  rowsPerPage: pagination.size,
+  rowsNumber: pagination.totalElements,
+}));
+
+// q-table 分頁事件
+const onRequest = (props: { pagination: { page: number; rowsPerPage: number } }) => {
+  const { page, rowsPerPage } = props.pagination;
+  pagination.page = page;
+  pagination.size = rowsPerPage;
+  loadOrders();
+};
+
+const columns = [
+  { name: 'orderNo', label: '訂單編號', field: 'orderNo', align: 'left' as const, style: 'font-family: monospace; font-weight: 500;' },
+  { name: 'status', label: '狀態', field: 'status', align: 'left' as const },
+  { name: 'customer', label: '顧客', field: 'customerName', align: 'left' as const },
+  { name: 'items', label: '服務項目', field: 'items', align: 'left' as const },
+  { name: 'amount', label: '總金額', field: 'totalAmount', align: 'right' as const },
+  { name: 'dates', label: '預計取件日', field: 'estimatedPickupDate', align: 'left' as const },
+  { name: 'actions', label: '操作', field: 'actions', align: 'right' as const }
+];
+
 const loading = ref(false);
 
 const loadOrders = async () => {
@@ -738,6 +931,7 @@ const loadOrders = async () => {
       keyword: filters.keyword || undefined,
       status: filters.status || undefined,
       isUrgent: filters.isUrgent ?? undefined,
+      sort: `${filters.sortField},${filters.sortDir}`,
       page: pagination.page - 1,
       size: pagination.size,
     });
@@ -794,13 +988,23 @@ const formDialog = reactive({
   editId: null as number | null,
 });
 
-type FormItem = { serviceCode: string; quantity: number; unitPrice: number };
+const imagePreview = reactive({
+  open: false,
+  url: '',
+});
+
+const showFullImage = (url: string) => {
+  imagePreview.url = url;
+  imagePreview.open = true;
+};
+
+type FormItem = { serviceCode: string; quantity: number; unitPrice: number; imageUrls?: string[] };
 
 const form = reactive({
   customerId: null as number | null,
   customerPhone: '',
   customerName: '',
-  items: [{ serviceCode: '', quantity: 1, unitPrice: 0 }] as FormItem[],
+  items: [{ serviceCode: '', quantity: 1, unitPrice: 0, imageUrls: [] }] as FormItem[],
   isUrgent: false,
   urgentDeadline: '',
   estimatedPickupDate: '',
@@ -820,34 +1024,51 @@ const resetForm = () => {
   form.customerId = null;
   form.customerPhone = '';
   form.customerName = '';
-  form.items = [{ serviceCode: '', quantity: 1, unitPrice: 0 }];
+  form.items = [{ serviceCode: '', quantity: 1, unitPrice: 0, imageUrls: [] }];
   form.isUrgent = false;
   form.urgentDeadline = '';
-  form.estimatedPickupDate = '';
+  form.estimatedPickupDate = qDate.formatDate(new Date(Date.now() + 14 * 86400000), 'YYYY/MM/DD');
   form.storageLocation = '';
   form.note = '';
   customerNotFound.value = false;
+  selectedCustomer.value = null;
+  tempFiles.value = [null];
 };
 
-const lookupCustomer = async () => {
-  if (!form.customerPhone) return;
+const selectedCustomer = ref<CustomerResult | { id: number; name: string; phone: string } | null>(null);
+const customerOptions = ref<CustomerResult[]>([]);
+const customerSearchText = ref('');
+
+const filterCustomers = async (val: string, update: (callback: () => void) => void, abort: () => void) => {
+  if (val.length < 1) {
+    abort();
+    return;
+  }
   try {
     lookingUp.value = true;
-    customerNotFound.value = false;
-    const results = await searchCustomers(form.customerPhone);
-    if (results.length > 0) {
-      form.customerId = results[0].id;
-      form.customerName = results[0].name;
-      $q.notify({ type: 'positive', message: `已找到會員：${results[0].name}` });
-    } else {
-      form.customerId = null;
-      form.customerName = '';
-      customerNotFound.value = true;
-    }
+    const results = await searchCustomers(val);
+    update(() => {
+      customerOptions.value = results;
+    });
   } catch {
+    update(() => {
+      customerOptions.value = [];
+    });
     $q.notify({ type: 'negative', message: '查詢顧客失敗' });
   } finally {
     lookingUp.value = false;
+  }
+};
+
+const onCustomerSelected = (opt: CustomerResult | { id: number; name: string; phone: string } | null) => {
+  if (opt) {
+    form.customerId = opt.id;
+    form.customerName = opt.name;
+    form.customerPhone = opt.phone;
+  } else {
+    form.customerId = null;
+    form.customerName = '';
+    form.customerPhone = '';
   }
 };
 
@@ -855,20 +1076,50 @@ const onCustomerCreated = (customer: { id: number; name: string; phone: string }
   form.customerId = customer.id;
   form.customerName = customer.name;
   form.customerPhone = customer.phone;
+  selectedCustomer.value = customer;
   customerNotFound.value = false;
 };
 
 const addServiceItem = () => {
-  form.items.push({ serviceCode: '', quantity: 1, unitPrice: 0 });
+  form.items.push({ serviceCode: '', quantity: 1, unitPrice: 0, imageUrls: [] });
+  tempFiles.value.push(null);
 };
 
 const removeServiceItem = (idx: number) => {
-  if (form.items.length > 1) form.items.splice(idx, 1);
+  if (form.items.length > 1) {
+    form.items.splice(idx, 1);
+    tempFiles.value.splice(idx, 1);
+  }
 };
 
 const onServiceChange = (idx: number, code: string) => {
   const svc = serviceMap.value[code];
   if (svc) form.items[idx].unitPrice = svc.defaultPrice;
+};
+
+// 照片處理
+const tempFiles = ref<(File | null)[]>([]);
+const onFilesPicked = (itemIdx: number, files: File[]) => {
+  if (!files || files.length === 0) return;
+  
+  if (!form.items[itemIdx].imageUrls) {
+    form.items[itemIdx].imageUrls = [];
+  }
+
+  files.forEach(file => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      form.items[itemIdx].imageUrls?.push(e.target?.result as string);
+    };
+    reader.readAsDataURL(file);
+  });
+  
+  // 清空暫存避免重複觸發或顯示標籤
+  tempFiles.value[itemIdx] = null;
+};
+
+const removeImage = (itemIdx: number, imgIdx: number) => {
+  form.items[itemIdx].imageUrls?.splice(imgIdx, 1);
 };
 
 const openCreateDialog = () => {
@@ -929,7 +1180,11 @@ const submitForm = async () => {
         customerId: form.customerId,
         isUrgent: form.isUrgent,
         urgentDeadline: form.isUrgent ? form.urgentDeadline : undefined,
-        items: form.items.map((i) => ({ serviceCode: i.serviceCode, quantity: i.quantity })),
+        items: form.items.map((i) => ({ 
+          serviceCode: i.serviceCode, 
+          quantity: i.quantity,
+          imageUrls: i.imageUrls 
+        })),
         storageLocations,
         estimatedPickupDate: form.estimatedPickupDate,
         note: form.note || undefined,
@@ -962,10 +1217,44 @@ const openDetailDialog = (order: OrderResult) => {
   detailDialog.open = true;
 };
 
-const openEditFromDetail = () => {
+const openEditFromDetail = async () => {
   if (!detailDialog.order) return;
+  const order = detailDialog.order;
   detailDialog.open = false;
-  openEditDialog(detailDialog.order);
+  
+  formDialog.isEdit = true;
+  formDialog.editId = order.id;
+
+  // 嘗試找出預設顧客，以利在 select 顯示
+  try {
+    const custs = await searchCustomers(order.customerPhone);
+    const exact = custs.find(c => c.id === order.customerId);
+    selectedCustomer.value = exact || { id: order.customerId, name: order.customerName, phone: order.customerPhone };
+  } catch {
+    selectedCustomer.value = { id: order.customerId, name: order.customerName, phone: order.customerPhone };
+  }
+
+  form.customerId = order.customerId;
+  form.customerPhone = order.customerPhone;
+  form.customerName = order.customerName;
+
+  form.isUrgent = order.isUrgent;
+  form.urgentDeadline = order.urgentDeadline || '';
+  form.estimatedPickupDate = order.estimatedPickupDate || '';
+  form.storageLocation = order.storageLocations ? order.storageLocations.join(', ') : '';
+  form.note = order.note || '';
+
+  form.items = order.items.map((i) => ({
+    serviceCode: i.serviceCode,
+    quantity: i.quantity,
+    unitPrice: 0,
+  }));
+  form.items.forEach((item) => {
+    const svc = serviceMap.value[item.serviceCode];
+    if (svc) item.unitPrice = svc.defaultPrice;
+  });
+
+  formDialog.open = true;
 };
 
 const updateStatus = async (order: OrderResult, status: OrderStatus) => {
@@ -1060,13 +1349,28 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.order-item {
-  min-height: 72px;
-  transition: background-color 0.2s;
+.order-table :deep(th) {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: #455a64;
+  background-color: #fcfcfc;
 }
 
-.order-item:hover {
-  background-color: rgba(0, 150, 136, 0.04);
+.order-table :deep(td) {
+  font-size: 0.9rem;
+}
+
+.order-table :deep(tr.q-tr) td {
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+
+.order-grid-card {
+  transition: all 0.2s;
+}
+.order-grid-card:hover {
+  border-color: #009688;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.1);
 }
 
 .card-header-accent {
@@ -1097,5 +1401,37 @@ onMounted(async () => {
   border-radius: 8px;
   padding: 8px 10px;
   background: rgba(0, 150, 136, 0.02);
+}
+
+/* 迷你照片選擇器 */
+.photo-picker-mini {
+  border: 1px dashed #cbd5e1;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: all 0.2s;
+}
+
+.photo-picker-mini:hover {
+  border-color: #0d9488;
+  background-color: #f0fdfa;
+}
+
+.photo-picker-mini :deep(.q-field__inner) {
+  height: 60px;
+}
+
+.photo-picker-mini :deep(.q-field__control) {
+  height: 60px;
+  min-height: 60px !important;
+}
+
+.photo-picker-mini :deep(.q-field__native) {
+  display: none !important;
+}
+
+.photo-picker-mini :deep(.q-field__prepend) {
+  width: 100%;
+  justify-content: center;
+  padding: 0;
 }
 </style>

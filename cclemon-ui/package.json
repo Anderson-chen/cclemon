@@ -1,8 +1,8 @@
 {
-  "name": "cclemon-ui",
+  "name": "shoes-reborn",
   "version": "0.0.1",
   "description": "ui for cclemon",
-  "productName": "cclemon-ui",
+  "productName": "shoes-reborn",
   "type": "module",
   "private": true,
   "scripts": {

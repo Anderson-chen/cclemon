@@ -9,6 +9,7 @@ export interface OrderItem {
   quantity: number;
   unitPrice: number;
   subtotal: number;
+  imageUrls?: string[];
 }
 
 export interface OrderResult {
@@ -34,7 +35,7 @@ export interface OrderCreateRequest {
   customerId: number;
   isUrgent: boolean;
   urgentDeadline?: string;
-  items: { serviceCode: string; quantity: number }[];
+  items: { serviceCode: string; quantity: number; imageUrls?: string[] }[];
   storageLocations?: string[];
   estimatedPickupDate: string;
   note?: string;
@@ -61,6 +62,7 @@ export interface ListOrdersParams {
   dateTo?: string;
   page?: number;
   size?: number;
+  sort?: string;
 }
 
 export interface PagedResult<T> {

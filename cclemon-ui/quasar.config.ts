@@ -120,7 +120,7 @@ export default configure((ctx) => {
       config: {},
 
       // iconSet: 'material-icons', // Quasar icon set
-      // lang: 'en-US', // Quasar language pack
+      lang: 'zh-TW', // Quasar language pack
 
       // For special cases outside of where the auto-import strategy can have an impact
       // (like functional components as one of the examples),
@@ -228,7 +228,7 @@ export default configure((ctx) => {
       builder: {
         // https://www.electron.build/configuration/configuration
 
-        appId: 'cclemon-ui',
+        appId: 'shoes-reborn',
       },
     },
 

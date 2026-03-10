@@ -212,6 +212,24 @@ export const handlers = [
       filtered = filtered.filter((o) => o.isUrgent === isUrgent);
     }
 
+    const sort = url.searchParams.get('sort') ?? 'createTime,desc';
+    const [sortField, sortDir] = sort.split(',');
+
+    filtered.sort((a, b) => {
+      let diff = 0;
+      if (sortField === 'createTime') {
+        diff = new Date(a.createTime).getTime() - new Date(b.createTime).getTime();
+      } else if (sortField === 'estimatedPickupDate') {
+        // 預計取件日可能為空，將空值排在最後
+        const timeA = a.estimatedPickupDate ? new Date(a.estimatedPickupDate).getTime() : Infinity;
+        const timeB = b.estimatedPickupDate ? new Date(b.estimatedPickupDate).getTime() : Infinity;
+        diff = timeA - timeB;
+      } else if (sortField === 'totalAmount') {
+        diff = a.totalAmount - b.totalAmount;
+      }
+      return sortDir === 'desc' ? -diff : diff;
+    });
+
     const totalElements = filtered.length;
     const totalPages = Math.ceil(totalElements / size) || 1;
     const content = filtered.slice(page * size, page * size + size);

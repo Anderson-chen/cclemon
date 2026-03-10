@@ -25,7 +25,11 @@
       "Bash(npx playwright:*)",
       "Bash(grep:*)",
       "Bash(npx wrangler:*)",
-      "Bash(ls /c/project/cclemon/cclemon-ui/quasar.config* 2>/dev/null; ls /c/project/cclemon/cclemon-ui/src/boot/ 2>/dev/null)"
+      "Bash(ls /c/project/cclemon/cclemon-ui/quasar.config* 2>/dev/null; ls /c/project/cclemon/cclemon-ui/src/boot/ 2>/dev/null)",
+      "Bash(cd \"C:\\\\project\\\\cclemon\\\\cclemon-ui\" && npx vue-tsc --noEmit 2>&1)",
+      "Bash(cd \"C:\\\\project\\\\cclemon\\\\cclemon-ui\" && npx vue-tsc --noEmit 2>&1 | grep \"^src/\")",
+      "Bash(cd \"C:\\\\project\\\\cclemon\\\\cclemon-ui\" && npx vue-tsc --noEmit 2>&1 | grep \"^src/\" && echo \"OK\")",
+      "Bash(npx vue-tsc:*)"
     ]
   }
 }
