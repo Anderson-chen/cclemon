@@ -1,9 +1,16 @@
 <template>
   <q-page padding>
     <!-- 頁面標題 -->
-    <div class="row items-center q-mb-md">
-      <q-icon name="tune" size="md" color="teal-8" class="q-mr-sm" />
-      <h5 class="q-mt-none q-mb-none">服務設定</h5>
+    <div class="row items-center justify-between q-mb-lg">
+      <div class="row items-center q-gutter-sm">
+        <div class="title-icon-wrap">
+          <q-icon name="tune" color="white" size="sm" />
+        </div>
+        <div>
+          <h5 class="q-mt-none q-mb-none text-weight-bold text-grey-9">服務設定</h5>
+          <div class="text-caption text-grey-5">Shoes Reborn · 服務項目</div>
+        </div>
+      </div>
     </div>
 
     <!-- 全域急件費率 -->
@@ -245,12 +252,15 @@ const submitForm = async () => {
   try {
     formDialog.value.submitting = true;
     if (formDialog.value.isEdit) {
-      await updateService(formDialog.value.editCode, {
+      const updated = await updateService(formDialog.value.editCode, {
         name: form.value.name,
         defaultPrice: form.value.defaultPrice,
         urgentFeeRate,
       });
       $q.notify({ type: 'positive', message: '服務項目已更新' });
+      // Update local state directly
+      const idx = services.value.findIndex(s => s.code === updated.code);
+      if (idx !== -1) services.value[idx] = updated;
     } else {
       await createService({
         code: form.value.code,
@@ -259,9 +269,9 @@ const submitForm = async () => {
         urgentFeeRate,
       });
       $q.notify({ type: 'positive', message: `服務項目「${form.value.name}」已新增` });
+      await loadServices(); // Still reload for new items to ensure correct order/state
     }
     formDialog.value.open = false;
-    await loadServices();
   } catch {
     $q.notify({
       type: 'negative',
@@ -279,9 +289,11 @@ const toggleActive = async (svc: ServiceTypeResult) => {
   const nextActive = !svc.isActive;
   const actionLabel = nextActive ? '啟用' : '停用';
   try {
-    await updateService(svc.code, { isActive: nextActive });
+    const updated = await updateService(svc.code, { isActive: nextActive });
     $q.notify({ type: 'positive', message: `服務「${svc.name}」已${actionLabel}` });
-    await loadServices();
+    // Update local state directly
+    const idx = services.value.findIndex(s => s.code === updated.code);
+    if (idx !== -1) services.value[idx] = updated;
   } catch {
     $q.notify({ type: 'negative', message: `${actionLabel}失敗，請稍後再試` });
   }
@@ -289,3 +301,15 @@ const toggleActive = async (svc: ServiceTypeResult) => {
 
 onMounted(loadServices);
 </script>
+
+<style scoped>
+.title-icon-wrap {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #0f766e, #0d9488);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+</style>

@@ -10,6 +10,9 @@ export interface OrderItem {
   unitPrice: number;
   subtotal: number;
   imageUrls?: string[];
+  productName?: string;
+  itemNote?: string;
+  itemStorageLocation?: string;
 }
 
 export interface OrderResult {
@@ -34,8 +37,7 @@ export interface OrderResult {
 export interface OrderCreateRequest {
   customerId: number;
   isUrgent: boolean;
-  urgentDeadline?: string;
-  items: { serviceCode: string; quantity: number; imageUrls?: string[] }[];
+  items: { serviceCode: string; quantity: number; imageUrls?: string[]; productName?: string; itemNote?: string; itemStorageLocation?: string }[];
   storageLocations?: string[];
   estimatedPickupDate: string;
   note?: string;
@@ -43,7 +45,6 @@ export interface OrderCreateRequest {
 
 export interface OrderUpdateRequest {
   isUrgent?: boolean;
-  urgentDeadline?: string;
   storageLocations?: string[];
   estimatedPickupDate?: string;
   note?: string;

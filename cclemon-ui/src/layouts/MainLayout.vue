@@ -87,8 +87,8 @@ const linksList: NavLink[] = [
     to: '/orders/dashboard',
   },
   {
-    title: '開單管理',
-    shortTitle: '開單',
+    title: '訂單管理',
+    shortTitle: '訂單',
     caption: '建立與追蹤洗鞋訂單',
     icon: 'receipt_long',
     to: '/orders',

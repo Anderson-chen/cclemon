@@ -21,7 +21,7 @@
     </template>
   </q-select>
 
-  <!-- 手機：觸發欄位 + 底部 Drawer -->
+  <!-- 手機：Action Sheet（iOS 風格） -->
   <div v-else v-bind="$attrs" class="app-select-wrapper" @click="openDrawer">
     <q-field
       :model-value="proxyValue"
@@ -51,51 +51,48 @@
       </template>
     </q-field>
 
-    <!-- 底部 Drawer 選項 -->
-    <q-dialog v-model="drawerOpen" position="bottom">
-      <q-card class="app-select-drawer">
-        <div class="drawer-handle" />
-        <div class="q-px-md q-pt-xs q-pb-sm text-subtitle2 text-grey-7">
-          {{ label }}
-        </div>
-        <q-separator />
-        <q-scroll-area
-          :style="`height: min(${(normalizedOptions.length + (clearable ? 1 : 0)) * 48 + 24}px, 55vh)`"
-        >
-          <q-list padding>
-            <q-item v-if="clearable" clickable @click="select(null)">
-              <q-item-section>
-                <q-item-label class="text-grey-5">不限</q-item-label>
-              </q-item-section>
-              <q-item-section v-if="proxyValue == null" side>
-                <q-icon color="teal-8" name="check" size="xs" />
-              </q-item-section>
-            </q-item>
+    <!-- Action Sheet Dialog -->
+    <q-dialog v-model="drawerOpen" position="bottom" class="app-select-dialog">
+      <div
+        class="action-sheet-container"
+        :style="dragY > 0 ? `transform: translateY(${dragY}px); transition: none` : ''"
+        @touchstart="onTouchStart"
+        @touchmove.prevent="onTouchMove"
+        @touchend="onTouchEnd"
+      >
+        <!-- 選項卡片 -->
+        <q-card class="action-sheet-card">
+          <!-- 標題 -->
+          <div class="action-sheet-title">{{ label }}</div>
 
-            <q-item
-              v-for="opt in normalizedOptions"
-              :key="String(opt.value)"
-              clickable
-              @click="select(opt.value)"
-            >
-              <q-item-section>
-                <q-item-label
-                  :class="
-                    proxyValue === opt.value
-                      ? 'text-teal-8 text-weight-medium'
-                      : ''
-                  "
-                >
-                  {{ opt.label }}
-                </q-item-label>
-              </q-item-section>
-              <q-item-section v-if="proxyValue === opt.value" side>
-                <q-icon color="teal-8" name="check" size="xs" />
-              </q-item-section>
-            </q-item>
-          </q-list>
-        </q-scroll-area>
-      </q-card>
+          <q-separator />
+
+          <!-- 不限（clearable） -->
+          <template v-if="clearable">
+            <button class="action-sheet-item" @click="select(null)">
+              <span :class="proxyValue == null ? 'text-teal-8 text-weight-bold' : 'text-grey-8'">不限</span>
+            </button>
+            <q-separator />
+          </template>
+
+          <!-- 選項列表 -->
+          <template v-for="(opt, idx) in normalizedOptions" :key="String(opt.value)">
+            <button class="action-sheet-item" @click="select(opt.value)">
+              <span :class="proxyValue === opt.value ? 'text-teal-8 text-weight-bold' : 'text-grey-8'">
+                {{ opt.label }}
+              </span>
+            </button>
+            <q-separator v-if="idx < normalizedOptions.length - 1" />
+          </template>
+        </q-card>
+
+        <!-- 取消按鈕（獨立卡片） -->
+        <q-card class="action-sheet-cancel">
+          <button class="action-sheet-item action-sheet-cancel-btn" @click="drawerOpen = false">
+            取消
+          </button>
+        </q-card>
+      </div>
     </q-dialog>
   </div>
 </template>
@@ -138,8 +135,27 @@ const emit = defineEmits<{
 }>();
 
 const $q = useQuasar();
-const drawerOpen = ref(false);
 const isMobile = computed(() => $q.screen.lt.md);
+const drawerOpen = ref(false);
+const dragY = ref(0);
+let dragStartY = 0;
+
+function onTouchStart(e: TouchEvent) {
+  dragStartY = e.touches[0]!.clientY;
+  dragY.value = 0;
+}
+
+function onTouchMove(e: TouchEvent) {
+  const delta = e.touches[0]!.clientY - dragStartY;
+  if (delta > 0) dragY.value = delta;
+}
+
+function onTouchEnd() {
+  if (dragY.value > 80) {
+    drawerOpen.value = false;
+  }
+  dragY.value = 0;
+}
 
 const normalizedOptions = computed<SelectOption[]>(() =>
   props.options.map((opt) =>
@@ -183,17 +199,68 @@ function clear() {
   pointer-events: none;
 }
 
-.app-select-drawer {
-  border-radius: 16px 16px 0 0 !important;
-  width: 100%;
-  max-width: 100% !important;
+/* 強制 AppSelect dialog 水平置中（:global 穿透 teleport） */
+:global(.app-select-dialog .q-dialog__inner) {
+  justify-content: center !important;
+  align-items: flex-end !important;
 }
 
-.drawer-handle {
-  width: 40px;
-  height: 4px;
-  background: rgba(0, 0, 0, 0.12);
-  border-radius: 2px;
-  margin: 12px auto 8px;
+/* Action Sheet 容器：左右有間距，底部有安全區域 */
+.action-sheet-container {
+  width: calc(100% - 16px);
+  max-width: 480px;
+  padding: 0 0 calc(8px + env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: transparent;
+  box-shadow: none;
+}
+
+/* 選項卡片 */
+.action-sheet-card {
+  border-radius: 14px !important;
+  overflow: hidden;
+}
+
+/* 標題列 */
+.action-sheet-title {
+  padding: 12px 16px 10px;
+  font-size: 13px;
+  color: #8e8e93;
+  text-align: center;
+  letter-spacing: 0.01em;
+}
+
+/* 每一個選項行 */
+.action-sheet-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 52px;
+  padding: 0 20px;
+  background: white;
+  border: none;
+  cursor: pointer;
+  font-size: 17px;
+  text-align: center;
+  transition: background 0.15s;
+}
+
+.action-sheet-item:active {
+  background: #f2f2f7;
+}
+
+/* 取消按鈕卡片 */
+.action-sheet-cancel {
+  border-radius: 14px !important;
+  overflow: hidden;
+}
+
+.action-sheet-cancel-btn {
+  justify-content: center;
+  color: #007aff;
+  font-weight: 600;
 }
 </style>

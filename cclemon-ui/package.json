@@ -1,7 +1,7 @@
 {
   "name": "shoes-reborn",
   "version": "0.0.1",
-  "description": "ui for cclemon",
+  "description": "",
   "productName": "shoes-reborn",
   "type": "module",
   "private": true,
@@ -17,7 +17,7 @@
     "build:dev": "set ENV_FILE=dev&& quasar build",
     "build:sit": "set ENV_FILE=sit&& quasar build",
     "build:prod": "set ENV_FILE=prod&& quasar build",
-    "build:demo": "set ENV_FILE=demo&& quasar build -m pwa",
+    "build:demo": "set ENV_FILE=demo&& quasar build",
     "deploy:pages": "npm run build:demo && wrangler pages deploy"
   },
   "dependencies": {

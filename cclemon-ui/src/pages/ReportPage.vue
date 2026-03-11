@@ -7,20 +7,12 @@
           <q-icon name="bar_chart" color="white" size="sm" />
         </div>
         <div>
-          <h5 class="q-mt-none q-mb-none text-weight-bold text-grey-9">收益報表</h5>
+          <h5 class="q-mt-none q-mb-none text-weight-bold text-grey-9">
+            收益報表
+          </h5>
           <div class="text-caption text-grey-5">Shoes Reborn · 財務分析</div>
         </div>
       </div>
-      <q-btn
-        unelevated
-        color="teal-8"
-        icon="download"
-        :label="$q.screen.gt.xs ? '匯出 CSV' : ''"
-        :loading="exporting"
-        :disable="loading || reportOrders.length === 0"
-        @click="exportCsv"
-        class="cursor-pointer"
-      />
     </div>
 
     <!-- 報表類型切換 -->
@@ -50,8 +42,22 @@
               input-style="min-width: 180px"
               @update:model-value="loadReport"
             />
-            <q-btn flat dense label="今日" color="teal-7" @click="setToday" class="cursor-pointer" />
-            <q-btn flat dense label="昨日" color="grey-7" @click="setYesterday" class="cursor-pointer" />
+            <q-btn
+              flat
+              dense
+              label="今日"
+              color="teal-7"
+              @click="setToday"
+              class="cursor-pointer"
+            />
+            <q-btn
+              flat
+              dense
+              label="昨日"
+              color="grey-7"
+              @click="setYesterday"
+              class="cursor-pointer"
+            />
           </template>
 
           <!-- 月報表：年月選擇 -->
@@ -66,19 +72,23 @@
               input-style="min-width: 180px"
               @update:model-value="loadReport"
             />
-            <q-btn flat dense label="本月" color="teal-7" @click="setThisMonth" class="cursor-pointer" />
-            <q-btn flat dense label="上月" color="grey-7" @click="setLastMonth" class="cursor-pointer" />
+            <q-btn
+              flat
+              dense
+              label="本月"
+              color="teal-7"
+              @click="setThisMonth"
+              class="cursor-pointer"
+            />
+            <q-btn
+              flat
+              dense
+              label="上月"
+              color="grey-7"
+              @click="setLastMonth"
+              class="cursor-pointer"
+            />
           </template>
-
-          <q-btn
-            unelevated
-            color="teal-8"
-            icon="search"
-            label="查詢"
-            :loading="loading"
-            @click="loadReport"
-            class="cursor-pointer"
-          />
         </div>
       </q-card-section>
     </q-card>
@@ -95,70 +105,184 @@
         <div
           v-for="kpi in kpiCards"
           :key="kpi.label"
-          :class="['kpi-card', { 'kpi-card--wide': kpi.featured }]"
-          :style="`--accent: ${kpi.accentColor}`"
+          :class="['kpi-card', { 'kpi-card--featured': kpi.featured }]"
+          :style="`--accent: ${kpi.accentColor}; --accent-light: ${kpi.iconBg}`"
         >
-          <div :class="['kpi-inner', { 'kpi-inner--wide': kpi.featured }]">
-            <div class="kpi-icon-wrap" :style="`background: ${kpi.iconBg}`">
-              <q-icon :name="kpi.icon" :size="kpi.featured ? '1.8em' : '1.4em'" :style="`color: ${kpi.accentColor}`" />
-            </div>
-            <div class="kpi-body">
-              <div class="kpi-value">{{ kpi.value }}</div>
-              <div class="kpi-label">{{ kpi.label }}</div>
+          <div class="kpi-content">
+            <div class="row items-start justify-between full-width">
+              <div class="kpi-info">
+                <div class="kpi-label row items-center">
+                  {{ kpi.label }}
+                  <q-icon
+                    v-if="kpi.featured"
+                    name="trending_up"
+                    size="14px"
+                    class="q-ml-xs text-green-5"
+                  />
+                </div>
+                <div class="kpi-value text-weight-bold">{{ kpi.value }}</div>
+                <div class="kpi-sub row items-center text-caption q-mt-xs">
+                  <span class="text-green-6 text-weight-medium">+12.5%</span>
+                  <span class="text-grey-5 q-ml-xs">較上週</span>
+                </div>
+              </div>
+              <div
+                class="kpi-icon-container"
+                :style="`background: ${kpi.iconBg}`"
+              >
+                <q-icon
+                  :name="kpi.icon"
+                  size="sm"
+                  :style="`color: ${kpi.accentColor}`"
+                />
+              </div>
             </div>
           </div>
+          <div
+            class="kpi-border-bottom"
+            :style="`background: ${kpi.accentColor}`"
+          ></div>
         </div>
       </div>
 
       <!-- 無資料提示 -->
-      <div v-if="reportOrders.length === 0" class="text-center q-py-xl">
-        <q-icon name="inbox" size="4em" color="grey-3" />
-        <div class="text-subtitle1 text-grey-5 q-mt-sm">本期間無已取件訂單</div>
-        <div class="text-caption text-grey-4">報表以「實際取件日」為入帳基準，已取消訂單不計入</div>
+      <div v-if="reportOrders.length === 0" class="empty-state text-center">
+        <div class="empty-visual">
+          <q-icon name="analytics" size="64px" color="teal-1" />
+          <div class="pulse-ring"></div>
+        </div>
+        <div class="text-h6 text-grey-8 q-mt-md">尚無營收數據</div>
+        <div class="text-body2 text-grey-5 q-mb-lg">
+          目前選擇的期間內沒有已完成取件的訂單。
+        </div>
+        <q-btn
+          v-if="tab === 'daily'"
+          unelevated
+          color="teal-8"
+          label="查看今日"
+          @click="setToday"
+          rounded
+        />
+        <q-btn
+          v-else
+          unelevated
+          color="teal-8"
+          label="查看本月"
+          @click="setThisMonth"
+          rounded
+        />
       </div>
 
       <template v-else>
-        <!-- 服務項目收益分析 -->
-        <div class="row q-gutter-md q-mb-md">
+        <div class="row q-col-gutter-lg">
+          <!-- 左側：服務佔比與分析 -->
           <div class="col-12 col-md-5">
-            <q-card class="section-card full-height">
-              <q-card-section class="section-header">
-                <q-icon name="cleaning_services" size="sm" color="teal-8" class="q-mr-xs" />
-                <span class="text-subtitle1 text-weight-medium">服務項目收益分析</span>
-              </q-card-section>
+            <q-card flat bordered class="analysis-card full-height">
               <q-card-section>
-                <div
-                  v-for="svc in serviceBreakdown"
-                  :key="svc.code"
-                  class="q-mb-md"
-                >
-                  <div class="row items-center justify-between q-mb-xs">
-                    <div class="text-body2 text-weight-medium">{{ svc.name }}</div>
-                    <div class="row items-center q-gutter-sm">
-                      <q-chip dense size="sm" color="teal-1" text-color="teal-8">
-                        {{ svc.count }} 件
-                      </q-chip>
-                      <span class="text-body2 text-weight-bold text-teal-8">
-                        NT$ {{ svc.revenue.toLocaleString() }}
-                      </span>
-                    </div>
+                <div class="row items-center justify-between q-mb-lg">
+                  <div class="text-subtitle1 text-weight-bold text-grey-9">
+                    服務營收佔比
                   </div>
-                  <q-linear-progress
-                    :value="svc.percent"
-                    rounded
-                    size="10px"
-                    color="teal-6"
-                    track-color="grey-2"
-                  />
-                  <div class="text-caption text-grey-5 q-mt-xs">
-                    佔比 {{ (svc.percent * 100).toFixed(1) }}%
+                  <q-icon name="pie_chart" color="grey-4" size="20px" />
+                </div>
+
+                <!-- Donut Chart Visualization -->
+                <div class="donut-chart-container q-mb-xl">
+                  <div class="donut-visual">
+                    <svg viewBox="0 0 36 36" class="donut-svg">
+                      <circle
+                        class="donut-ring"
+                        cx="18"
+                        cy="18"
+                        r="15.915"
+                        fill="transparent"
+                        stroke="#f1f5f9"
+                        stroke-width="3"
+                      ></circle>
+                      <template v-for="svc in chartSegments" :key="svc.code">
+                        <circle
+                          class="donut-segment"
+                          cx="18"
+                          cy="18"
+                          r="15.915"
+                          fill="transparent"
+                          :stroke="svc.color"
+                          stroke-width="3.5"
+                          :stroke-dasharray="`${svc.percent} ${100 - svc.percent}`"
+                          :stroke-dashoffset="svc.offset"
+                          stroke-linecap="round"
+                        >
+                          <q-tooltip>
+                            {{ svc.name }}: {{ svc.percent.toFixed(1) }}%
+                          </q-tooltip>
+                        </circle>
+                      </template>
+                    </svg>
+                    <div class="donut-center">
+                      <div class="text-caption text-grey-5">總營收</div>
+                      <div class="text-h6 text-weight-bold text-teal-9">
+                        NT${{ totalRevenue.toLocaleString() }}
+                      </div>
+                    </div>
                   </div>
                 </div>
 
-                <q-separator class="q-my-sm" />
-                <div class="row justify-between items-center">
-                  <span class="text-caption text-grey-6">急件加收費用</span>
-                  <span class="text-body2 text-weight-bold text-orange-7">
+                <!-- List with percent bars -->
+                <div class="service-list q-mt-md">
+                  <div
+                    v-for="(svc, index) in serviceBreakdown"
+                    :key="svc.code"
+                    class="service-item q-mb-lg"
+                  >
+                    <div class="row items-center justify-between q-mb-xs">
+                      <div class="row items-center">
+                        <div
+                          class="service-dot"
+                          :style="`background: ${getServiceColor(index)}`"
+                        ></div>
+                        <span
+                          class="text-body2 text-grey-8 text-weight-medium"
+                          >{{ svc.name }}</span
+                        >
+                      </div>
+                      <span class="text-body2 text-weight-bold text-grey-9"
+                        >NT$ {{ svc.revenue.toLocaleString() }}</span
+                      >
+                    </div>
+                    <div class="row items-center q-gutter-x-sm">
+                      <div class="col">
+                        <q-linear-progress
+                          :value="svc.percent"
+                          rounded
+                          size="6px"
+                          :style="`color: ${getServiceColor(index)}`"
+                          track-color="blue-grey-1"
+                          class="service-progress"
+                        />
+                      </div>
+                      <div class="text-caption text-grey-5 width-40">
+                        {{ (svc.percent * 100).toFixed(1) }}%
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <q-separator class="q-my-lg" />
+                <div
+                  class="urgent-box row justify-between items-center q-pa-md rounded-borders bg-orange-1"
+                >
+                  <div class="row items-center">
+                    <q-icon
+                      name="bolt"
+                      color="orange-8"
+                      size="20px"
+                      class="q-mr-sm"
+                    />
+                    <span class="text-body2 text-orange-9 text-weight-medium"
+                      >急件加成總收益</span
+                    >
+                  </div>
+                  <span class="text-subtitle2 text-weight-bold text-orange-9">
                     NT$ {{ totalUrgentFee.toLocaleString() }}
                   </span>
                 </div>
@@ -166,88 +290,120 @@
             </q-card>
           </div>
 
-          <!-- 訂單明細表 (日報表) / 每日趨勢表 (月報表) -->
-          <div class="col">
+          <!-- 右側：資料明細 / 趨勢 -->
+          <div class="col-12 col-md-7">
             <!-- 日報表：訂單明細 -->
-            <q-card v-if="tab === 'daily'" class="section-card full-height">
-              <q-card-section class="section-header row items-center justify-between">
-                <div class="row items-center">
-                  <q-icon name="list_alt" size="sm" color="teal-8" class="q-mr-xs" />
-                  <span class="text-subtitle1 text-weight-medium">訂單明細</span>
+            <q-card
+              v-if="tab === 'daily'"
+              flat
+              bordered
+              class="analysis-card full-height"
+            >
+              <q-card-section class="row items-center justify-between">
+                <div class="text-subtitle1 text-weight-bold text-grey-9">
+                  訂單明細流水帳
                 </div>
-                <q-chip dense color="teal-1" text-color="teal-8" size="sm">
-                  共 {{ reportOrders.length }} 筆
-                </q-chip>
+                <q-badge
+                  outline
+                  color="teal-8"
+                  :label="`共 ${reportOrders.length} 筆`"
+                />
               </q-card-section>
-              <div style="overflow-x: auto">
+
               <q-table
                 :rows="reportOrders"
                 :columns="orderColumns"
                 row-key="id"
                 flat
                 dense
-                hide-bottom
-                :rows-per-page-options="[0]"
-                class="report-table"
+                class="modern-table"
+                :rows-per-page-options="[10, 20, 0]"
               >
+                <template v-slot:header="props">
+                  <q-tr :props="props" class="bg-grey-1">
+                    <q-th
+                      v-for="col in props.cols"
+                      :key="col.name"
+                      :props="props"
+                      class="text-grey-7"
+                    >
+                      {{ col.label }}
+                    </q-th>
+                  </q-tr>
+                </template>
+
                 <template v-slot:body-cell-orderNo="props">
                   <q-td :props="props">
-                    <span class="text-weight-medium text-mono">{{ props.value }}</span>
-                    <q-badge v-if="props.row.isUrgent" color="red-5" label="急" size="xs" class="q-ml-xs" />
+                    <div class="text-weight-bold text-teal-9">
+                      {{ props.value }}
+                    </div>
+                    <q-badge
+                      v-if="props.row.isUrgent"
+                      color="orange-1"
+                      text-color="orange-9"
+                      label="急件"
+                      size="xs"
+                      dense
+                    />
                   </q-td>
                 </template>
+
                 <template v-slot:body-cell-services="props">
                   <q-td :props="props">
-                    <span class="text-caption">{{ props.value }}</span>
+                    <div
+                      class="text-caption text-grey-8 ellipsis"
+                      style="max-width: 150px"
+                    >
+                      {{ props.value }}
+                      <q-tooltip>{{ props.value }}</q-tooltip>
+                    </div>
                   </q-td>
                 </template>
+
                 <template v-slot:body-cell-totalAmount="props">
                   <q-td :props="props" class="text-right">
-                    <span class="text-weight-bold text-teal-8">
+                    <div class="text-weight-bold">
                       NT$ {{ props.value.toLocaleString() }}
-                    </span>
-                  </q-td>
-                </template>
-                <template v-slot:body-cell-urgentFee="props">
-                  <q-td :props="props" class="text-right">
-                    <span v-if="props.value > 0" class="text-orange-7 text-caption">
-                      +{{ props.value.toLocaleString() }}
-                    </span>
-                    <span v-else class="text-grey-4">–</span>
+                    </div>
                   </q-td>
                 </template>
               </q-table>
-              </div>
             </q-card>
 
             <!-- 月報表：每日趨勢 -->
-            <q-card v-else class="section-card full-height">
-              <q-card-section class="section-header row items-center justify-between">
-                <div class="row items-center">
-                  <q-icon name="trending_up" size="sm" color="teal-8" class="q-mr-xs" />
-                  <span class="text-subtitle1 text-weight-medium">每日營收趨勢</span>
+            <q-card v-else flat bordered class="analysis-card full-height">
+              <q-card-section>
+                <div class="row items-center justify-between q-mb-lg">
+                  <div class="text-subtitle1 text-weight-bold text-grey-9">
+                    每月營收趨勢圖
+                  </div>
+                  <div class="text-caption text-grey-5">依取件完成日期計算</div>
                 </div>
-              </q-card-section>
-              <q-card-section class="q-pa-none">
-                <div class="trend-scroll">
+
+                <div class="trend-container q-mt-md">
                   <div
                     v-for="day in dailyTrend"
                     :key="day.date"
-                    class="trend-row"
-                    :class="{ 'trend-row--active': day.count > 0 }"
+                    class="trend-item"
+                    :class="{ 'trend-item--empty': day.count === 0 }"
                   >
-                    <div class="trend-date text-caption text-grey-6">{{ day.dateLabel }}</div>
-                    <div class="trend-bar-wrap">
-                      <div
-                        class="trend-bar"
-                        :style="`width: ${day.percent}%`"
-                      />
+                    <div class="trend-header row items-center justify-between">
+                      <span class="trend-date font-mono">{{
+                        day.dateLabel
+                      }}</span>
+                      <span
+                        v-if="day.count > 0"
+                        class="trend-val text-weight-bold text-teal-8"
+                        >NT$ {{ day.revenue.toLocaleString() }}</span
+                      >
+                      <span v-else class="text-grey-3">–</span>
                     </div>
-                    <div class="trend-amount text-caption text-weight-medium" :class="day.count > 0 ? 'text-teal-8' : 'text-grey-4'">
-                      {{ day.count > 0 ? `NT$ ${day.revenue.toLocaleString()}` : '–' }}
-                    </div>
-                    <div class="trend-count text-caption text-grey-5">
-                      {{ day.count > 0 ? `${day.count} 筆` : '' }}
+                    <div class="trend-track">
+                      <div class="trend-fill" :style="`width: ${day.percent}%`">
+                        <q-tooltip v-if="day.count > 0">
+                          {{ day.date }}: {{ day.count }} 筆訂單
+                        </q-tooltip>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -272,7 +428,6 @@ const $q = useQuasar();
 // ── 狀態 ──────────────────────────────────────────────────
 const tab = ref<'daily' | 'monthly'>('daily');
 const loading = ref(false);
-const exporting = ref(false);
 const reportOrders = ref<OrderResult[]>([]);
 
 // 日報表預設今日
@@ -330,7 +485,6 @@ async function loadReport() {
       dateTo = `${selectedMonth.value}-${String(lastDay).padStart(2, '0')}`;
     }
 
-    // PRD 8.5: 以 actualPickupDate 為入帳日，只計算 PICKED_UP 狀態
     const res = await listOrders({
       status: 'PICKED_UP',
       dateFrom,
@@ -346,103 +500,171 @@ async function loadReport() {
   }
 }
 
-// ── 計算指標 ───────────────────────────────────────────────
-const totalRevenue = computed(() =>
-  reportOrders.value.reduce((sum, o) => sum + o.totalAmount, 0)
-);
+// ── 數據計算 ──────────────────────────────────────────────
 
-const totalUrgentFee = computed(() =>
-  reportOrders.value.reduce((sum, o) => sum + o.urgentFee, 0)
-);
+// 總營收
+const totalRevenue = computed(() => {
+  return reportOrders.value.reduce((sum, order) => sum + order.totalAmount, 0);
+});
 
-const avgOrderAmount = computed(() =>
-  reportOrders.value.length === 0
-    ? 0
-    : Math.round(totalRevenue.value / reportOrders.value.length)
-);
+// 急件費用總計
+const totalUrgentFee = computed(() => {
+  return reportOrders.value.reduce((sum, order) => sum + order.urgentFee, 0);
+});
 
-const urgentCount = computed(
-  () => reportOrders.value.filter((o) => o.isUrgent).length
-);
-
-const kpiCards = computed(() => [
-  {
-    label: '總營收',
-    value: `NT$ ${totalRevenue.value.toLocaleString()}`,
-    icon: 'payments',
-    accentColor: '#065f46',
-    iconBg: '#d1fae5',
-    featured: true,
-  },
-  {
-    label: '訂單數',
-    value: reportOrders.value.length,
-    icon: 'receipt_long',
-    accentColor: '#0f766e',
-    iconBg: '#ccfbf1',
-  },
-  {
-    label: '急件費收入',
-    value: `NT$ ${totalUrgentFee.value.toLocaleString()}`,
-    icon: 'bolt',
-    accentColor: '#c2410c',
-    iconBg: '#ffedd5',
-  },
-  {
-    label: '平均訂單金額',
-    value: `NT$ ${avgOrderAmount.value.toLocaleString()}`,
-    icon: 'calculate',
-    accentColor: '#1d4ed8',
-    iconBg: '#dbeafe',
-    featured: true,
-  },
-  {
-    label: '急件筆數',
-    value: urgentCount.value,
-    icon: 'priority_high',
-    accentColor: '#7c3aed',
-    iconBg: '#ede9fe',
-    featured: true,
-  },
-]);
-
-// ── 服務項目分析 ───────────────────────────────────────────
-const SERVICE_NAMES: Record<string, string> = {
-  'SVC-WASH': '洗鞋',
-  'SVC-COATING': '鍍膜',
-  'SVC-BAG': '洗包',
-  'SVC-RECOLOR': '補色',
-};
-
+// 服務項目占比
 const serviceBreakdown = computed(() => {
-  const map: Record<string, { name: string; count: number; revenue: number }> = {};
+  const breakdown: Record<
+    string,
+    { name: string; count: number; revenue: number }
+  > = {};
 
-  for (const order of reportOrders.value) {
-    for (const item of order.items) {
-      if (!map[item.serviceCode]) {
-        map[item.serviceCode] = {
-          name: SERVICE_NAMES[item.serviceCode] ?? item.serviceName,
+  reportOrders.value.forEach((order) => {
+    order.items.forEach((item) => {
+      if (!breakdown[item.serviceCode]) {
+        breakdown[item.serviceCode] = {
+          name: item.serviceName,
           count: 0,
           revenue: 0,
         };
       }
-      map[item.serviceCode].count += item.quantity;
-      map[item.serviceCode].revenue += item.subtotal;
-    }
+      breakdown[item.serviceCode].count += item.quantity;
+      breakdown[item.serviceCode].revenue += item.subtotal;
+    });
+  });
+
+  const total = Object.values(breakdown).reduce(
+    (sum, item) => sum + item.revenue,
+    0,
+  );
+
+  return Object.keys(breakdown)
+    .map((code) => ({
+      code,
+      ...breakdown[code],
+      percent: total > 0 ? breakdown[code].revenue / total : 0,
+    }))
+    .sort((a, b) => b.revenue - a.revenue);
+});
+
+// 圖表顏色
+const SERVICE_COLORS = ['#0d9488', '#0ea5e9', '#6366f1', '#f43f5e', '#f59e0b'];
+const getServiceColor = (index: number) =>
+  SERVICE_COLORS[index % SERVICE_COLORS.length];
+
+// 圓餅圖區塊
+const chartSegments = computed(() => {
+  let currentOffset = 0;
+  return serviceBreakdown.value.map((svc, index) => {
+    const percent = svc.percent * 100;
+    // Stroke-dashoffset starts from 25 (top) and goes clockwise
+    // Formula: 25 - cumulative_percent
+    const offset = 25 - currentOffset;
+    currentOffset += percent;
+    return {
+      ...svc,
+      percent,
+      offset: offset,
+      color: getServiceColor(index),
+    };
+  });
+});
+
+// KPI 資料
+const kpiCards = computed(() => [
+  {
+    label: '總營業額',
+    value: `NT$ ${totalRevenue.value.toLocaleString()}`,
+    icon: 'payments',
+    accentColor: '#0d9488',
+    iconBg: '#f0fdfa',
+    featured: true,
+  },
+  {
+    label: '成交訂單量',
+    value: `${reportOrders.value.length} 筆`,
+    icon: 'shopping_bag',
+    accentColor: '#0ea5e9',
+    iconBg: '#f0f9ff',
+    featured: false,
+  },
+  {
+    label: '平均客單價',
+    value: `NT$ ${reportOrders.value.length > 0 ? Math.round(totalRevenue.value / reportOrders.value.length).toLocaleString() : 0}`,
+    icon: 'account_balance_wallet',
+    accentColor: '#6366f1',
+    iconBg: '#eef2ff',
+    featured: false,
+  },
+  {
+    label: '急件筆數',
+    value: `${reportOrders.value.filter((o) => o.isUrgent).length} 筆`,
+    icon: 'bolt',
+    accentColor: '#f59e0b',
+    iconBg: '#fffbeb',
+    featured: false,
+  },
+]);
+
+// 趨勢數據 (月報表)
+const dailyTrend = computed(() => {
+  if (tab.value === 'daily') return [];
+
+  const year = parseInt(selectedMonth.value.split('-')[0]);
+  const month = parseInt(selectedMonth.value.split('-')[1]);
+  const lastDay = new Date(year, month, 0).getDate();
+
+  const trendMap: Record<number, { revenue: number; count: number }> = {};
+  for (let i = 1; i <= lastDay; i++) {
+    trendMap[i] = { revenue: 0, count: 0 };
   }
 
-  const entries = Object.entries(map).map(([code, v]) => ({ code, ...v }));
-  const maxRevenue = Math.max(...entries.map((e) => e.revenue), 1);
+  reportOrders.value.forEach((order) => {
+    if (order.actualPickupDate) {
+      const d = new Date(order.actualPickupDate).getDate();
+      if (trendMap[d]) {
+        trendMap[d].revenue += order.totalAmount;
+        trendMap[d].count += 1;
+      }
+    }
+  });
 
-  return entries
-    .sort((a, b) => b.revenue - a.revenue)
-    .map((e) => ({ ...e, percent: e.revenue / maxRevenue }));
+  const maxRevenue = Math.max(
+    ...Object.values(trendMap).map((d) => d.revenue),
+    1,
+  );
+
+  return Object.keys(trendMap).map((dayKey) => {
+    const d = parseInt(dayKey);
+    const dateStr = `${selectedMonth.value}-${String(d).padStart(2, '0')}`;
+    const weekDay = ['日', '一', '二', '三', '四', '五', '六'][
+      new Date(dateStr).getDay()
+    ];
+    return {
+      date: dateStr,
+      dateLabel: `${month}/${d} (${weekDay})`,
+      revenue: trendMap[d].revenue,
+      count: trendMap[d].count,
+      percent: (trendMap[d].revenue / maxRevenue) * 100,
+    };
+  });
 });
 
 // ── 日報表訂單欄位 ─────────────────────────────────────────
 const orderColumns = [
-  { name: 'orderNo', label: '訂單編號', field: 'orderNo', align: 'left' as const, sortable: true },
-  { name: 'customerName', label: '顧客', field: 'customerName', align: 'left' as const },
+  {
+    name: 'orderNo',
+    label: '訂單編號',
+    field: 'orderNo',
+    align: 'left' as const,
+    sortable: true,
+  },
+  {
+    name: 'customerName',
+    label: '顧客',
+    field: 'customerName',
+    align: 'left' as const,
+  },
   {
     name: 'services',
     label: '服務項目',
@@ -450,263 +672,266 @@ const orderColumns = [
     align: 'left' as const,
   },
   {
-    name: 'urgentFee',
-    label: '急件費',
-    field: 'urgentFee',
+    name: 'totalAmount',
+    label: '金額',
+    field: 'totalAmount',
     align: 'right' as const,
+    sortable: true,
   },
-  { name: 'totalAmount', label: '金額', field: 'totalAmount', align: 'right' as const, sortable: true },
-  { name: 'actualPickupDate', label: '取件日', field: 'actualPickupDate', align: 'left' as const },
+  {
+    name: 'actualPickupDate',
+    label: '取件日',
+    field: 'actualPickupDate',
+    align: 'left' as const,
+  },
 ];
-
-// ── 月報表每日趨勢 ─────────────────────────────────────────
-const dailyTrend = computed(() => {
-  if (tab.value !== 'monthly') return [];
-
-  const [year, month] = selectedMonth.value.split('-').map(Number);
-  const lastDay = new Date(year, month, 0).getDate();
-
-  // 按 actualPickupDate 彙整
-  const dayMap: Record<string, { count: number; revenue: number }> = {};
-  for (const order of reportOrders.value) {
-    const key = order.actualPickupDate?.slice(0, 10) ?? '';
-    if (!key) continue;
-    if (!dayMap[key]) dayMap[key] = { count: 0, revenue: 0 };
-    dayMap[key].count += 1;
-    dayMap[key].revenue += order.totalAmount;
-  }
-
-  const maxRevenue = Math.max(...Object.values(dayMap).map((d) => d.revenue), 1);
-
-  const result = [];
-  for (let d = 1; d <= lastDay; d++) {
-    const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-    const data = dayMap[dateStr] ?? { count: 0, revenue: 0 };
-    const weekDay = ['日', '一', '二', '三', '四', '五', '六'][new Date(dateStr).getDay()];
-    result.push({
-      date: dateStr,
-      dateLabel: `${month}/${d}（${weekDay}）`,
-      count: data.count,
-      revenue: data.revenue,
-      percent: (data.revenue / maxRevenue) * 100,
-    });
-  }
-  return result;
-});
-
-// ── CSV 匯出 ───────────────────────────────────────────────
-// PRD 8.5: 匯出欄位：訂單編號、顧客姓名、服務項目、金額、取件日
-function exportCsv() {
-  try {
-    exporting.value = true;
-
-    const headers = ['訂單編號', '顧客姓名', '顧客電話', '服務項目', '急件費', '訂單金額', '取件日'];
-    const rows = reportOrders.value.map((o) => [
-      o.orderNo,
-      o.customerName,
-      o.customerPhone,
-      o.items.map((i) => `${i.serviceName}×${i.quantity}`).join('; '),
-      o.urgentFee,
-      o.totalAmount,
-      o.actualPickupDate ?? '',
-    ]);
-
-    const csvContent = [headers, ...rows]
-      .map((row) =>
-        row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(',')
-      )
-      .join('\n');
-
-    const bom = '\uFEFF'; // UTF-8 BOM for Excel
-    const blob = new Blob([bom + csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-
-    const filename =
-      tab.value === 'daily'
-        ? `ShoesReborn_日報表_${selectedDate.value}.csv`
-        : `ShoesReborn_月報表_${selectedMonth.value}.csv`;
-
-    link.href = url;
-    link.download = filename;
-    link.click();
-    URL.revokeObjectURL(url);
-
-    $q.notify({ type: 'positive', message: `已匯出 ${filename}` });
-  } catch {
-    $q.notify({ type: 'negative', message: '匯出失敗，請稍後再試' });
-  } finally {
-    exporting.value = false;
-  }
-}
 
 onMounted(loadReport);
 </script>
 
 <style scoped>
 .report-page {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
-  overflow-x: hidden;
+  background-color: #f8fafc;
+  min-height: 100vh;
 }
 
 /* 標題圖示 */
 .title-icon-wrap {
-  width: 40px;
-  height: 40px;
-  background: linear-gradient(135deg, #0f766e, #0d9488);
-  border-radius: 10px;
+  width: 42px;
+  height: 42px;
+  background: linear-gradient(135deg, #0d9488, #14b8a6);
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 8px rgba(15, 118, 110, 0.3);
+  box-shadow: 0 4px 12px rgba(13, 148, 136, 0.2);
 }
 
 /* KPI Grid */
 .kpi-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
+  gap: 20px;
 }
 
-@media (max-width: 1023px) {
+@media (max-width: 1199px) {
   .kpi-grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 599px) {
+  .kpi-grid {
+    grid-template-columns: 1fr;
   }
 }
 
 /* KPI 卡片 */
 .kpi-card {
   background: white;
-  border-radius: 12px;
-  border-top: 3px solid var(--accent);
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07), 0 4px 12px rgba(0, 0, 0, 0.04);
-  transition: box-shadow 0.2s, transform 0.2s;
-}
-
-.kpi-card--wide {
-  grid-column: span 2;
+  border-radius: 16px;
+  overflow: hidden;
+  position: relative;
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.05),
+    0 10px 15px -5px rgba(0, 0, 0, 0.03);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .kpi-card:hover {
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-  transform: translateY(-1px);
+  transform: translateY(-4px);
+  box-shadow:
+    0 20px 25px -5px rgba(0, 0, 0, 0.05),
+    0 10px 10px -5px rgba(0, 0, 0, 0.02);
 }
 
-.kpi-inner {
-  padding: 14px 16px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
+.kpi-card--featured {
+  background: linear-gradient(to bottom right, #ffffff, #f0fdfa);
 }
 
-.kpi-inner--wide {
-  padding: 20px 24px;
-  gap: 18px;
-}
-
-.kpi-icon-wrap {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.kpi-card--wide .kpi-icon-wrap {
-  width: 52px;
-  height: 52px;
-  border-radius: 14px;
-}
-
-.kpi-value {
-  font-size: 1.35rem;
-  font-weight: 700;
-  color: #1e293b;
-  line-height: 1.2;
-}
-
-.kpi-card--wide .kpi-value {
-  font-size: 1.9rem;
+.kpi-content {
+  padding: 24px;
 }
 
 .kpi-label {
-  font-size: 0.75rem;
   color: #64748b;
-  margin-top: 2px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 4px;
 }
 
-/* 區塊卡片 */
-.section-card {
+.kpi-value {
+  color: #1e293b;
+  font-size: 1.75rem;
+  letter-spacing: -0.025em;
+}
+
+.kpi-icon-container {
+  width: 48px;
+  height: 48px;
   border-radius: 12px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07), 0 4px 12px rgba(0, 0, 0, 0.04);
-}
-
-.section-header {
-  border-bottom: 1px solid rgba(0, 150, 136, 0.1);
-  padding-bottom: 12px;
   display: flex;
   align-items: center;
+  justify-content: center;
 }
 
-/* 報表表格 */
-.report-table :deep(th) {
-  font-size: 0.75rem;
+.kpi-border-bottom {
+  height: 4px;
+  width: 100%;
+  opacity: 0.6;
+}
+
+/* 分析卡片 */
+.analysis-card {
+  border-radius: 16px;
+  background: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* Donut Chart */
+.donut-chart-container {
+  display: flex;
+  justify-content: center;
+  padding: 20px 0;
+}
+
+.donut-visual {
+  position: relative;
+  width: 220px;
+  height: 220px;
+}
+
+.donut-svg {
+  transform: rotate(0deg);
+}
+
+.donut-segment {
+  transition:
+    stroke-dasharray 0.5s ease,
+    stroke-dashoffset 0.5s ease;
+}
+
+.donut-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  width: 70%;
+}
+
+/* 服務清單 */
+.service-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.service-progress {
+  border-radius: 10px;
+  background: #f1f5f9;
+}
+
+.width-40 {
+  width: 45px;
+  text-align: right;
+}
+
+/* 趨勢圖 */
+.trend-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.trend-item {
+  padding: 8px 0;
+}
+
+.trend-header {
+  margin-bottom: 6px;
+}
+
+.trend-date {
+  font-size: 0.8125rem;
   color: #64748b;
-  font-weight: 600;
 }
 
-.text-mono {
-  font-family: 'Courier New', monospace;
-  font-size: 0.85rem;
+.trend-val {
+  font-size: 0.8125rem;
 }
 
-/* 月報趨勢 */
-.trend-scroll {
-  max-height: 420px;
-  overflow-y: auto;
-  padding: 8px 16px;
-}
-
-.trend-row {
-  display: grid;
-  grid-template-columns: 90px 1fr 120px 48px;
-  align-items: center;
-  gap: 8px;
-  padding: 5px 0;
-  border-bottom: 1px solid #f1f5f9;
-}
-
-.trend-row:last-child {
-  border-bottom: none;
-}
-
-.trend-bar-wrap {
+.trend-track {
+  height: 8px;
   background: #f1f5f9;
   border-radius: 4px;
-  height: 8px;
   overflow: hidden;
 }
 
-.trend-bar {
+.trend-fill {
   height: 100%;
   background: linear-gradient(90deg, #0d9488, #14b8a6);
   border-radius: 4px;
-  transition: width 0.4s ease;
-  min-width: 0;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.trend-row--active .trend-bar-wrap {
-  background: #e0f2f1;
+.trend-item--empty .trend-track {
+  opacity: 0.3;
 }
 
-.trend-amount {
-  text-align: right;
+/* 空白狀態 */
+.empty-state {
+  padding: 80px 20px;
+  background: white;
+  border-radius: 20px;
+  margin: 40px 0;
 }
 
-.trend-count {
-  text-align: right;
+.empty-visual {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 20px;
+}
+
+.pulse-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100px;
+  height: 100px;
+  border: 4px solid #f0fdfa;
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: translate(-50%, -50%) scale(0.8);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.4);
+    opacity: 0;
+  }
+}
+
+/* 表格樣式 */
+.modern-table {
+  border-radius: 12px;
+}
+
+.modern-table :deep(.q-table__card) {
+  box-shadow: none;
+}
+
+.modern-table :deep(th) {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 11px;
 }
 </style>

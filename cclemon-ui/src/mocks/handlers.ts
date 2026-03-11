@@ -191,6 +191,8 @@ export const handlers = [
     const keyword = url.searchParams.get('keyword')?.toLowerCase() ?? '';
     const status = url.searchParams.get('status') ?? '';
     const isUrgentStr = url.searchParams.get('isUrgent');
+    const dateFrom = url.searchParams.get('dateFrom') ?? '';
+    const dateTo = url.searchParams.get('dateTo') ?? '';
     const page = Number(url.searchParams.get('page') ?? 0);
     const size = Number(url.searchParams.get('size') ?? 20);
 
@@ -210,6 +212,12 @@ export const handlers = [
     if (isUrgentStr !== null && isUrgentStr !== '') {
       const isUrgent = isUrgentStr === 'true';
       filtered = filtered.filter((o) => o.isUrgent === isUrgent);
+    }
+    if (dateFrom) {
+      filtered = filtered.filter((o) => o.estimatedPickupDate >= dateFrom);
+    }
+    if (dateTo) {
+      filtered = filtered.filter((o) => o.estimatedPickupDate <= dateTo);
     }
 
     const sort = url.searchParams.get('sort') ?? 'createTime,desc';
@@ -243,8 +251,7 @@ export const handlers = [
     const body = (await request.json()) as {
       customerId: number;
       isUrgent: boolean;
-      urgentDeadline?: string;
-      items: { serviceCode: string; quantity: number }[];
+      items: { serviceCode: string; quantity: number; productName?: string; itemNote?: string; itemStorageLocation?: string }[];
       storageLocations?: string[];
       estimatedPickupDate: string;
       note?: string;
@@ -267,6 +274,9 @@ export const handlers = [
         quantity: i.quantity,
         unitPrice: svc?.unitPrice ?? 0,
         subtotal,
+        productName: i.productName,
+        itemNote: i.itemNote,
+        itemStorageLocation: i.itemStorageLocation,
       };
     });
 
@@ -279,7 +289,6 @@ export const handlers = [
       customerPhone: customer.phone,
       status: 'PENDING',
       isUrgent: body.isUrgent,
-      urgentDeadline: body.urgentDeadline,
       items: orderItems,
       storageLocations: body.storageLocations ?? [],
       totalAmount: serviceSubtotal + urgentFee,
@@ -299,7 +308,6 @@ export const handlers = [
     const id = Number(params.id);
     const body = (await request.json()) as {
       isUrgent?: boolean;
-      urgentDeadline?: string;
       storageLocations?: string[];
       estimatedPickupDate?: string;
       note?: string;
@@ -318,7 +326,6 @@ export const handlers = [
     const updated: OrderResult = {
       ...order,
       isUrgent: body.isUrgent ?? order.isUrgent,
-      urgentDeadline: body.urgentDeadline ?? order.urgentDeadline,
       storageLocations: body.storageLocations ?? order.storageLocations,
       estimatedPickupDate: body.estimatedPickupDate ?? order.estimatedPickupDate,
       note: body.note ?? order.note,

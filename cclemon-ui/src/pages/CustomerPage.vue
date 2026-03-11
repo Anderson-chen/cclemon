@@ -1,10 +1,16 @@
 <template>
   <q-page padding>
     <!-- 頁面標題 -->
-    <div class="row items-center q-mb-md">
-      <q-icon name="group" size="md" color="teal-8" class="q-mr-sm" />
-      <h5 class="q-mt-none q-mb-none">會員管理中心</h5>
-      <q-space />
+    <div class="row items-center justify-between q-mb-lg">
+      <div class="row items-center q-gutter-sm">
+        <div class="title-icon-wrap">
+          <q-icon name="group" color="white" size="sm" />
+        </div>
+        <div>
+          <h5 class="q-mt-none q-mb-none text-weight-bold text-grey-9">會員管理中心</h5>
+          <div class="text-caption text-grey-5">Shoes Reborn · 會員資料</div>
+        </div>
+      </div>
       <q-btn
         unelevated
         color="teal-8"
@@ -595,6 +601,16 @@ onMounted(loadCustomers);
 </script>
 
 <style scoped>
+.title-icon-wrap {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #0f766e, #0d9488);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .customer-item {
   min-height: 72px;
   transition: background-color 0.2s;
