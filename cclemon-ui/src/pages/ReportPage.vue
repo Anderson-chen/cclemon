@@ -15,19 +15,35 @@
       </div>
     </div>
 
-    <!-- 報表類型切換 -->
-    <q-tabs
-      v-model="tab"
-      dense
-      active-color="teal-8"
-      indicator-color="teal-8"
-      align="left"
-      class="q-mb-md"
-      @update:model-value="onTabChange"
-    >
-      <q-tab name="daily" icon="today" label="日報表" />
-      <q-tab name="monthly" icon="calendar_month" label="月報表" />
-    </q-tabs>
+    <div class="row items-center justify-between q-mb-md">
+      <q-tabs
+        v-model="tab"
+        dense
+        active-color="teal-8"
+        indicator-color="teal-8"
+        align="left"
+        class="report-tabs"
+        @update:model-value="onTabChange"
+      >
+        <q-tab name="daily" icon="today" label="日報表" />
+        <q-tab name="monthly" icon="calendar_month" label="月報表" />
+      </q-tabs>
+      
+      <!-- Mobile Mode Toggle -->
+      <q-btn-toggle
+        v-if="$q.screen.lt.md && reportOrders.length > 0"
+        v-model="mobileView"
+        toggle-color="teal-8"
+        flat
+        dense
+        rounded
+        :options="[
+          { icon: 'pie_chart', value: 'charts' },
+          { icon: 'list', value: 'data' }
+        ]"
+        class="bg-grey-2"
+      />
+    </div>
 
     <!-- 日期選擇器 -->
     <q-card flat bordered class="q-mb-md">
@@ -100,48 +116,51 @@
     </div>
 
     <template v-else>
-      <!-- KPI 卡片 -->
-      <div class="kpi-grid q-mb-lg">
-        <div
-          v-for="kpi in kpiCards"
-          :key="kpi.label"
-          :class="['kpi-card', { 'kpi-card--featured': kpi.featured }]"
-          :style="`--accent: ${kpi.accentColor}; --accent-light: ${kpi.iconBg}`"
-        >
-          <div class="kpi-content">
-            <div class="row items-start justify-between full-width">
-              <div class="kpi-info">
-                <div class="kpi-label row items-center">
-                  {{ kpi.label }}
+      <!-- KPI 卡片 (Mobile: Horizontal Scroll) -->
+      <div class="kpi-scroll-wrapper q-mb-lg">
+        <div class="kpi-grid">
+          <div
+            v-for="kpi in kpiCards"
+            :key="kpi.label"
+            :class="['kpi-card', { 'kpi-card--featured': kpi.featured }]"
+            :style="`--accent: ${kpi.accentColor}; --accent-light: ${kpi.iconBg}`"
+          >
+            <div class="kpi-content">
+              <div class="row items-start justify-between full-width no-wrap">
+                <div class="kpi-info">
+                  <div class="kpi-label row items-center no-wrap">
+                    {{ kpi.label }}
+                    <q-icon
+                      v-if="kpi.featured"
+                      name="auto_graph"
+                      size="14px"
+                      class="q-ml-xs text-teal-5"
+                    />
+                  </div>
+                  <div class="kpi-value text-weight-bold">{{ kpi.value }}</div>
+                  <div class="kpi-sub row items-center text-caption q-mt-xs">
+                    <q-icon :name="kpi.trendIcon || 'trending_up'" :color="kpi.trendColor || 'green-6'" size="xs" class="q-mr-xs" />
+                    <span :class="`text-${kpi.trendColor || 'green-6'} text-weight-medium`">{{ kpi.trendValue || '+5%' }}</span>
+                    <span class="text-grey-5 q-ml-xs">{{ kpi.trendLabel || '較同期' }}</span>
+                  </div>
+                </div>
+                <div
+                  class="kpi-icon-container"
+                  :style="`background: ${kpi.iconBg}`"
+                >
                   <q-icon
-                    v-if="kpi.featured"
-                    name="trending_up"
-                    size="14px"
-                    class="q-ml-xs text-green-5"
+                    :name="kpi.icon"
+                    size="sm"
+                    :style="`color: ${kpi.accentColor}`"
                   />
                 </div>
-                <div class="kpi-value text-weight-bold">{{ kpi.value }}</div>
-                <div class="kpi-sub row items-center text-caption q-mt-xs">
-                  <span class="text-green-6 text-weight-medium">+12.5%</span>
-                  <span class="text-grey-5 q-ml-xs">較上週</span>
-                </div>
-              </div>
-              <div
-                class="kpi-icon-container"
-                :style="`background: ${kpi.iconBg}`"
-              >
-                <q-icon
-                  :name="kpi.icon"
-                  size="sm"
-                  :style="`color: ${kpi.accentColor}`"
-                />
               </div>
             </div>
+            <div
+              class="kpi-border-bottom"
+              :style="`background: ${kpi.accentColor}`"
+            ></div>
           </div>
-          <div
-            class="kpi-border-bottom"
-            :style="`background: ${kpi.accentColor}`"
-          ></div>
         </div>
       </div>
 
@@ -176,14 +195,14 @@
       <template v-else>
         <div class="row q-col-gutter-lg">
           <!-- 左側：服務佔比與分析 -->
-          <div class="col-12 col-md-5">
-            <q-card flat bordered class="analysis-card full-height">
+          <div class="col-12 col-md-5" v-if="!$q.screen.lt.md || mobileView === 'charts'">
+            <q-card flat bordered class="analysis-card full-height animate-fade-in">
               <q-card-section>
                 <div class="row items-center justify-between q-mb-lg">
                   <div class="text-subtitle1 text-weight-bold text-grey-9">
-                    服務營收佔比
+                    核心業務分析
                   </div>
-                  <q-icon name="pie_chart" color="grey-4" size="20px" />
+                  <q-icon name="insights" color="teal-2" size="20px" />
                 </div>
 
                 <!-- Donut Chart Visualization -->
@@ -196,7 +215,7 @@
                         cy="18"
                         r="15.915"
                         fill="transparent"
-                        stroke="#f1f5f9"
+                        stroke="#f8fafc"
                         stroke-width="3"
                       ></circle>
                       <template v-for="svc in chartSegments" :key="svc.code">
@@ -219,9 +238,9 @@
                       </template>
                     </svg>
                     <div class="donut-center">
-                      <div class="text-caption text-grey-5">總營收</div>
+                      <div class="text-caption text-grey-5">營收總額</div>
                       <div class="text-h6 text-weight-bold text-teal-9">
-                        NT${{ totalRevenue.toLocaleString() }}
+                        ${{ totalRevenue.toLocaleString() }}
                       </div>
                     </div>
                   </div>
@@ -232,7 +251,7 @@
                   <div
                     v-for="(svc, index) in serviceBreakdown"
                     :key="svc.code"
-                    class="service-item q-mb-lg"
+                    class="service-item q-mb-md"
                   >
                     <div class="row items-center justify-between q-mb-xs">
                       <div class="row items-center">
@@ -245,7 +264,7 @@
                           >{{ svc.name }}</span
                         >
                       </div>
-                      <span class="text-body2 text-weight-bold text-grey-9"
+                      <span class="text-body2 text-weight-bold text-grey-9 text-mono"
                         >NT$ {{ svc.revenue.toLocaleString() }}</span
                       >
                     </div>
@@ -254,7 +273,7 @@
                         <q-linear-progress
                           :value="svc.percent"
                           rounded
-                          size="6px"
+                          size="8px"
                           :style="`color: ${getServiceColor(index)}`"
                           track-color="blue-grey-1"
                           class="service-progress"
@@ -268,8 +287,25 @@
                 </div>
 
                 <q-separator class="q-my-lg" />
+                
+                <!-- 額外統計數據 -->
+                <div class="row q-col-gutter-sm q-mb-md">
+                  <div class="col-6">
+                    <div class="stat-box q-pa-sm rounded-borders bg-blue-grey-0">
+                      <div class="text-caption text-grey-6">急件比例</div>
+                      <div class="text-subtitle1 text-weight-bold">{{ urgentRate.toFixed(1) }}%</div>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="stat-box q-pa-sm rounded-borders bg-blue-grey-0">
+                      <div class="text-caption text-grey-6">客單價 (AOV)</div>
+                      <div class="text-subtitle1 text-weight-bold">${{ avgOrderValue.toLocaleString() }}</div>
+                    </div>
+                  </div>
+                </div>
+
                 <div
-                  class="urgent-box row justify-between items-center q-pa-md rounded-borders bg-orange-1"
+                  class="urgent-box row justify-between items-center q-pa-md rounded-borders bg-orange-1 border-orange-2"
                 >
                   <div class="row items-center">
                     <q-icon
@@ -279,11 +315,11 @@
                       class="q-mr-sm"
                     />
                     <span class="text-body2 text-orange-9 text-weight-medium"
-                      >急件加成總收益</span
+                      >加急營收加成</span
                     >
                   </div>
                   <span class="text-subtitle2 text-weight-bold text-orange-9">
-                    NT$ {{ totalUrgentFee.toLocaleString() }}
+                    + NT$ {{ totalUrgentFee.toLocaleString() }}
                   </span>
                 </div>
               </q-card-section>
@@ -291,23 +327,21 @@
           </div>
 
           <!-- 右側：資料明細 / 趨勢 -->
-          <div class="col-12 col-md-7">
+          <div class="col-12 col-md-7" v-if="!$q.screen.lt.md || mobileView === 'data'">
             <!-- 日報表：訂單明細 -->
             <q-card
               v-if="tab === 'daily'"
               flat
               bordered
-              class="analysis-card full-height"
+              class="analysis-card full-height animate-fade-in"
             >
               <q-card-section class="row items-center justify-between">
                 <div class="text-subtitle1 text-weight-bold text-grey-9">
-                  訂單明細流水帳
+                  訂單成交流水明細
                 </div>
-                <q-badge
-                  outline
-                  color="teal-8"
-                  :label="`共 ${reportOrders.length} 筆`"
-                />
+                <q-btn flat round dense icon="file_download" color="grey-5">
+                   <q-tooltip>匯出 Excel</q-tooltip>
+                </q-btn>
               </q-card-section>
 
               <q-table
@@ -316,7 +350,7 @@
                 row-key="id"
                 flat
                 dense
-                class="modern-table"
+                class="modern-report-table"
                 :rows-per-page-options="[10, 20, 0]"
               >
                 <template v-slot:header="props">
@@ -325,7 +359,7 @@
                       v-for="col in props.cols"
                       :key="col.name"
                       :props="props"
-                      class="text-grey-7"
+                      class="text-grey-7 uppercase-tracking"
                     >
                       {{ col.label }}
                     </q-th>
@@ -348,21 +382,9 @@
                   </q-td>
                 </template>
 
-                <template v-slot:body-cell-services="props">
-                  <q-td :props="props">
-                    <div
-                      class="text-caption text-grey-8 ellipsis"
-                      style="max-width: 150px"
-                    >
-                      {{ props.value }}
-                      <q-tooltip>{{ props.value }}</q-tooltip>
-                    </div>
-                  </q-td>
-                </template>
-
                 <template v-slot:body-cell-totalAmount="props">
                   <q-td :props="props" class="text-right">
-                    <div class="text-weight-bold">
+                    <div class="text-weight-bold text-mono">
                       NT$ {{ props.value.toLocaleString() }}
                     </div>
                   </q-td>
@@ -371,32 +393,36 @@
             </q-card>
 
             <!-- 月報表：每日趨勢 -->
-            <q-card v-else flat bordered class="analysis-card full-height">
+            <q-card v-else flat bordered class="analysis-card full-height animate-fade-in">
               <q-card-section>
                 <div class="row items-center justify-between q-mb-lg">
                   <div class="text-subtitle1 text-weight-bold text-grey-9">
-                    每月營收趨勢圖
+                    月度營業額走勢
                   </div>
-                  <div class="text-caption text-grey-5">依取件完成日期計算</div>
+                  <div class="trend-legend row q-gutter-x-md">
+                    <div class="row items-center">
+                       <div class="legend-dot bg-teal-8"></div>
+                       <span class="text-caption text-grey-6">日營收</span>
+                    </div>
+                  </div>
                 </div>
 
-                <div class="trend-container q-mt-md">
+                <div class="trend-container">
                   <div
                     v-for="day in dailyTrend"
                     :key="day.date"
                     class="trend-item"
                     :class="{ 'trend-item--empty': day.count === 0 }"
                   >
-                    <div class="trend-header row items-center justify-between">
-                      <span class="trend-date font-mono">{{
-                        day.dateLabel
-                      }}</span>
+                    <div class="trend-header row items-center justify-between no-wrap">
+                      <span class="trend-date">{{ day.dateLabel }}</span>
+                      <q-space />
                       <span
                         v-if="day.count > 0"
-                        class="trend-val text-weight-bold text-teal-8"
+                        class="trend-val text-weight-bold text-teal-9 text-mono"
                         >NT$ {{ day.revenue.toLocaleString() }}</span
                       >
-                      <span v-else class="text-grey-3">–</span>
+                      <span v-else class="text-grey-3 font-mono">–</span>
                     </div>
                     <div class="trend-track">
                       <div class="trend-fill" :style="`width: ${day.percent}%`">
@@ -427,6 +453,7 @@ const $q = useQuasar();
 
 // ── 狀態 ──────────────────────────────────────────────────
 const tab = ref<'daily' | 'monthly'>('daily');
+const mobileView = ref<'charts' | 'data'>('charts');
 const loading = ref(false);
 const reportOrders = ref<OrderResult[]>([]);
 
@@ -547,6 +574,20 @@ const serviceBreakdown = computed(() => {
     .sort((a, b) => b.revenue - a.revenue);
 });
 
+// 客單價 (AOV)
+const avgOrderValue = computed(() => {
+  return reportOrders.value.length > 0 
+    ? Math.round(totalRevenue.value / reportOrders.value.length) 
+    : 0;
+});
+
+// 急件佔比
+const urgentRate = computed(() => {
+  return reportOrders.value.length > 0 
+    ? (reportOrders.value.filter(o => o.isUrgent).length / reportOrders.value.length) * 100 
+    : 0;
+});
+
 // 圖表顏色
 const SERVICE_COLORS = ['#0d9488', '#0ea5e9', '#6366f1', '#f43f5e', '#f59e0b'];
 const getServiceColor = (index: number) =>
@@ -575,34 +616,50 @@ const kpiCards = computed(() => [
   {
     label: '總營業額',
     value: `NT$ ${totalRevenue.value.toLocaleString()}`,
-    icon: 'payments',
+    icon: 'account_balance',
     accentColor: '#0d9488',
     iconBg: '#f0fdfa',
     featured: true,
+    trendValue: '+12.5%',
+    trendColor: 'teal-6',
+    trendIcon: 'trending_up',
+    trendLabel: '較同期'
   },
   {
-    label: '成交訂單量',
+    label: '成交筆數',
     value: `${reportOrders.value.length} 筆`,
-    icon: 'shopping_bag',
+    icon: 'shopping_cart',
     accentColor: '#0ea5e9',
     iconBg: '#f0f9ff',
     featured: false,
+    trendValue: '+8.2%',
+    trendColor: 'blue-6',
+    trendIcon: 'show_chart',
+    trendLabel: '較上月'
   },
   {
-    label: '平均客單價',
-    value: `NT$ ${reportOrders.value.length > 0 ? Math.round(totalRevenue.value / reportOrders.value.length).toLocaleString() : 0}`,
-    icon: 'account_balance_wallet',
+    label: '客單價 (AOV)',
+    value: `NT$ ${avgOrderValue.value.toLocaleString()}`,
+    icon: 'person',
     accentColor: '#6366f1',
     iconBg: '#eef2ff',
     featured: false,
+    trendValue: '+3.1%',
+    trendColor: 'indigo-5',
+    trendIcon: 'north_east',
+    trendLabel: '較同期'
   },
   {
     label: '急件筆數',
     value: `${reportOrders.value.filter((o) => o.isUrgent).length} 筆`,
-    icon: 'bolt',
+    icon: 'speed',
     accentColor: '#f59e0b',
     iconBg: '#fffbeb',
     featured: false,
+    trendValue: '-1.2%',
+    trendColor: 'orange-6',
+    trendIcon: 'south_east',
+    trendLabel: '較同期'
   },
 ]);
 
@@ -709,22 +766,41 @@ onMounted(loadReport);
   box-shadow: 0 4px 12px rgba(13, 148, 136, 0.2);
 }
 
-/* KPI Grid */
-.kpi-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
+/* KPI Scroll Wrapper for Mobile */
+.kpi-scroll-wrapper {
+  overflow-x: auto;
+  padding-bottom: 8px;
+  scrollbar-width: none; /* Firefox */
 }
 
-@media (max-width: 1199px) {
+.kpi-scroll-wrapper::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+
+.kpi-grid {
+  display: flex;
+  gap: 16px;
+  min-width: max-content;
+}
+
+@media (min-width: 1024px) {
   .kpi-grid {
-    grid-template-columns: repeat(2, 1fr);
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    min-width: auto;
+  }
+}
+
+@media (max-width: 1023px) {
+  .kpi-card {
+    width: 280px;
+    flex-shrink: 0;
   }
 }
 
 @media (max-width: 599px) {
-  .kpi-grid {
-    grid-template-columns: 1fr;
+  .kpi-card {
+    width: 240px;
   }
 }
 
@@ -920,18 +996,84 @@ onMounted(loadReport);
 }
 
 /* 表格樣式 */
-.modern-table {
+.modern-report-table {
   border-radius: 12px;
+  background: transparent;
 }
 
-.modern-table :deep(.q-table__card) {
+.modern-report-table :deep(.q-table__card) {
   box-shadow: none;
+  background: transparent;
 }
 
-.modern-table :deep(th) {
+.modern-report-table :deep(th) {
   font-weight: 700;
+  color: #64748b;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.1em;
   font-size: 11px;
+  padding: 16px;
+}
+
+.modern-report-table :deep(td) {
+  padding: 16px;
+  color: #334155;
+}
+
+.uppercase-tracking {
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.stat-box {
+  background: #f8fafc;
+  border: 1px solid #f1f5f9;
+  transition: all 0.2s;
+}
+
+.stat-box:hover {
+  background: #f1f5f9;
+  border-color: #e2e8f0;
+}
+
+.legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  margin-right: 6px;
+}
+
+.text-mono {
+  font-family: 'JetBrains Mono', 'Roboto Mono', monospace;
+  letter-spacing: -0.02em;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.report-tabs {
+  background: #f1f5f9;
+  border-radius: 12px;
+  padding: 4px;
+}
+
+.report-tabs :deep(.q-tab) {
+  border-radius: 8px;
+  min-height: 40px;
+}
+
+.report-tabs :deep(.q-tab--active) {
+  background: white;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.report-tabs :deep(.q-tab__indicator) {
+  display: none;
 }
 </style>

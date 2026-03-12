@@ -45,6 +45,7 @@ export interface OrderCreateRequest {
 
 export interface OrderUpdateRequest {
   isUrgent?: boolean;
+  items?: OrderCreateRequest['items'];
   storageLocations?: string[];
   estimatedPickupDate?: string;
   note?: string;

@@ -594,7 +594,6 @@ onMounted(loadOrders);
 
 /* 訂單列表項目 */
 .order-list-item {
-  min-height: 56px;
   padding: 12px 16px;
   border-left: 3px solid transparent;
   transition: background 0.18s ease, border-color 0.18s ease;

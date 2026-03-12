@@ -29,7 +29,8 @@
       "Bash(cd \"C:\\\\project\\\\cclemon\\\\cclemon-ui\" && npx vue-tsc --noEmit 2>&1)",
       "Bash(cd \"C:\\\\project\\\\cclemon\\\\cclemon-ui\" && npx vue-tsc --noEmit 2>&1 | grep \"^src/\")",
       "Bash(cd \"C:\\\\project\\\\cclemon\\\\cclemon-ui\" && npx vue-tsc --noEmit 2>&1 | grep \"^src/\" && echo \"OK\")",
-      "Bash(npx vue-tsc:*)"
+      "Bash(npx vue-tsc:*)",
+      "Bash(npx tsc:*)"
     ]
   }
 }

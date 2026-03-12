@@ -15,7 +15,6 @@
         unelevated
         color="teal-8"
         icon="person_add"
-        :label="$q.screen.gt.xs ? '新增會員' : ''"
         @click="openCreateDialog"
         class="cursor-pointer"
       />
@@ -23,12 +22,6 @@
 
     <!-- 搜尋與篩選 -->
     <q-card class="q-mb-md">
-      <q-card-section class="card-header-accent">
-        <div class="row items-center">
-          <q-icon name="search" color="teal-8" size="sm" class="q-mr-sm" />
-          <span class="text-h6">搜尋會員</span>
-        </div>
-      </q-card-section>
       <q-card-section>
         <div class="row q-gutter-md wrap">
           <q-input
@@ -40,15 +33,11 @@
             style="flex: 1; min-width: 200px"
             @keyup.enter="search"
           >
-            <template v-slot:prepend>
-              <q-icon name="search" />
-            </template>
           </q-input>
 
           <q-btn
             unelevated
             color="teal-8"
-            icon="search"
             label="查詢"
             @click="search"
             :loading="loading"
@@ -60,14 +49,6 @@
 
     <!-- 會員列表 -->
     <q-card class="section-card">
-      <q-card-section class="card-header-accent">
-        <div class="row items-center">
-          <q-icon name="list" color="teal-8" size="sm" class="q-mr-sm" />
-          <span class="text-h6">會員列表</span>
-          <q-space />
-          <span class="text-caption text-grey-5">共 {{ pagination.totalElements }} 筆</span>
-        </div>
-      </q-card-section>
 
       <!-- 列表主體 -->
       <div class="list-body">
