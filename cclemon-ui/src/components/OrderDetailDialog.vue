@@ -33,38 +33,74 @@
       <!-- Scrollable Body -->
       <div class="detail-body">
       <q-card-section class="q-pa-md">
-        <div class="row q-col-gutter-lg" :class="{ 'column': $q.screen.lt.md }">
-          <!-- 訂單資訊 + 狀態操作 -->
-          <div class="col-12 col-md-4">
-            <q-card bordered flat>
-              <q-card-section class="card-header-accent">
-                <div class="row items-center">
-                  <q-icon
-                    name="info"
-                    color="teal-8"
-                    size="sm"
-                    class="q-mr-sm"
-                  />
-                  <span class="text-subtitle1 text-weight-medium"
-                    >訂單資訊</span
-                  >
-                </div>
-              </q-card-section>
+        <q-card bordered flat>
+          <!-- Tabs -->
+          <q-tabs
+            v-model="activeTab"
+            dense
+            align="left"
+            active-color="teal-8"
+            indicator-color="teal-8"
+            class="text-grey-7 tab-bar"
+          >
+            <q-tab name="info" icon="info" label="訂單資訊" />
+            <q-tab name="items" icon="cleaning_services" label="服務明細" />
+          </q-tabs>
+          <q-separator />
+
+          <q-tab-panels v-model="activeTab" animated>
+            <!-- Tab: 訂單資訊 -->
+            <q-tab-panel name="info" class="q-pa-none">
               <q-card-section>
-                <div class="text-center q-mb-md">
-                  <q-avatar
-                    :color="statusColor(localOrder.status)"
-                    text-color="white"
-                    size="56px"
-                    :icon="statusIcon(localOrder.status)"
-                  />
-                  <div class="q-mt-sm">
-                    <q-badge
-                      :color="statusColor(localOrder.status)"
-                      :label="statusLabel(localOrder.status)"
-                      class="text-caption"
+                <!-- 整合後的狀態軌道 (Status Rail) -->
+                <div class="text-caption text-grey-6 text-center q-mb-xs">點擊圖示可更新狀態</div>
+                <div class="status-rail q-mb-md">
+                  <template v-for="(step, idx) in STATUS_STEPS" :key="step.status">
+                    <div v-if="idx > 0"
+                      class="status-rail__line"
+                      :class="{ 'status-rail__line--done': statusIndex(localOrder.status) >= idx }"
                     />
-                  </div>
+                    <div
+                      class="status-node"
+                      :class="[
+                        `status-node--${step.status.toLowerCase()}`,
+                        {
+                          'status-node--done': statusIndex(localOrder.status) > idx,
+                          'status-node--active': localOrder.status === step.status,
+                          'status-node--future': statusIndex(localOrder.status) < idx,
+                          'status-node--clickable': canUpdateTo(step.status),
+                        }
+                      ]"
+                      @click="canUpdateTo(step.status) && updateStatus(step.status)"
+                    >
+                      <div class="status-node__ring">
+                        <q-spinner v-if="pendingStatus === step.status" size="18px" color="white" />
+                        <q-icon v-else :name="step.icon" size="18px" />
+                      </div>
+                      <div class="status-node__label">{{ step.label }}</div>
+                    </div>
+                  </template>
+                </div>
+
+                <!-- 取消訂單按鈕 (僅在未取件且未取消時顯示) -->
+                <div v-if="localOrder.status !== 'PICKED_UP' && localOrder.status !== 'CANCELLED'" class="row justify-center q-mb-md">
+                  <q-btn
+                    flat
+                    color="red-4"
+                    icon="cancel"
+                    label="取消訂單"
+                    dense
+                    size="sm"
+                    padding="2px 12px"
+                    class="cursor-pointer"
+                    :loading="pendingStatus === 'CANCELLED'"
+                    @click="confirmCancel"
+                  />
+                </div>
+
+                <!-- 若已取消則顯示取消標誌 -->
+                <div v-if="localOrder.status === 'CANCELLED'" class="text-center q-mb-md">
+                  <q-chip color="red-1" text-color="red-6" icon="cancel" label="訂單已取消" />
                 </div>
 
                 <q-list dense>
@@ -84,8 +120,23 @@
                     <q-item-section>
                       <q-item-label caption>電話</q-item-label>
                       <div class="row items-center no-wrap">
-                        <q-item-label>{{ localOrder.customerPhone }}</q-item-label>
-                        <q-btn v-if="$q.screen.lt.md" flat round dense color="teal-7" icon="phone" :href="'tel:' + localOrder.customerPhone" class="q-ml-sm" />
+                        <template v-if="localOrder.customerPhone">
+                          <a 
+                            :href="'tel:' + localOrder.customerPhone" 
+                            class="phone-link text-weight-medium text-teal-9"
+                          >
+                            {{ localOrder.customerPhone }}
+                          </a>
+                          <div class="q-ml-sm row items-center no-wrap q-gutter-xs">
+                            <q-btn flat round dense color="teal-7" icon="call" tag="a" :href="'tel:' + localOrder.customerPhone" size="sm" class="cursor-pointer">
+                              <q-tooltip>立即撥打</q-tooltip>
+                            </q-btn>
+                            <q-btn flat round dense color="grey-6" icon="content_copy" size="xs" @click="copyText(localOrder.customerPhone)" class="cursor-pointer">
+                              <q-tooltip>複製號碼</q-tooltip>
+                            </q-btn>
+                          </div>
+                        </template>
+                        <span v-else class="text-grey-5">無電話資訊</span>
                       </div>
                     </q-item-section>
                   </q-item>
@@ -122,15 +173,7 @@
                       }}</q-item-label>
                     </q-item-section>
                   </q-item>
-                  <q-item v-if="localOrder.note">
-                    <q-item-section avatar
-                      ><q-icon name="notes" color="teal-7"
-                    /></q-item-section>
-                    <q-item-section>
-                      <q-item-label caption>備註</q-item-label>
-                      <q-item-label>{{ localOrder.note }}</q-item-label>
-                    </q-item-section>
-                  </q-item>
+
                   <q-item>
                     <q-item-section avatar
                       ><q-icon name="calendar_today" color="teal-7"
@@ -144,96 +187,10 @@
                   </q-item>
                 </q-list>
               </q-card-section>
-            </q-card>
+            </q-tab-panel>
 
-            <!-- 金額摘要 -->
-            <q-card bordered flat class="q-mt-md">
-              <q-card-section class="card-header-accent">
-                <div class="row items-center">
-                  <q-icon
-                    name="payments"
-                    color="teal-8"
-                    size="sm"
-                    class="q-mr-sm"
-                  />
-                  <span class="text-subtitle1 text-weight-medium"
-                    >金額摘要</span
-                  >
-                </div>
-              </q-card-section>
-              <q-card-section>
-                <div class="row q-gutter-sm">
-                  <div class="col stat-mini-card text-center q-pa-sm">
-                    <div class="text-h6 text-weight-bold text-teal-8">
-                      NT$ {{ localOrder.totalAmount.toLocaleString() }}
-                    </div>
-                    <div class="text-caption text-grey-6">訂單總額</div>
-                  </div>
-                  <div
-                    v-if="localOrder.urgentFee > 0"
-                    class="col stat-mini-card text-center q-pa-sm"
-                  >
-                    <div class="text-h6 text-weight-bold text-red-6">
-                      NT$ {{ localOrder.urgentFee.toLocaleString() }}
-                    </div>
-                    <div class="text-caption text-grey-6">急件費</div>
-                  </div>
-                </div>
-              </q-card-section>
-            </q-card>
-
-            <!-- 狀態操作 -->
-            <q-card
-              bordered
-              flat
-              class="q-mt-md"
-              v-if="nextStatusOptions(localOrder.status).length > 0"
-            >
-              <q-card-section class="card-header-accent">
-                <div class="row items-center">
-                  <q-icon
-                    name="update"
-                    color="teal-8"
-                    size="sm"
-                    class="q-mr-sm"
-                  />
-                  <span class="text-subtitle1 text-weight-medium"
-                    >更新狀態</span
-                  >
-                </div>
-              </q-card-section>
-              <q-card-section class="q-gutter-sm">
-                <q-btn
-                  v-for="opt in nextStatusOptions(localOrder.status)"
-                  :key="opt.status"
-                  unelevated
-                  :color="opt.color"
-                  :icon="opt.icon"
-                  :label="opt.label"
-                  class="full-width cursor-pointer"
-                  @click="updateStatus(opt.status)"
-                  :loading="updatingStatus"
-                />
-              </q-card-section>
-            </q-card>
-          </div>
-
-          <!-- 服務明細 -->
-          <div class="col">
-            <q-card bordered flat>
-              <q-card-section class="card-header-accent">
-                <div class="row items-center">
-                  <q-icon
-                    name="cleaning_services"
-                    color="teal-8"
-                    size="sm"
-                    class="q-mr-sm"
-                  />
-                  <span class="text-subtitle1 text-weight-medium"
-                    >服務明細</span
-                  >
-                </div>
-              </q-card-section>
+            <!-- Tab: 服務明細 -->
+            <q-tab-panel name="items" class="q-pa-none">
               <q-list separator>
                 <template v-for="item in localOrder.items" :key="item.id">
                   <q-item>
@@ -341,9 +298,9 @@
                   </span>
                 </div>
               </q-card-section>
-            </q-card>
-          </div>
-        </div>
+            </q-tab-panel>
+          </q-tab-panels>
+        </q-card>
       </q-card-section>
       </div>
 
@@ -433,7 +390,7 @@
 
 <script setup lang="ts">
 import { ref, reactive, watch } from 'vue';
-import { useQuasar } from 'quasar';
+import { useQuasar, copyToClipboard } from 'quasar';
 import { updateOrderStatus } from '../api/order/order';
 import type { OrderResult, OrderStatus } from '../api/order/types';
 
@@ -452,8 +409,16 @@ const emit = defineEmits<{
 }>();
 
 const $q = useQuasar();
-const updatingStatus = ref(false);
+const pendingStatus = ref<OrderStatus | null>(null);
 const localOrder = ref<OrderResult | null>(null);
+const activeTab = ref<'info' | 'items'>('info');
+
+const STATUS_STEPS: { status: OrderStatus; label: string; icon: string }[] = [
+  { status: 'PENDING', label: '待處理', icon: 'hourglass_empty' },
+  { status: 'IN_PROGRESS', label: '處理中', icon: 'sync' },
+  { status: 'READY', label: '待取件', icon: 'check_circle' },
+  { status: 'PICKED_UP', label: '已取件', icon: 'done_all' },
+];
 
 // 藝廊狀態
 const imagePreview = reactive({
@@ -476,10 +441,20 @@ function showFullImage(urls: string[], index: number) {
   imagePreview.open = true;
 }
 
+function statusIndex(status: string): number {
+  return STATUS_STEPS.findIndex((s) => s.status === status);
+}
+
+function canUpdateTo(status: OrderStatus): boolean {
+  if (!localOrder.value) return false;
+  const cur = localOrder.value.status;
+  return cur !== status && cur !== 'CANCELLED' && cur !== 'PICKED_UP';
+}
+
 async function updateStatus(status: OrderStatus) {
   if (!localOrder.value) return;
   try {
-    updatingStatus.value = true;
+    pendingStatus.value = status;
     const payload: { status: OrderStatus; actualPickupDate?: string } = {
       status,
     };
@@ -497,8 +472,29 @@ async function updateStatus(status: OrderStatus) {
   } catch {
     $q.notify({ type: 'negative', message: '狀態更新失敗' });
   } finally {
-    updatingStatus.value = false;
+    pendingStatus.value = null;
   }
+}
+
+function confirmCancel() {
+  $q.dialog({
+    title: '確認取消',
+    message: '確定要取消這筆訂單嗎？取消後將無法回復狀態。',
+    cancel: {
+      flat: true,
+      color: 'grey-7',
+      label: '返回',
+    },
+    ok: {
+      unelevated: true,
+      color: 'red-6',
+      label: '確定取消',
+      rounded: true,
+    },
+    class: 'modern-dialog',
+  }).onOk(() => {
+    updateStatus('CANCELLED');
+  });
 }
 
 function statusColor(status: string): string {
@@ -513,17 +509,7 @@ function statusColor(status: string): string {
   );
 }
 
-function statusIcon(status: string): string {
-  return (
-    {
-      PENDING: 'hourglass_empty',
-      IN_PROGRESS: 'sync',
-      READY: 'check_circle',
-      PICKED_UP: 'done_all',
-      CANCELLED: 'cancel',
-    }[status] ?? 'help'
-  );
-}
+
 
 function statusLabel(status: string): string {
   return (
@@ -537,60 +523,19 @@ function statusLabel(status: string): string {
   );
 }
 
-type StatusOption = {
-  status: OrderStatus;
-  label: string;
-  color: string;
-  icon: string;
-};
-
-function nextStatusOptions(status: string): StatusOption[] {
-  const map: Record<string, StatusOption[]> = {
-    PENDING: [
-      {
-        status: 'IN_PROGRESS',
-        label: '開始處理',
-        color: 'blue-6',
-        icon: 'sync',
-      },
-      {
-        status: 'CANCELLED',
-        label: '取消訂單',
-        color: 'red-4',
-        icon: 'cancel',
-      },
-    ],
-    IN_PROGRESS: [
-      {
-        status: 'READY',
-        label: '標記完成（待取件）',
-        color: 'teal-6',
-        icon: 'check_circle',
-      },
-      {
-        status: 'CANCELLED',
-        label: '取消訂單',
-        color: 'red-4',
-        icon: 'cancel',
-      },
-    ],
-    READY: [
-      {
-        status: 'PICKED_UP',
-        label: '完成取件',
-        color: 'grey-7',
-        icon: 'done_all',
-      },
-    ],
-    PICKED_UP: [],
-    CANCELLED: [],
-  };
-  return map[status] ?? [];
-}
 
 function formatDate(dateStr: string): string {
   const d = new Date(dateStr);
   return `${d.getFullYear()}/${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getDate()).padStart(2, '0')}`;
+}
+
+async function copyText(text: string) {
+  try {
+    await copyToClipboard(text);
+    $q.notify({ type: 'positive', message: '已複製號碼', timeout: 1000, position: 'top' });
+  } catch {
+    $q.notify({ type: 'negative', message: '複製失敗' });
+  }
 }
 </script>
 
@@ -668,5 +613,124 @@ function formatDate(dateStr: string): string {
 :deep(.q-carousel__thumbnails) {
   padding: 8px;
   background: rgba(0, 0, 0, 0.3);
+}
+
+/* Status Rail */
+.status-rail {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 8px 4px 4px;
+}
+
+.status-rail__line {
+  flex: 1;
+  height: 3px;
+  background: #e0e0e0;
+  margin-top: 20px;
+  border-radius: 2px;
+  transition: background 0.3s;
+}
+
+.status-rail__line--done {
+  background: #0d9488;
+}
+
+.status-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 56px;
+  max-width: 70px;
+}
+
+.status-node__ring {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #e0e0e0;
+  background: white;
+  transition: all 0.25s;
+  flex-shrink: 0;
+}
+
+/* 各狀態顏色定義 (正常 & 啟動 & 未啟動) */
+.status-node--pending { --status-color: #fb8c00; --status-bg: #fff3e0; }
+.status-node--in_progress { --status-color: #1e88e5; --status-bg: #e3f2fd; }
+.status-node--ready { --status-color: #0d9488; --status-bg: #f0fdfa; }
+.status-node--picked_up { --status-color: #757575; --status-bg: #f5f5f5; }
+
+/* 未啟動 (未來) 狀態: 使用對應顏色的反灰/淺色版本 */
+.status-node--future .status-node__ring {
+  border-color: var(--status-bg);
+  color: var(--status-color);
+  opacity: 0.4;
+}
+.status-node--future.status-node--clickable:hover .status-node__ring {
+  opacity: 1;
+  border-color: var(--status-color);
+  background: var(--status-bg);
+}
+
+/* 已完成 (過去) 狀態 */
+.status-node--done .status-node__ring {
+  background: var(--status-color);
+  border-color: var(--status-color);
+  color: white;
+}
+
+/* 當前 (啟動中) 狀態 */
+.status-node--active .status-node__ring {
+  background: var(--status-color);
+  border-color: var(--status-color);
+  color: white;
+  box-shadow: 0 0 0 5px rgba(0, 0, 0, 0.05);
+  transform: scale(1.1);
+}
+
+.status-node--active.status-node--pending .status-node__ring { box-shadow: 0 0 0 5px rgba(251, 140, 0, 0.15); }
+.status-node--active.status-node--in_progress .status-node__ring { box-shadow: 0 0 0 5px rgba(30, 136, 229, 0.15); }
+.status-node--active.status-node--ready .status-node__ring { box-shadow: 0 0 0 5px rgba(13, 148, 136, 0.15); }
+
+.status-node--clickable {
+  cursor: pointer;
+}
+
+.status-node__label {
+  font-size: 10px;
+  color: #212121; /* 使用深黑色，避免反灰 */
+  margin-top: 6px;
+  text-align: center;
+  white-space: nowrap;
+  line-height: 1.2;
+}
+
+.status-node--active .status-node__label {
+  color: var(--status-color);
+  font-weight: 700;
+}
+
+.status-node--done .status-node__label {
+  color: var(--status-color);
+  font-weight: 500;
+}
+
+.tab-bar {
+  background: #f9fafb;
+}
+
+.phone-link {
+  text-decoration: none;
+  border-bottom: 1px dashed transparent;
+  transition: all 0.2s;
+  font-size: 15px;
+}
+
+.phone-link:hover {
+  color: #0f766e;
+  border-bottom-color: #0f766e;
 }
 </style>

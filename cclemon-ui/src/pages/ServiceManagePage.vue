@@ -55,8 +55,8 @@
               <q-btn
                 flat round
                 :icon="svc.isActive ? 'toggle_on' : 'toggle_off'"
-                :color="svc.isActive ? 'teal-8' : 'grey-4'"
-                size="md"
+                :color="svc.isActive ? 'teal-8' : 'grey-6'"
+                size="lg"
                 class="cursor-pointer"
                 @click.stop="toggleActive(svc)"
               >
@@ -144,7 +144,7 @@
     <AppFormDialog
       v-model="formDialog.open"
       :title="formDialog.isEdit ? '編輯服務項目' : '新增服務項目'"
-      :icon="formDialog.isEdit ? 'edit' : 'add_circle'"
+      :icon="formDialog.isEdit ? 'edit' : 'playlist_add'"
       :is-edit="formDialog.isEdit"
       :submitting="formDialog.submitting"
       max-width="480px"
@@ -385,6 +385,6 @@ onMounted(loadServices);
 }
 
 .svc-item--inactive:hover {
-  background-color: rgba(0, 0, 0, 0.02);
+  background-color: rgba(0, 0, 0, 0.05);
 }
 </style>

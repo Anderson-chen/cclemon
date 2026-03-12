@@ -21,20 +21,6 @@
           {{ title }}
         </q-toolbar-title>
 
-        <!-- 無自訂 footer 時才在 toolbar 顯示提交按鈕（手機） -->
-        <div v-if="!hasFooterSlot && $q.screen.lt.md" class="row items-center q-gutter-x-sm">
-          <q-btn
-            unelevated
-            color="white"
-            text-color="teal-9"
-            padding="4px 16px"
-            :label="computedSubmitLabel"
-            :loading="submitting"
-            @click="$emit('submit')"
-            class="text-weight-bold"
-            rounded
-          />
-        </div>
       </q-toolbar>
 
       <!-- 可捲動的表單內容 -->
@@ -45,18 +31,26 @@
       <!-- Footer：自訂或預設提交列 -->
       <div class="dialog-footer">
         <slot name="footer">
-          <q-card-actions align="right" class="q-px-md q-pb-md">
-            <q-btn flat label="取消並關閉" color="grey-7" @click="isOpen = false" class="cursor-pointer q-px-md" />
-            <q-btn
-              unelevated
-              rounded
-              :label="computedSubmitLabel"
-              color="teal-8"
-              @click="$emit('submit')"
-              :loading="submitting"
-              class="cursor-pointer q-px-lg"
-            />
-          </q-card-actions>
+          <q-btn
+            flat
+            color="grey-7"
+            icon="close"
+            label="取消"
+            @click="isOpen = false"
+            class="cursor-pointer"
+            padding="6px 16px"
+          />
+          <q-btn
+            unelevated
+            rounded
+            :label="computedSubmitLabel"
+            color="teal-8"
+            icon-right="check"
+            @click="$emit('submit')"
+            :loading="submitting"
+            class="cursor-pointer"
+            padding="6px 20px"
+          />
         </slot>
       </div>
     </q-card>
@@ -64,7 +58,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, useSlots } from 'vue';
+import { computed } from 'vue';
 import { useQuasar } from 'quasar';
 
 const props = defineProps<{
@@ -83,14 +77,11 @@ const emit = defineEmits<{
 }>();
 
 const $q = useQuasar();
-const slots = useSlots();
 
 const isOpen = computed({
   get: () => props.modelValue,
   set: (val) => emit('update:modelValue', val),
 });
-
-const hasFooterSlot = computed(() => !!slots.footer);
 
 const computedSubmitLabel = computed(
   () => props.submitLabel ?? (props.isEdit ? '儲存' : '建立')
@@ -118,6 +109,11 @@ const computedSubmitLabel = computed(
 
 .dialog-footer {
   flex-shrink: 0;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
   border-top: 1px solid #edf2f7;
   background: #fafafa;
   z-index: 10;

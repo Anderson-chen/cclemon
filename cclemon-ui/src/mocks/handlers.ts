@@ -18,12 +18,7 @@ const SERVICE_SETTINGS_BASE = `${API_ORIGIN}/api/v1/settings/services`;
 const URGENT_FEE_RATE_URL = `${API_ORIGIN}/api/v1/settings/urgent-fee-rate`;
 const UPLOAD_URL = `${API_ORIGIN}/api/v1/upload`;
 
-const SERVICE_MAP: Record<string, { name: string; unitPrice: number; urgentFeeRate: number }> = {
-  'SVC-WASH': { name: '洗鞋', unitPrice: 350, urgentFeeRate: 0.5 },
-  'SVC-COATING': { name: '鍍膜', unitPrice: 500, urgentFeeRate: 0.5 },
-  'SVC-BAG': { name: '洗包', unitPrice: 600, urgentFeeRate: 0.5 },
-  'SVC-RECOLOR': { name: '補色', unitPrice: 800, urgentFeeRate: 0.5 },
-};
+
 
 function genOrderNo(): string {
   const now = new Date();
@@ -57,7 +52,7 @@ export const handlers = [
       filtered = filtered.filter(
         (c) =>
           c.name.toLowerCase().includes(keyword) ||
-          c.phone.includes(keyword)
+          (c.phone && c.phone.includes(keyword))
       );
     }
 
@@ -169,7 +164,7 @@ export const handlers = [
     const results = mockCustomers.filter(
       (c) =>
         c.name.toLowerCase().includes(keyword) ||
-        c.phone.includes(keyword)
+        (c.phone && c.phone.includes(keyword))
     );
     return HttpResponse.json(results);
   }),
@@ -276,9 +271,9 @@ export const handlers = [
 
     let serviceSubtotal = 0;
     const orderItems = body.items.map((i, idx) => {
-      const svc = SERVICE_MAP[i.serviceCode];
-      // 如果 body 有傳 unitPrice 優先使用，否則才用 SERVICE_MAP
-      const finalPrice = i.unitPrice ?? svc?.unitPrice ?? 0;
+      const svc = mockServices.find((s) => s.code === i.serviceCode);
+      // 如果 body 有傳 unitPrice 優先使用，否則才用 svc.defaultPrice
+      const finalPrice = i.unitPrice ?? svc?.defaultPrice ?? 0;
       const subtotal = finalPrice * i.quantity;
       serviceSubtotal += subtotal;
       return {
@@ -301,7 +296,7 @@ export const handlers = [
       orderNo: genOrderNo(),
       customerId: customer.id,
       customerName: customer.name,
-      customerPhone: customer.phone,
+      customerPhone: customer.phone ?? '',
       status: 'PENDING',
       isUrgent: body.isUrgent,
       items: orderItems,
@@ -309,7 +304,6 @@ export const handlers = [
       totalAmount: serviceSubtotal + urgentFee,
       urgentFee,
       estimatedPickupDate: body.estimatedPickupDate,
-      note: body.note,
       createTime: new Date().toISOString(),
     };
 
@@ -364,8 +358,8 @@ export const handlers = [
 
     if (body.items) {
       orderItems = body.items.map((i, iIdx) => {
-        const svc = SERVICE_MAP[i.serviceCode];
-        const finalPrice = i.unitPrice ?? svc?.unitPrice ?? 0;
+        const svc = mockServices.find((s) => s.code === i.serviceCode);
+        const finalPrice = i.unitPrice ?? svc?.defaultPrice ?? 0;
         const subtotal = finalPrice * i.quantity;
         serviceSubtotal += subtotal;
         return {
@@ -393,7 +387,6 @@ export const handlers = [
       items: orderItems,
       storageLocations: body.storageLocations ?? order.storageLocations,
       estimatedPickupDate: body.estimatedPickupDate ?? order.estimatedPickupDate,
-      note: body.note ?? order.note,
       urgentFee,
       totalAmount: serviceSubtotal + urgentFee,
     };

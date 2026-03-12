@@ -287,7 +287,6 @@ export const mockOrderList: OrderResult[] = [
     totalAmount: 850,
     urgentFee: 0,
     estimatedPickupDate: '2026-03-10',
-    note: 'Nike Air Max，請輕柔處理',
     createTime: '2026-03-01T09:00:00',
   },
   {
@@ -306,7 +305,6 @@ export const mockOrderList: OrderResult[] = [
     totalAmount: 1725,
     urgentFee: 575,
     estimatedPickupDate: '2026-03-08',
-    note: 'Jordan 1，補色部位：前後鞋頭',
     createTime: '2026-03-02T14:30:00',
   },
   {
@@ -691,7 +689,6 @@ export const mockOrderList: OrderResult[] = [
     totalAmount: 1050,
     urgentFee: 350,
     estimatedPickupDate: daysFromNow(2),
-    note: '客人說很趕，今天要',
     createTime: '2026-03-11T08:10:00',
   },
   {
@@ -727,7 +724,6 @@ export const mockOrderList: OrderResult[] = [
     totalAmount: 2100,
     urgentFee: 700,
     estimatedPickupDate: daysFromNow(3),
-    note: '包包有輕微刮傷需補色',
     createTime: '2026-03-11T10:00:00',
   },
   {
@@ -897,7 +893,6 @@ export const mockOrderList: OrderResult[] = [
     urgentFee: 0,
     estimatedPickupDate: '2026-03-15',
     createTime: '2026-03-11T10:00:00',
-    note: '客戶家中有事取消',
   },
   {
     id: 1030,
@@ -913,7 +908,6 @@ export const mockOrderList: OrderResult[] = [
     urgentFee: 0,
     estimatedPickupDate: '2026-03-12',
     createTime: '2026-03-10T14:30:00',
-    note: '重複下單',
   },
   {
     id: 1031,
@@ -929,7 +923,6 @@ export const mockOrderList: OrderResult[] = [
     urgentFee: 300,
     estimatedPickupDate: '2026-03-10',
     createTime: '2026-03-09T09:15:00',
-    note: '急用改送他處',
   },
   {
     id: 1032,
@@ -945,7 +938,6 @@ export const mockOrderList: OrderResult[] = [
     urgentFee: 0,
     estimatedPickupDate: '2026-03-13',
     createTime: '2026-03-08T11:00:00',
-    note: '價格考量',
   },
   {
     id: 1033,
@@ -961,7 +953,6 @@ export const mockOrderList: OrderResult[] = [
     urgentFee: 0,
     estimatedPickupDate: '2026-03-12',
     createTime: '2026-03-07T14:00:00',
-    note: '暫不處理',
   },
   // ── 增加急件 (Urgent) 共 5 筆 ───────────────────────────────
   {

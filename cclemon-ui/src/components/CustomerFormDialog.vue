@@ -8,6 +8,10 @@
     max-width="560px"
     @submit="submitForm"
   >
+    <template #footer>
+      <q-btn flat color="grey-7" icon="close" label="取消" @click="isOpen = false" class="cursor-pointer" padding="6px 16px" />
+      <q-btn unelevated rounded :label="isEdit ? '儲存' : '建立'" color="teal-8" :icon="isEdit ? 'save' : 'check'" @click="submitForm" :loading="submitting" class="cursor-pointer" padding="6px 20px" />
+    </template>
     <q-form ref="formRef" class="q-gutter-md">
       <q-input
         v-model="form.name"
@@ -26,7 +30,6 @@
         label="手機號碼 (選填)"
         outlined
         dense
-        :disable="isEdit"
         :rules="[
           (val) => !val || /^[0-9]{8,15}$/.test(val) || '請輸入有效的手機號碼',
         ]"
@@ -106,7 +109,7 @@ watch(
     if (!open) return;
     if (props.editCustomer) {
       form.name = props.editCustomer.name;
-      form.phone = props.editCustomer.phone;
+      form.phone = props.editCustomer.phone ?? '';
       form.email = props.editCustomer.email ?? '';
       form.note = props.editCustomer.note ?? '';
     } else {
@@ -124,7 +127,7 @@ const submitForm = async () => {
 
   const payload = {
     name: form.name,
-    phone: form.phone,
+    phone: form.phone || undefined,
     email: form.email || undefined,
     note: form.note || undefined,
   };

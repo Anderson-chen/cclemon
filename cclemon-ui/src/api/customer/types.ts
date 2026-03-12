@@ -5,7 +5,7 @@ export type MemberTierCode = 'STANDARD' | 'SILVER' | 'GOLD';
 export interface CustomerResult {
   id: number;
   name: string;
-  phone: string;
+  phone?: string;
   email?: string;
   tierCode: MemberTierCode;
   totalSpend: number;
@@ -16,14 +16,14 @@ export interface CustomerResult {
 
 export interface CustomerCreateRequest {
   name: string;
-  phone: string;
+  phone?: string;
   email?: string;
   note?: string;
 }
 
 export interface CustomerUpdateRequest {
   name: string;
-  phone: string;
+  phone?: string;
   email?: string;
   note?: string;
 }

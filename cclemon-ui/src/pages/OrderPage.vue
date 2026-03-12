@@ -25,16 +25,47 @@
     <!-- 搜尋列 -->
     <q-card class="q-mb-sm">
       <q-card-section>
-        <div class="row q-gutter-md wrap items-center">
-          <q-input
-            v-model="keyword"
-            label="姓名 / 電話搜尋"
+        <div class="row no-wrap items-center q-gutter-sm">
+          <q-select
+            v-model="listSearchCustomer"
+            use-input
+            clearable
+            :options="listSearchOptions"
+            option-value="id"
+            :option-label="(opt) => (opt ? `${opt.name} (${opt.phone})` : '')"
+            label="搜尋會員姓名 / 電話"
             outlined
             dense
-            clearable
-            style="flex: 1; min-width: 200px"
-            @keyup.enter="search"
-          />
+            bg-color="grey-1"
+            class="col"
+            @filter="filterListCustomers"
+            @update:model-value="onListCustomerSelected"
+            @clear="() => { keyword = ''; search(); }"
+            :loading="listSearchLookingUp"
+            hide-dropdown-icon
+            behavior="menu"
+            debounce="300"
+          >
+            <template v-slot:prepend>
+              <q-icon name="search" color="teal-8" />
+            </template>
+            <template v-slot:no-option>
+              <q-item>
+                <q-item-section class="text-grey-5 text-caption">查無符合會員</q-item-section>
+              </q-item>
+            </template>
+            <template v-slot:option="scope">
+              <q-item v-bind="(scope.itemProps as Record<string, unknown>)">
+                <q-item-section avatar>
+                  <q-avatar color="teal-1" text-color="teal-8" icon="person" size="32px" />
+                </q-item-section>
+                <q-item-section>
+                  <q-item-label class="text-weight-bold text-grey-9">{{ (scope.opt as any).name }}</q-item-label>
+                  <q-item-label caption class="text-grey-6">{{ (scope.opt as any).phone }}</q-item-label>
+                </q-item-section>
+              </q-item>
+            </template>
+          </q-select>
           <q-btn
             unelevated
             :color="activeFilterCount > 0 ? 'teal-8' : 'grey-3'"
@@ -329,6 +360,7 @@
     <AppFormDialog
       v-model="formDialog.open"
       :title="formDialog.isEdit ? '編輯訂單' : '建立新訂單'"
+      :icon="formDialog.isEdit ? 'edit' : 'post_add'"
       :is-edit="formDialog.isEdit"
       max-width="800px"
     >
@@ -364,14 +396,12 @@
                 </div>
               </div>
 
-              <div class="row q-col-gutter-md">
+              <!-- 搜尋欄：未選取時才顯示 -->
+              <div v-if="!selectedCustomer" class="row q-col-gutter-md">
                 <div class="col-12">
                   <q-select
                     v-model="selectedCustomer"
                     use-input
-                    fill-input
-                    hide-selected
-                    clearable
                     :options="customerOptions"
                     option-value="id"
                     :option-label="
@@ -384,11 +414,10 @@
                     @filter="filterCustomers"
                     @update:model-value="onCustomerSelected"
                     @input-value="(val) => (customerSearchText = val)"
-                    :disable="formDialog.isEdit"
                     :loading="lookingUp"
                     hide-dropdown-icon
                     behavior="menu"
-                    debounce="1500"
+                    debounce="300"
                     class="modern-select"
                   >
                     <template v-slot:prepend>
@@ -401,20 +430,15 @@
                         rounded
                         icon="person_add"
                         color="teal-8"
-                        label="新會員"
                         @click.stop="customerFormOpen = true"
-                        :disable="formDialog.isEdit"
-                        class="q-px-sm"
+                        padding="4px 8px"
                       >
                         <q-tooltip>若查無會員，點此快速建立</q-tooltip>
                       </q-btn>
                     </template>
                     <template v-slot:no-option>
                       <q-item>
-                        <q-item-section
-                          class="text-grey-7 row items-center justify-between no-wrap"
-                          horizontal
-                        >
+                        <q-item-section class="text-grey-7 row items-center no-wrap" horizontal>
                           <q-icon name="info" size="xs" class="q-mr-xs" />
                           <div>查無此會員，請嘗試其他關鍵字或</div>
                           <q-btn
@@ -429,40 +453,15 @@
                       </q-item>
                     </template>
                     <template v-slot:option="scope">
-                      <q-item
-                        v-bind="scope.itemProps"
-                        class="search-result-item"
-                      >
+                      <q-item v-bind="(scope.itemProps as Record<string, unknown>)" class="search-result-item">
                         <q-item-section avatar>
-                          <q-avatar
-                            color="teal-1"
-                            text-color="teal-8"
-                            icon="person"
-                            size="32px"
-                          />
+                          <q-avatar color="teal-1" text-color="teal-8" icon="person" size="32px" />
                         </q-item-section>
                         <q-item-section>
-                          <q-item-label class="text-weight-bold grey-9">{{
-                            scope.opt.name
-                          }}</q-item-label>
-                          <q-item-label caption class="text-grey-6">{{
-                            scope.opt.phone
-                          }}</q-item-label>
-                        </q-item-section>
-                        <q-item-section
-                          side
-                          v-if="scope.opt.id === form.customerId"
-                        >
-                          <q-icon name="check_circle" color="teal-8" />
+                          <q-item-label class="text-weight-bold text-grey-9">{{ (scope.opt as any).name }}</q-item-label>
+                          <q-item-label caption class="text-grey-6">{{ (scope.opt as any).phone }}</q-item-label>
                         </q-item-section>
                       </q-item>
-                    </template>
-
-                    <template v-slot:selected-item="scope">
-                      <div class="selected-customer-pill" v-if="scope.opt">
-                        <q-icon name="person" size="xs" class="q-mr-xs" />
-                        <span>{{ scope.opt.name }}</span>
-                      </div>
                     </template>
                   </q-select>
                 </div>
@@ -502,17 +501,18 @@
                     </div>
                   </div>
                   <q-btn
+                    v-if="!formDialog.isEdit"
                     flat
                     round
-                    color="grey-4"
-                    icon="close"
+                    color="grey-5"
+                    icon="manage_search"
                     @click="
                       selectedCustomer = null;
                       onCustomerSelected(null);
                     "
-                    class="q-ml-sm"
+                    class="q-ml-sm cursor-pointer"
                   >
-                    <q-tooltip>重新選擇</q-tooltip>
+                    <q-tooltip>重新搜尋</q-tooltip>
                   </q-btn>
                 </div>
               </div>
@@ -541,7 +541,6 @@
                   color="teal-8"
                   label="新增項目"
                   @click="addServiceItem"
-                  :disable="formDialog.isEdit"
                   class="q-px-sm cursor-pointer text-weight-bold"
                 />
               </div>
@@ -601,7 +600,7 @@
                         icon="remove_circle_outline"
                         color="grey-4"
                         @click.stop="removeServiceItem(idx)"
-                        :disable="form.items.length === 1 || formDialog.isEdit"
+                        :disable="form.items.length === 1"
                         class="hover-red-5 cursor-pointer"
                       />
                     </div>
@@ -618,7 +617,6 @@
                               v-model="item.serviceCode"
                               :options="serviceOptions"
                               label="選擇服務"
-                              :disable="formDialog.isEdit"
                               :rules="[(val) => !!val || '請選擇服務']"
                               @update:model-value="
                                 (val) => onServiceChange(idx, val as string)
@@ -679,7 +677,6 @@
                               dense
                               type="number"
                               prefix="NT$"
-                              :disable="formDialog.isEdit"
                               :rules="[(val) => val >= 0 || '不得為負']"
                             >
                               <template v-slot:prepend>
@@ -695,7 +692,6 @@
                               outlined
                               dense
                               type="number"
-                              :disable="formDialog.isEdit"
                               :rules="[(val) => val > 0 || '至少1']"
                             >
                               <template v-slot:prepend>
@@ -711,7 +707,6 @@
                               label="品牌/型號"
                               outlined
                               dense
-                              :disable="formDialog.isEdit"
                             >
                               <template v-slot:prepend
                                 ><q-icon name="branding_watermark" size="xs"
@@ -724,7 +719,6 @@
                               label="存放位置"
                               outlined
                               dense
-                              :disable="formDialog.isEdit"
                             >
                               <template v-slot:prepend
                                 ><q-icon name="place" size="xs"
@@ -737,7 +731,6 @@
                               label="物件備註"
                               outlined
                               dense
-                              :disable="formDialog.isEdit"
                             >
                               <template v-slot:prepend
                                 ><q-icon name="sticky_note_2" size="xs"
@@ -885,22 +878,7 @@
                   </div>
                 </div>
 
-                <div class="col-12 col-sm-6">
-                  <!-- 總體備註 -->
-                  <q-input
-                    v-model="form.note"
-                    label="全單備註 / 鞋物狀況總覽"
-                    outlined
-                    dense
-                    type="textarea"
-                    rows="3"
-                    placeholder="例如：客人的鞋盒要保留、物件有特殊汙損..."
-                  >
-                    <template v-slot:prepend>
-                      <q-icon name="notes" />
-                    </template>
-                  </q-input>
-                </div>
+
               </div>
 
               <!-- 價格摘要卡片 (現代風格) -->
@@ -944,56 +922,35 @@
         </q-stepper>
       </q-form>
       <template #footer>
-        <div class="row full-width justify-between items-center">
-          <!-- 左側：步驟進度或金額 -->
-          <div class="row items-center q-gutter-xs">
-            <template v-if="currentStep < 3">
-              <div
-                v-for="n in 3"
-                :key="n"
-                class="step-dot"
-                :class="n === currentStep ? 'step-dot--active' : n < currentStep ? 'step-dot--done' : ''"
-              />
-            </template>
-            <span v-else class="text-subtitle2 text-teal-8 text-weight-bold">
-              <q-icon name="receipt" size="16px" class="q-mr-xs" />
-              NT$ {{ (serviceSubtotal + urgentFeeAmount).toLocaleString() }}
-            </span>
-          </div>
-
-          <!-- 右側：導航按鈕 -->
-          <div class="row q-gutter-sm">
-            <q-btn
-              v-if="currentStep > 1"
-              outline
-              rounded
-              color="teal-8"
-              icon="chevron_left"
-              label="上一步"
-              @click="stepperRef?.previous()"
-              class="cursor-pointer"
-              padding="6px 16px"
-            />
-            <q-btn
-              unelevated
-              rounded
-              color="teal-8"
-              :icon-right="currentStep === 3 ? 'check' : 'chevron_right'"
-              :label="
-                currentStep === 3
-                  ? formDialog.isEdit
-                    ? '更新訂單'
-                    : '確認開單'
-                  : '下一步'
-              "
-              @click="currentStep === 3 ? submitForm() : stepperRef?.next()"
-              padding="6px 20px"
-              class="cursor-pointer"
-              :loading="submitting"
-              :disable="currentStep === 1 && !form.customerId"
-            />
-          </div>
-        </div>
+        <q-btn
+          v-if="currentStep > 1"
+          outline
+          rounded
+          color="teal-8"
+          icon="chevron_left"
+          label="上一步"
+          @click="stepperRef?.previous()"
+          class="cursor-pointer"
+          padding="6px 16px"
+        />
+        <q-btn
+          unelevated
+          rounded
+          color="teal-8"
+          :icon-right="currentStep === 3 ? 'check' : 'chevron_right'"
+          :label="
+            currentStep === 3
+              ? formDialog.isEdit
+                ? '更新訂單'
+                : '確認開單'
+              : '下一步'
+          "
+          @click="currentStep === 3 ? submitForm() : stepperRef?.next()"
+          padding="6px 20px"
+          class="cursor-pointer"
+          :loading="submitting"
+          :disable="currentStep === 1 && !form.customerId"
+        />
       </template>
     </AppFormDialog>
 
@@ -1035,6 +992,36 @@ const orderNavStore = useOrderNavStore();
 
 // ── 搜尋 ──────────────────────────────────────────────────
 const keyword = ref('');
+
+// ── 搜尋列 autocomplete ────────────────────────────────────
+const listSearchCustomer = ref<CustomerResult | null>(null);
+const listSearchOptions = ref<CustomerResult[]>([]);
+const listSearchLookingUp = ref(false);
+
+const filterListCustomers = async (
+  val: string,
+  update: (callback: () => void) => void,
+  abort: () => void,
+) => {
+  if (val.length < 1) {
+    abort();
+    return;
+  }
+  try {
+    listSearchLookingUp.value = true;
+    const results = await searchCustomers(val);
+    update(() => { listSearchOptions.value = results; });
+  } catch {
+    update(() => { listSearchOptions.value = []; });
+  } finally {
+    listSearchLookingUp.value = false;
+  }
+};
+
+const onListCustomerSelected = (opt: CustomerResult | null) => {
+  keyword.value = opt ? opt.name : '';
+  search();
+};
 
 // ── 新增/編輯 步驟控制 ────────────────────────────────────
 const currentStep = ref(1);
@@ -1276,7 +1263,6 @@ const form = reactive({
   ] as FormItem[],
   isUrgent: false,
   estimatedPickupDate: '',
-  note: '',
 });
 
 const serviceSubtotal = computed(() =>
@@ -1308,7 +1294,6 @@ const resetForm = () => {
     new Date(Date.now() + 14 * 86400000),
     'YYYY/MM/DD',
   );
-  form.note = '';
   customerNotFound.value = false;
   currentStep.value = 1;
   selectedCustomer.value = null;
@@ -1347,12 +1332,12 @@ const filterCustomers = async (
 };
 
 const onCustomerSelected = (
-  opt: CustomerResult | { id: number; name: string; phone: string } | null,
+  opt: CustomerResult | { id: number; name: string; phone?: string } | null,
 ) => {
   if (opt) {
     form.customerId = opt.id;
     form.customerName = opt.name;
-    form.customerPhone = opt.phone;
+    form.customerPhone = opt.phone ?? '';
   } else {
     form.customerId = null;
     form.customerName = '';
@@ -1360,14 +1345,10 @@ const onCustomerSelected = (
   }
 };
 
-const onCustomerCreated = (customer: {
-  id: number;
-  name: string;
-  phone: string;
-}) => {
+const onCustomerCreated = (customer: CustomerResult) => {
   form.customerId = customer.id;
   form.customerName = customer.name;
-  form.customerPhone = customer.phone;
+  form.customerPhone = customer.phone ?? '';
   selectedCustomer.value = customer;
   customerNotFound.value = false;
 };
@@ -1453,7 +1434,7 @@ const submitForm = async () => {
     const storageLocations: string[] = [];
 
     if (formDialog.isEdit && formDialog.editId) {
-      await updateOrder(formDialog.editId, {
+      const updatedOrder = await updateOrder(formDialog.editId, {
         isUrgent: form.isUrgent,
         items: form.items.map((i) => ({
           serviceCode: i.serviceCode,
@@ -1466,9 +1447,9 @@ const submitForm = async () => {
         })),
         storageLocations,
         estimatedPickupDate: form.estimatedPickupDate,
-        note: form.note || undefined,
       });
       $q.notify({ type: 'positive', message: '訂單已更新！' });
+      detailDialog.order = updatedOrder;
     } else {
       await createOrder({
         customerId: form.customerId,
@@ -1484,7 +1465,6 @@ const submitForm = async () => {
         })),
         storageLocations,
         estimatedPickupDate: form.estimatedPickupDate,
-        note: form.note || undefined,
       });
       $q.notify({ type: 'positive', message: '訂單建立成功！' });
     }
@@ -1523,8 +1503,6 @@ const onStatusUpdated = async (updated: OrderResult) => {
 };
 
 const onEditRequested = async (order: OrderResult) => {
-  detailDialog.open = false;
-
   formDialog.isEdit = true;
   formDialog.editId = order.id;
 
@@ -1551,8 +1529,7 @@ const onEditRequested = async (order: OrderResult) => {
 
   form.isUrgent = order.isUrgent;
   form.estimatedPickupDate = order.estimatedPickupDate || '';
-  form.note = order.note || '';
-
+  
   form.items = order.items.map((i) => ({
     serviceCode: i.serviceCode,
     quantity: i.quantity,
@@ -1565,7 +1542,7 @@ const onEditRequested = async (order: OrderResult) => {
   }));
   if (form.items.length > 0) form.items[0].isExpanded = true;
 
-  currentStep.value = 1;
+  currentStep.value = 2; // 編輯時預設跳到第 2 步 (服務項目)
   formDialog.open = true;
 };
 
@@ -1754,6 +1731,56 @@ onMounted(async () => {
 }
 
 /* 現代化表單組件 */
+/* Stepper 顏色風格統一（Quasar v2 正確 class） */
+:deep(.q-stepper__step-inner) {
+  padding: 16px 0;
+}
+
+/* 待走步驟圓圈 */
+:deep(.q-stepper__tab .q-stepper__dot) {
+  background: #94a3b8 !important;
+  color: white !important;
+}
+
+/* 目前步驟圓圈 */
+:deep(.q-stepper__tab--active .q-stepper__dot) {
+  background: #0f766e !important;
+  color: white !important;
+}
+
+/* 已完成步驟圓圈 */
+:deep(.q-stepper__tab--done .q-stepper__dot) {
+  background: #0d9488 !important;
+  color: white !important;
+}
+
+/* 錯誤步驟圓圈 */
+:deep(.q-stepper__tab--error .q-stepper__dot) {
+  background: #ef4444 !important;
+  color: white !important;
+}
+
+/* 標題 */
+:deep(.q-stepper__tab .q-stepper__title) {
+  color: #64748b;
+  font-weight: 500;
+}
+
+:deep(.q-stepper__tab--active .q-stepper__title) {
+  color: #0f766e;
+  font-weight: 700;
+}
+
+:deep(.q-stepper__tab--done .q-stepper__title) {
+  color: #0d9488;
+  font-weight: 600;
+}
+
+/* 連接線 */
+:deep(.q-stepper__line) {
+  background: #cbd5e0 !important;
+}
+
 .step-dot {
   width: 8px;
   height: 8px;

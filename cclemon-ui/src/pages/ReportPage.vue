@@ -240,7 +240,7 @@
                     <div class="donut-center">
                       <div class="text-caption text-grey-5">營收總額</div>
                       <div class="text-h6 text-weight-bold text-teal-9">
-                        ${{ totalRevenue.toLocaleString() }}
+                        NT$ {{ totalRevenue.toLocaleString() }}
                       </div>
                     </div>
                   </div>
@@ -264,7 +264,7 @@
                           >{{ svc.name }}</span
                         >
                       </div>
-                      <span class="text-body2 text-weight-bold text-grey-9 text-mono"
+                      <span class="text-body2 text-weight-bold text-grey-9"
                         >NT$ {{ svc.revenue.toLocaleString() }}</span
                       >
                     </div>
@@ -319,7 +319,7 @@
                     >
                   </div>
                   <span class="text-subtitle2 text-weight-bold text-orange-9">
-                    + NT$ {{ totalUrgentFee.toLocaleString() }}
+                    NT$ {{ totalUrgentFee.toLocaleString() }}
                   </span>
                 </div>
               </q-card-section>
@@ -384,7 +384,7 @@
 
                 <template v-slot:body-cell-totalAmount="props">
                   <q-td :props="props" class="text-right">
-                    <div class="text-weight-bold text-mono">
+                    <div class="text-weight-bold text-grey-9">
                       NT$ {{ props.value.toLocaleString() }}
                     </div>
                   </q-td>
@@ -419,10 +419,10 @@
                       <q-space />
                       <span
                         v-if="day.count > 0"
-                        class="trend-val text-weight-bold text-teal-9 text-mono"
+                        class="trend-val text-weight-bold text-teal-9"
                         >NT$ {{ day.revenue.toLocaleString() }}</span
                       >
-                      <span v-else class="text-grey-3 font-mono">–</span>
+                      <span v-else class="text-grey-3">–</span>
                     </div>
                     <div class="trend-track">
                       <div class="trend-fill" :style="`width: ${day.percent}%`">
@@ -833,15 +833,16 @@ onMounted(loadReport);
 
 .kpi-label {
   color: #64748b;
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   font-weight: 500;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
 
 .kpi-value {
-  color: #1e293b;
-  font-size: 1.75rem;
-  letter-spacing: -0.025em;
+  color: #2c3e50;
+  font-size: 1.625rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
 }
 
 .kpi-icon-container {
@@ -933,7 +934,7 @@ onMounted(loadReport);
 
 .trend-date {
   font-size: 0.8125rem;
-  color: #64748b;
+  color: #7f8c8d;
 }
 
 .trend-val {
@@ -1044,8 +1045,8 @@ onMounted(loadReport);
 }
 
 .text-mono {
-  font-family: 'JetBrains Mono', 'Roboto Mono', monospace;
-  letter-spacing: -0.02em;
+  font-family: inherit;
+  letter-spacing: -0.01em;
 }
 
 .animate-fade-in {
