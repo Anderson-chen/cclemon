@@ -203,8 +203,8 @@
         </q-card-section>
         <q-card-section v-else-if="weights.length === 0" class="text-center q-py-xl">
           <q-icon name="inbox" size="4em" color="grey-4" />
-          <div class="text-subtitle1 text-grey-5 q-mt-sm">暫無記錄</div>
-          <div class="text-caption text-grey-4">試著新增第一筆體重記錄吧</div>
+          <div class="text-subtitle1 text-grey-7 q-mt-sm">暫無記錄</div>
+          <div class="text-caption text-grey-6">試著新增第一筆體重記錄吧</div>
         </q-card-section>
         <q-list v-else separator>
           <q-item v-for="weight in weights" :key="weight.id" class="weight-item">
@@ -230,10 +230,10 @@
               <q-btn
                 flat
                 round
-                dense
                 icon="delete_outline"
-                color="red-3"
+                color="red-6"
                 @click="confirmDelete(weight.id)"
+                class="delete-btn"
               />
             </q-item-section>
           </q-item>
@@ -399,19 +399,19 @@ onMounted(() => {
 <style scoped>
 .weight-item {
   min-height: 64px;
-  transition: background-color 0.2s;
+  transition: background-color 0.15s ease;
 }
 
 .weight-item:hover {
-  background-color: rgba(0, 150, 136, 0.04);
-}
-
-.card-header-accent {
-  border-bottom: 1px solid rgba(0, 150, 136, 0.15);
-  padding-bottom: 12px;
+  background-color: rgba(15, 118, 110, 0.04);
 }
 
 .form-card {
-  border-top: 3px solid #00695c;
+  border-top: 3px solid #0f766e;
+}
+
+.delete-btn {
+  min-width: 44px;
+  min-height: 44px;
 }
 </style>

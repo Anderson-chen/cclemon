@@ -1,7 +1,7 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-header elevated class="bg-teal-8">
-      <q-toolbar>
+    <q-header class="app-header">
+      <q-toolbar class="app-toolbar">
         <!-- 桌機才顯示漢堡選單 -->
         <q-btn
           v-if="$q.screen.gt.sm"
@@ -10,23 +10,34 @@
           round
           icon="menu"
           aria-label="Menu"
+          color="white"
           @click="toggleLeftDrawer"
         />
 
-        <q-toolbar-title>
-          <q-icon name="spa" size="sm" class="q-mr-xs" />
+        <q-toolbar-title class="app-brand">
+          <q-icon name="spa" size="22px" color="white" />
+          <span class="app-brand-name">Shoes Reborn</span>
         </q-toolbar-title>
-        <Suspense> </Suspense>
       </q-toolbar>
     </q-header>
 
     <!-- 桌機左側 Drawer -->
-    <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
-      <q-list>
-        <q-item-label header class="text-weight-bold text-grey-7">
-          主選單
-        </q-item-label>
+    <q-drawer v-model="leftDrawerOpen" show-if-above bordered class="app-drawer">
+      <!-- Brand section -->
+      <div class="drawer-brand">
+        <div class="drawer-brand-icon">
+          <q-icon name="spa" size="24px" color="white" />
+        </div>
+        <div>
+          <div class="drawer-brand-title">Shoes Reborn</div>
+          <div class="drawer-brand-sub">洗鞋管理系統</div>
+        </div>
+      </div>
 
+      <q-separator />
+
+      <q-list class="drawer-nav q-mt-sm">
+        <q-item-label header class="drawer-nav-label">主選單</q-item-label>
         <EssentialLink
           v-for="link in linksList"
           :key="link.title"
@@ -137,16 +148,93 @@ watch(
 </script>
 
 <style scoped>
+/* ── Header ─────────────────────────────────────────────────── */
+.app-header {
+  background: linear-gradient(135deg, #0f766e 0%, #0d9488 100%);
+  box-shadow: 0 1px 0 rgba(255,255,255,0.08), 0 2px 8px rgba(15, 118, 110, 0.25);
+}
+
+.app-toolbar {
+  min-height: 52px;
+  padding: 0 12px;
+}
+
+.app-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.app-brand-name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: white;
+  letter-spacing: 0.01em;
+}
+
+/* ── Drawer ──────────────────────────────────────────────────── */
+.app-drawer {
+  background: #ffffff;
+}
+
+.drawer-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 16px 16px;
+}
+
+.drawer-brand-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #0f766e, #0d9488);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.drawer-brand-title {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.2;
+}
+
+.drawer-brand-sub {
+  font-size: 0.72rem;
+  color: #94a3b8;
+  margin-top: 1px;
+  font-weight: 500;
+}
+
+.drawer-nav {
+  padding: 0 8px;
+}
+
+.drawer-nav-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #94a3b8;
+  padding: 8px 8px 4px;
+}
+
+/* ── Bottom Nav ──────────────────────────────────────────────── */
 .bottom-nav {
-  background: white;
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
-  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.06);
+  background: rgba(255, 255, 255, 0.95);
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.06);
+  backdrop-filter: blur(8px);
 }
 
 .bottom-nav :deep(.q-tab) {
   min-height: 56px;
   padding: 6px 4px;
-  color: #9e9e9e;
+  color: #94a3b8;
+  transition: color 0.15s ease;
 }
 
 .bottom-nav :deep(.q-tab--active) {
@@ -154,8 +242,13 @@ watch(
 }
 
 .bottom-nav :deep(.q-tab__label) {
-  font-size: 0.72rem;
-  font-weight: 500;
+  font-size: 0.68rem;
+  font-weight: 600;
   margin-top: 2px;
+  letter-spacing: 0.02em;
+}
+
+.bottom-nav :deep(.q-tab__icon) {
+  font-size: 22px;
 }
 </style>

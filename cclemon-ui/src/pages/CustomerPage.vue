@@ -8,7 +8,7 @@
         </div>
         <div>
           <h5 class="q-mt-none q-mb-none text-weight-bold text-grey-9">會員管理中心</h5>
-          <div class="text-caption text-grey-5">Shoes Reborn · 會員資料</div>
+          <div class="text-caption page-subtitle">Shoes Reborn · 會員資料</div>
         </div>
       </div>
       <q-btn
@@ -73,8 +73,9 @@
         <!-- 無資料（非載入中） -->
         <div v-if="!loading && customers.length === 0" class="list-body-center">
           <q-icon name="person_off" size="4em" color="grey-4" />
-          <div class="text-subtitle1 text-grey-5 q-mt-sm">尚無會員資料</div>
-          <div class="text-caption text-grey-4">點擊右上角「新增會員」開始建立</div>
+          <div class="text-subtitle1 text-grey-7 q-mt-sm">尚無會員資料</div>
+          <div class="text-caption text-grey-6">點擊右上角「新增會員」開始建立</div>
+
         </div>
 
         <!-- 列表 -->
@@ -378,45 +379,23 @@ onMounted(loadCustomers);
 </script>
 
 <style scoped>
-.title-icon-wrap {
-  width: 40px;
-  height: 40px;
-  background: linear-gradient(135deg, #0f766e, #0d9488);
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+/* ── 會員列表項目 ──────────────────────────────────────────── */
+.customer-item {
+  padding: 14px 16px;
+  border-left: 3px solid transparent;
+  transition: background-color 0.15s ease;
+  min-height: 60px;
 }
 
-.section-card {
-  border-radius: 12px;
-  overflow: hidden;
+.customer-item--default {
+  border-left-color: #0f766e;
 }
 
-.list-body {
-  position: relative;
-  min-height: 200px;
+.customer-item--default:hover {
+  background-color: rgba(15, 118, 110, 0.04);
 }
 
-.list-body-center {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 48px 16px;
-}
-
-.list-loading-overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(255, 255, 255, 0.75);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 10;
-}
-
-/* 會員詳情 Dialog */
+/* ── 會員詳情 Dialog ──────────────────────────────────────── */
 .cust-detail-card {
   display: flex;
   flex-direction: column;
@@ -424,7 +403,7 @@ onMounted(loadCustomers);
 
 .cust-detail-toolbar {
   flex-shrink: 0;
-  z-index: 10;
+  z-index: 20;
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
 }
 
@@ -441,20 +420,9 @@ onMounted(loadCustomers);
   align-items: center;
   gap: 8px;
   padding: 10px 16px;
-  border-top: 1px solid #edf2f7;
+  border-top: 1px solid #e2e8f0;
   background: #fafafa;
   z-index: 10;
-}
-
-/* 會員列表項目 */
-.customer-item {
-  padding: 12px 16px;
-  border-left: 3px solid transparent;
-  transition: background-color 0.15s;
-}
-
-.customer-item--default {
-  border-left-color: #0f766e;
 }
 
 .phone-link {
@@ -466,18 +434,5 @@ onMounted(loadCustomers);
 .phone-link:hover {
   color: #0f766e;
   border-bottom-color: #0f766e;
-}
-
-.customer-item--default:hover {
-  background-color: rgba(15, 118, 110, 0.04);
-}
-
-.customer-item:hover {
-  background-color: rgba(15, 118, 110, 0.04);
-}
-
-.card-header-accent {
-  border-bottom: 1px solid rgba(0, 150, 136, 0.15);
-  padding-bottom: 12px;
 }
 </style>

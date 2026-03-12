@@ -10,15 +10,32 @@
           <h5 class="q-mt-none q-mb-none text-weight-bold text-grey-9">
             訂單總覽
           </h5>
-          <div class="text-caption text-grey-5">Shoes Reborn · 即時資料</div>
+          <div class="text-caption text-grey-7">Shoes Reborn · 即時資料</div>
         </div>
       </div>
     </div>
 
-    <!-- 載入中覆蓋 -->
-    <div v-if="loading" class="text-center q-py-xl">
-      <q-spinner color="teal-8" size="3em" />
-      <div class="text-caption text-grey-5 q-mt-sm">載入資料中...</div>
+    <!-- 載入中骨架 -->
+    <div v-if="loading" class="q-pb-md">
+      <q-card class="section-card q-mb-md">
+        <q-card-section class="q-py-sm q-px-md">
+          <div class="kpi-chart-inner">
+            <q-skeleton type="circle" width="120px" height="120px" animation="fade" />
+            <div class="kpi-legend" style="flex: 1">
+              <q-skeleton type="text" width="80%" animation="fade" />
+              <q-skeleton type="text" width="60%" animation="fade" />
+              <q-skeleton type="text" width="70%" animation="fade" />
+            </div>
+          </div>
+        </q-card-section>
+      </q-card>
+      <q-card class="section-card">
+        <q-skeleton type="rect" height="48px" animation="fade" />
+        <q-separator />
+        <q-skeleton type="rect" height="64px" animation="fade" />
+        <q-skeleton type="rect" height="64px" animation="fade" class="q-mt-xs" />
+        <q-skeleton type="rect" height="64px" animation="fade" class="q-mt-xs" />
+      </q-card>
     </div>
 
     <template v-else>
@@ -27,7 +44,7 @@
         <q-card-section class="q-py-sm q-px-md">
           <div v-if="totalActive === 0" class="text-center q-py-md">
             <q-icon name="donut_large" size="3em" color="grey-3" />
-            <div class="text-caption text-grey-5 q-mt-xs">目前無進行中訂單</div>
+            <div class="text-caption text-grey-6 q-mt-xs">目前無進行中訂單</div>
           </div>
           <div v-else class="kpi-chart-inner">
             <svg viewBox="0 0 120 120" class="kpi-donut-svg">
@@ -137,7 +154,7 @@
               class="text-center q-py-lg"
             >
               <q-icon name="check_circle" size="3em" color="teal-4" />
-              <div class="text-body2 text-grey-5 q-mt-sm">目前無急件</div>
+              <div class="text-body2 text-grey-6 q-mt-sm">目前無急件</div>
             </q-card-section>
             <q-list v-else separator>
               <q-item
@@ -159,7 +176,7 @@
                   <div class="pickup-date text-red-7">
                     {{ order.estimatedPickupDate ?? '–' }}
                   </div>
-                  <div class="pickup-label text-grey-5">預計取件</div>
+                  <div class="pickup-label text-grey-6">預計取件</div>
                 </q-item-section>
               </q-item>
             </q-list>
@@ -184,7 +201,7 @@
               class="text-center q-py-lg"
             >
               <q-icon name="check_circle_outline" size="3em" color="teal-3" />
-              <div class="text-body2 text-grey-5 q-mt-sm">目前無待取件</div>
+              <div class="text-body2 text-grey-6 q-mt-sm">目前無待取件</div>
             </q-card-section>
             <q-list v-else separator>
               <q-item
@@ -206,7 +223,7 @@
                   <div class="pickup-date text-teal-8">
                     {{ order.estimatedPickupDate ?? '–' }}
                   </div>
-                  <div class="pickup-label text-grey-5">預計取件</div>
+                  <div class="pickup-label text-grey-6">預計取件</div>
                 </q-item-section>
               </q-item>
             </q-list>
@@ -231,7 +248,7 @@
               class="text-center q-py-lg"
             >
               <q-icon name="event_available" size="3em" color="orange-3" />
-              <div class="text-body2 text-grey-4 q-mt-sm">明日無待處理訂單</div>
+              <div class="text-body2 text-grey-6 q-mt-sm">明日無待處理訂單</div>
             </q-card-section>
             <q-list v-else separator>
               <q-item
@@ -253,7 +270,7 @@
                   <div class="pickup-date text-orange-8">
                     {{ order.estimatedPickupDate ?? '–' }}
                   </div>
-                  <div class="pickup-label text-grey-5">預計取件</div>
+                  <div class="pickup-label text-grey-6">預計取件</div>
                 </q-item-section>
               </q-item>
             </q-list>
@@ -413,18 +430,6 @@ onMounted(loadOrders);
   overflow-x: hidden;
 }
 
-/* 標題圖示 */
-.title-icon-wrap {
-  width: 40px;
-  height: 40px;
-  background: linear-gradient(135deg, #0f766e, #0d9488);
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 2px 8px rgba(15, 118, 110, 0.3);
-}
-
 /* ── KPI Row ─────────────────────────────────────────────── */
 .kpi-row {
   display: grid;
@@ -577,14 +582,6 @@ onMounted(loadOrders);
   text-align: right;
 }
 
-/* 區塊卡片 */
-.section-card {
-  border-radius: 12px;
-  box-shadow:
-    0 1px 4px rgba(0, 0, 0, 0.07),
-    0 4px 12px rgba(0, 0, 0, 0.04);
-}
-
 .section-header {
   border-bottom: 1px solid rgba(0, 150, 136, 0.1);
   padding-bottom: 12px;
@@ -718,4 +715,10 @@ onMounted(loadOrders);
   color: #dc2626;
 }
 
+/* 停用動畫偏好：關閉甜甜圈圖動畫 */
+@media (prefers-reduced-motion: reduce) {
+  circle {
+    transition: none !important;
+  }
+}
 </style>

@@ -8,7 +8,7 @@
         </div>
         <div>
           <h5 class="q-mt-none q-mb-none text-weight-bold text-grey-9">服務設定</h5>
-          <div class="text-caption text-grey-5">Shoes Reborn · 服務項目</div>
+          <div class="text-caption page-subtitle">Shoes Reborn · 服務項目</div>
         </div>
       </div>
       <q-btn
@@ -28,8 +28,8 @@
         <!-- 無資料（非載入中） -->
         <div v-if="!loading && services.length === 0" class="list-body-center">
           <q-icon name="list_alt" size="3em" color="grey-4" />
-          <div class="text-subtitle1 text-grey-5 q-mt-sm">尚無服務項目</div>
-          <div class="text-caption text-grey-4">點擊「新增服務項目」開始建立</div>
+          <div class="text-subtitle1 text-grey-7 q-mt-sm">尚無服務項目</div>
+          <div class="text-caption text-grey-6">點擊「新增服務項目」開始建立</div>
         </div>
 
         <!-- 列表 -->
@@ -89,7 +89,7 @@
 
     <!-- 全域急件費率 -->
     <q-card class="section-card q-mt-lg">
-      <q-card-section class="bg-teal-1">
+      <q-card-section class="rate-card-header">
         <div class="row items-center">
           <q-icon name="speed" color="teal-8" size="sm" class="q-mr-sm" />
           <span class="text-h6">全域急件費率設定</span>
@@ -328,48 +328,12 @@ onMounted(loadServices);
 </script>
 
 <style scoped>
-.title-icon-wrap {
-  width: 40px;
-  height: 40px;
-  background: linear-gradient(135deg, #0f766e, #0d9488);
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.section-card {
-  border-radius: 12px;
-  overflow: hidden;
-}
-
-.list-body {
-  position: relative;
-  min-height: 200px;
-}
-
-.list-body-center {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 48px 16px;
-}
-
-.list-loading-overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(255, 255, 255, 0.75);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 10;
-}
-
+/* ── Service Items ─────────────────────────────────────────── */
 .svc-item {
-  padding: 12px 16px;
+  padding: 14px 16px;
   border-left: 3px solid transparent;
-  transition: background-color 0.15s;
+  transition: background-color 0.15s ease;
+  min-height: 60px;
 }
 
 .svc-item--active {
@@ -381,10 +345,17 @@ onMounted(loadServices);
 }
 
 .svc-item--inactive {
-  border-left-color: #bdbdbd;
+  border-left-color: #e2e8f0;
+  opacity: 0.75;
 }
 
 .svc-item--inactive:hover {
-  background-color: rgba(0, 0, 0, 0.05);
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+/* ── Rate card header ───────────────────────────────────────── */
+.rate-card-header {
+  background: linear-gradient(135deg, #f0fdfa, #e6fffa);
+  border-bottom: 1px solid rgba(15, 118, 110, 0.12);
 }
 </style>

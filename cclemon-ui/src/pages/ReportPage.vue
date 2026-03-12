@@ -10,7 +10,7 @@
           <h5 class="q-mt-none q-mb-none text-weight-bold text-grey-9">
             收益報表
           </h5>
-          <div class="text-caption text-grey-5">Shoes Reborn · 財務分析</div>
+          <div class="text-caption page-subtitle">Shoes Reborn · 財務分析</div>
         </div>
       </div>
     </div>
@@ -752,18 +752,6 @@ onMounted(loadReport);
   margin: 0 auto;
   background-color: #f8fafc;
   min-height: 100vh;
-}
-
-/* 標題圖示 */
-.title-icon-wrap {
-  width: 42px;
-  height: 42px;
-  background: linear-gradient(135deg, #0d9488, #14b8a6);
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 12px rgba(13, 148, 136, 0.2);
 }
 
 /* KPI Scroll Wrapper for Mobile */

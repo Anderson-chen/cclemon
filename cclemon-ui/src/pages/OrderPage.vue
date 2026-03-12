@@ -10,7 +10,7 @@
           <h5 class="q-mt-none q-mb-none text-weight-bold text-grey-9">
             訂單管理
           </h5>
-          <div class="text-caption text-grey-5">Shoes Reborn · 訂單列表</div>
+          <div class="text-caption page-subtitle">Shoes Reborn · 訂單列表</div>
         </div>
       </div>
       <q-btn
@@ -1614,16 +1614,6 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.title-icon-wrap {
-  width: 40px;
-  height: 40px;
-  background: linear-gradient(135deg, #0f766e, #0d9488);
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .card-header-accent {
   border-bottom: 1px solid rgba(0, 150, 136, 0.15);
   padding-bottom: 12px;
