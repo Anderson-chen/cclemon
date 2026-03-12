@@ -30,24 +30,22 @@ export interface OrderResult {
   urgentFee: number;
   estimatedPickupDate: string;
   actualPickupDate?: string;
-  note?: string;
   createTime: string;
 }
 
 export interface OrderCreateRequest {
   customerId: number;
   isUrgent: boolean;
-  items: { serviceCode: string; quantity: number; imageUrls?: string[]; productName?: string; itemNote?: string; itemStorageLocation?: string }[];
+  items: { serviceCode: string; quantity: number; unitPrice?: number; imageUrls?: string[]; productName?: string; itemNote?: string; itemStorageLocation?: string }[];
   storageLocations?: string[];
   estimatedPickupDate: string;
-  note?: string;
 }
 
 export interface OrderUpdateRequest {
   isUrgent?: boolean;
+  items?: OrderCreateRequest['items'];
   storageLocations?: string[];
   estimatedPickupDate?: string;
-  note?: string;
 }
 
 export interface OrderStatusUpdateRequest {
@@ -58,6 +56,7 @@ export interface OrderStatusUpdateRequest {
 export interface ListOrdersParams {
   keyword?: string;
   status?: OrderStatus;
+  statuses?: OrderStatus[];
   isUrgent?: boolean;
   dateFrom?: string;
   dateTo?: string;

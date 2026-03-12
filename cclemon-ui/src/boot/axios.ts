@@ -9,6 +9,18 @@ const authApi = axios.create({
 const healthApi = axios.create({
   baseURL: VUE_APP_HEALTH_BASE_URL,
   headers: { Authorization: getAccessToken() },
+  paramsSerializer: (params) => {
+    const sp = new URLSearchParams();
+    for (const [key, value] of Object.entries(params)) {
+      if (value === undefined || value === null) continue;
+      if (Array.isArray(value)) {
+        value.forEach((v) => sp.append(key, String(v)));
+      } else {
+        sp.append(key, String(value));
+      }
+    }
+    return sp.toString();
+  },
 });
 
 healthApi.interceptors.request.use(config => {

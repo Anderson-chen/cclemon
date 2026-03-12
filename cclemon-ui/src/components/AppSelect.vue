@@ -19,6 +19,15 @@
     <template v-if="prependIcon" #prepend>
       <q-icon :name="prependIcon" />
     </template>
+    
+    <!-- Forward option slot -->
+    <template v-if="$slots['option']" #option="scope">
+      <slot name="option" v-bind="scope" />
+    </template>
+    <!-- Forward no-option slot -->
+    <template v-if="$slots['no-option']" #no-option="scope">
+      <slot name="no-option" v-bind="scope" />
+    </template>
   </q-select>
 
   <!-- 手機：Action Sheet（iOS 風格） -->
@@ -75,12 +84,14 @@
             <q-separator />
           </template>
 
-          <!-- 選項列表 -->
           <template v-for="(opt, idx) in normalizedOptions" :key="String(opt.value)">
             <button class="action-sheet-item" @click="select(opt.value)">
-              <span :class="proxyValue === opt.value ? 'text-teal-8 text-weight-bold' : 'text-grey-8'">
-                {{ opt.label }}
-              </span>
+              <!-- Mobile Action Sheet item customization slot -->
+              <slot name="mobile-option" :opt="opt" :is-selected="proxyValue === opt.value">
+                <span :class="proxyValue === opt.value ? 'text-teal-8 text-weight-bold' : 'text-grey-8'">
+                  {{ opt.label }}
+                </span>
+              </slot>
             </button>
             <q-separator v-if="idx < normalizedOptions.length - 1" />
           </template>
