@@ -94,51 +94,38 @@
 
       <!-- 三合一 Tabs 區塊 -->
       <q-card class="section-card">
-        <q-tabs
-          v-model="activeTab"
-          dense
-          align="left"
-          class="dashboard-tabs"
-          indicator-color="teal-8"
-          active-color="teal-8"
-        >
-          <q-tab name="ready" class="tab-item">
-            <div class="row items-center q-gutter-xs no-wrap">
-              <q-icon name="inventory_2" size="xs" />
-              <span>待取件</span>
-              <q-badge
-                v-if="readyOrders.length > 0"
-                color="teal-8"
-                :label="readyOrders.length"
-                class="tab-badge"
-              />
-            </div>
-          </q-tab>
-          <q-tab name="expiring" class="tab-item">
-            <div class="row items-center q-gutter-xs no-wrap">
-              <q-icon name="event_busy" size="xs" />
-              <span>即將到期</span>
-              <q-badge
-                v-if="tomorrowPendingOrders.length > 0"
-                color="orange-8"
-                :label="tomorrowPendingOrders.length"
-                class="tab-badge"
-              />
-            </div>
-          </q-tab>
-          <q-tab name="urgent" class="tab-item">
-            <div class="row items-center q-gutter-xs no-wrap">
-              <q-icon name="bolt" size="xs" />
-              <span>待處理急件</span>
-              <q-badge
-                v-if="urgentActiveOrders.length > 0"
-                color="red-6"
-                :label="urgentActiveOrders.length"
-                class="tab-badge"
-              />
-            </div>
-          </q-tab>
-        </q-tabs>
+        <div class="tab-bar">
+          <button
+            class="tab-pill"
+            :class="{ 'tab-pill--active tab-pill--ready': activeTab === 'ready' }"
+            @click="activeTab = 'ready'"
+          >
+            待取件
+            <span v-if="readyOrders.length > 0" class="tab-count tab-count--ready">
+              {{ readyOrders.length }}
+            </span>
+          </button>
+          <button
+            class="tab-pill"
+            :class="{ 'tab-pill--active tab-pill--expiring': activeTab === 'expiring' }"
+            @click="activeTab = 'expiring'"
+          >
+            即將到期
+            <span v-if="tomorrowPendingOrders.length > 0" class="tab-count tab-count--expiring">
+              {{ tomorrowPendingOrders.length }}
+            </span>
+          </button>
+          <button
+            class="tab-pill"
+            :class="{ 'tab-pill--active tab-pill--urgent': activeTab === 'urgent' }"
+            @click="activeTab = 'urgent'"
+          >
+            急件
+            <span v-if="urgentActiveOrders.length > 0" class="tab-count tab-count--urgent">
+              {{ urgentActiveOrders.length }}
+            </span>
+          </button>
+        </div>
 
         <q-separator />
 
@@ -152,48 +139,31 @@
               <q-icon name="check_circle" size="3em" color="teal-4" />
               <div class="text-body2 text-grey-5 q-mt-sm">目前無急件</div>
             </q-card-section>
-            <q-list v-else dense separator>
+            <q-list v-else separator>
               <q-item
-                v-for="order in urgentActiveOrders.slice(0, 4)"
+                v-for="order in urgentActiveOrders.slice(0, 3)"
                 :key="order.id"
-                class="list-item cursor-pointer"
+                class="order-list-item order-list-item--urgent cursor-pointer"
                 clickable
                 @click="openDetail(order)"
               >
-                <q-item-section avatar>
-                  <q-avatar
-                    :color="statusColorMap[order.status]"
-                    text-color="white"
-                    size="36px"
-                    :icon="statusIconMap[order.status]"
-                  />
-                </q-item-section>
                 <q-item-section>
-                  <q-item-label
-                    class="text-weight-medium row items-center q-gutter-xs"
-                  >
-                    <span>{{ order.orderNo }}</span>
-                    <q-badge
-                      :color="statusColorMap[order.status]"
-                      :label="statusLabelMap[order.status]"
-                      outline
-                      size="xs"
-                    />
+                  <q-item-label class="text-weight-bold text-grey-9 text-body2">
+                    {{ order.customerName }}
                   </q-item-label>
-                  <q-item-label caption
-                    >{{ order.customerName }} ·
-                    {{ order.customerPhone }}</q-item-label
-                  >
+                  <q-item-label caption class="text-grey-6 q-mt-xs">
+                    {{ order.customerPhone }}
+                  </q-item-label>
                 </q-item-section>
-                <q-item-section side>
-                  <div class="text-caption text-grey-9 text-weight-medium">
+                <q-item-section side class="items-end">
+                  <div class="pickup-date text-red-7">
                     {{ order.estimatedPickupDate ?? '–' }}
                   </div>
-                  <div class="text-caption text-grey-5">預計取件</div>
+                  <div class="pickup-label text-grey-5">預計取件</div>
                 </q-item-section>
               </q-item>
             </q-list>
-            <div v-if="urgentActiveOrders.length > 4" class="show-more-row">
+            <div v-if="urgentActiveOrders.length > 3" class="show-more-row">
               <q-btn
                 flat
                 dense
@@ -216,40 +186,31 @@
               <q-icon name="check_circle_outline" size="3em" color="teal-3" />
               <div class="text-body2 text-grey-5 q-mt-sm">目前無待取件</div>
             </q-card-section>
-            <q-list v-else dense separator>
+            <q-list v-else separator>
               <q-item
-                v-for="order in readyOrders.slice(0, 4)"
+                v-for="order in readyOrders.slice(0, 3)"
                 :key="order.id"
-                class="list-item cursor-pointer"
+                class="order-list-item order-list-item--ready cursor-pointer"
                 clickable
                 @click="openDetail(order)"
               >
-                <q-item-section avatar>
-                  <q-avatar
-                    color="teal-6"
-                    text-color="white"
-                    size="36px"
-                    icon="check_circle"
-                  />
-                </q-item-section>
                 <q-item-section>
-                  <q-item-label class="text-weight-medium">{{
-                    order.orderNo
-                  }}</q-item-label>
-                  <q-item-label caption
-                    >{{ order.customerName }} ·
-                    {{ order.customerPhone }}</q-item-label
-                  >
+                  <q-item-label class="text-weight-bold text-grey-9 text-body2">
+                    {{ order.customerName }}
+                  </q-item-label>
+                  <q-item-label caption class="text-grey-6 q-mt-xs">
+                    {{ order.customerPhone }}
+                  </q-item-label>
                 </q-item-section>
-                <q-item-section side>
-                  <div class="text-caption text-grey-9 text-weight-medium">
+                <q-item-section side class="items-end">
+                  <div class="pickup-date text-teal-8">
                     {{ order.estimatedPickupDate ?? '–' }}
                   </div>
-                  <div class="text-caption text-grey-5">預計取件</div>
+                  <div class="pickup-label text-grey-5">預計取件</div>
                 </q-item-section>
               </q-item>
             </q-list>
-            <div v-if="readyOrders.length > 4" class="show-more-row">
+            <div v-if="readyOrders.length > 3" class="show-more-row">
               <q-btn
                 flat
                 dense
@@ -274,44 +235,29 @@
             </q-card-section>
             <q-list v-else separator>
               <q-item
-                v-for="order in tomorrowPendingOrders.slice(0, 4)"
+                v-for="order in tomorrowPendingOrders.slice(0, 3)"
                 :key="order.id"
-                class="list-item cursor-pointer"
+                class="order-list-item order-list-item--expiring cursor-pointer"
                 clickable
                 @click="openDetail(order)"
               >
-                <q-item-section avatar>
-                  <q-avatar
-                    :color="statusColorMap[order.status]"
-                    text-color="white"
-                    size="36px"
-                    :icon="statusIconMap[order.status]"
-                  />
-                </q-item-section>
                 <q-item-section>
-                  <q-item-label class="row items-center q-gutter-xs">
-                    <span class="text-weight-medium">{{ order.orderNo }}</span>
-                    <q-badge
-                      :color="statusColorMap[order.status]"
-                      :label="statusLabelMap[order.status]"
-                      outline
-                      size="xs"
-                    />
+                  <q-item-label class="text-weight-bold text-grey-9 text-body2">
+                    {{ order.customerName }}
                   </q-item-label>
-                  <q-item-label caption
-                    >{{ order.customerName }} ·
-                    {{ order.customerPhone }}</q-item-label
-                  >
+                  <q-item-label caption class="text-grey-6 q-mt-xs">
+                    {{ order.customerPhone }}
+                  </q-item-label>
                 </q-item-section>
-                <q-item-section side>
-                  <div class="text-caption text-grey-9 text-weight-medium">
-                    {{ order.estimatedPickupDate }}
+                <q-item-section side class="items-end">
+                  <div class="pickup-date text-orange-8">
+                    {{ order.estimatedPickupDate ?? '–' }}
                   </div>
-                  <div class="text-caption text-grey-5">預計取件</div>
+                  <div class="pickup-label text-grey-5">預計取件</div>
                 </q-item-section>
               </q-item>
             </q-list>
-            <div v-if="tomorrowPendingOrders.length > 4" class="show-more-row">
+            <div v-if="tomorrowPendingOrders.length > 3" class="show-more-row">
               <q-btn
                 flat
                 dense
@@ -375,31 +321,6 @@ const loadOrders = async () => {
   } finally {
     loading.value = false;
   }
-};
-
-// ── 輔助對應表 ─────────────────────────────────────────────
-const statusColorMap: Record<string, string> = {
-  PENDING: 'orange-6',
-  IN_PROGRESS: 'blue-6',
-  READY: 'teal-6',
-  PICKED_UP: 'grey-5',
-  CANCELLED: 'red-4',
-};
-
-const statusIconMap: Record<string, string> = {
-  PENDING: 'hourglass_empty',
-  IN_PROGRESS: 'sync',
-  READY: 'check_circle',
-  PICKED_UP: 'done_all',
-  CANCELLED: 'cancel',
-};
-
-const statusLabelMap: Record<string, string> = {
-  PENDING: '待處理',
-  IN_PROGRESS: '處理中',
-  READY: '待取件',
-  PICKED_UP: '已取件',
-  CANCELLED: '已取消',
 };
 
 // ── 計算指標 ───────────────────────────────────────────────
@@ -671,24 +592,51 @@ onMounted(loadOrders);
   align-items: center;
 }
 
-/* 急件列表 */
-.urgent-item {
-  min-height: 60px;
-  transition: background 0.2s;
+/* 訂單列表項目 */
+.order-list-item {
+  min-height: 56px;
+  padding: 12px 16px;
+  border-left: 3px solid transparent;
+  transition: background 0.18s ease, border-color 0.18s ease;
 }
 
-.urgent-item:hover {
-  background: rgba(220, 38, 38, 0.03);
+.order-list-item:hover {
+  background: rgba(0, 0, 0, 0.025);
 }
 
-/* 取件清單列表 */
-.pickup-item {
-  min-height: 60px;
-  transition: background 0.2s;
+.order-list-item--urgent {
+  border-left-color: #ef4444;
 }
 
-.pickup-item:hover {
-  background: rgba(13, 148, 136, 0.04);
+.order-list-item--urgent:hover {
+  background: rgba(239, 68, 68, 0.04);
+}
+
+.order-list-item--ready {
+  border-left-color: #0f766e;
+}
+
+.order-list-item--ready:hover {
+  background: rgba(15, 118, 110, 0.04);
+}
+
+.order-list-item--expiring {
+  border-left-color: #f97316;
+}
+
+.order-list-item--expiring:hover {
+  background: rgba(249, 115, 22, 0.04);
+}
+
+.pickup-date {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+.pickup-label {
+  font-size: 0.72rem;
+  margin-top: 2px;
 }
 
 /* 顯示更多 */
@@ -710,33 +658,65 @@ onMounted(loadOrders);
 }
 
 /* Tabs */
-.dashboard-tabs {
+.tab-bar {
+  display: flex;
+  gap: 6px;
+  padding: 10px 12px;
   background: #f8fafc;
   border-radius: 12px 12px 0 0;
 }
 
-.tab-item {
-  min-width: 0;
-  padding: 0 12px;
-}
-
-.tab-badge {
-  font-size: 0.65rem;
-  min-width: 18px;
-  height: 16px;
-  line-height: 16px;
-  padding: 0 4px;
+.tab-pill {
+  flex: 1;
+  justify-content: center;
   display: inline-flex;
   align-items: center;
-  justify-content: center;
+  gap: 5px;
+  padding: 5px 13px;
+  border-radius: 20px;
+  border: none;
+  background: transparent;
+  color: #64748b;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+  white-space: nowrap;
 }
 
-.list-item {
-  min-height: 60px;
-  transition: background 0.2s;
+.tab-pill:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: #334155;
 }
 
-.list-item:hover {
-  background: rgba(0, 0, 0, 0.03);
+.tab-pill--active {
+  background: white;
+  color: #0f172a;
+  font-weight: 600;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 }
+
+.tab-count {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 10px;
+  line-height: 1.4;
+}
+
+.tab-count--ready {
+  background: rgba(15, 118, 110, 0.12);
+  color: #0f766e;
+}
+
+.tab-count--expiring {
+  background: rgba(249, 115, 22, 0.12);
+  color: #c2410c;
+}
+
+.tab-count--urgent {
+  background: rgba(239, 68, 68, 0.12);
+  color: #dc2626;
+}
+
 </style>
