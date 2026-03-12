@@ -21,115 +21,198 @@
       />
     </div>
 
-    <!-- 搜尋與篩選 -->
-    <q-card class="q-mb-md filter-card">
-      <q-card-section class="q-py-sm q-px-md">
-        <div class="filter-row">
-          <!-- 關鍵字 -->
-          <q-input
-            v-model="filters.keyword"
-            placeholder="姓名 / 電話"
-            outlined
-            dense
-            clearable
-            class="filter-keyword"
-            @keyup.enter="search"
-          >
-            <template v-slot:prepend>
-              <q-icon name="search" size="xs" />
-            </template>
-          </q-input>
+    <!-- 搜尋列 -->
+    <div class="search-bar-row q-mb-sm row no-wrap items-center q-gutter-xs">
+      <q-input
+        v-model="keyword"
+        placeholder="搜尋姓名 / 電話"
+        outlined
+        dense
+        clearable
+        bg-color="white"
+        class="col"
+        @keyup.enter="search"
+      >
+        <template v-slot:prepend>
+          <q-icon name="search" color="teal-7" size="xs" />
+        </template>
+      </q-input>
 
-          <!-- 狀態 -->
-          <AppSelect
-            v-model="filters.status"
-            :options="statusOptions"
-            label="狀態"
-            clearable
-            class="filter-status"
-          />
+      <q-btn
+        unelevated
+        :color="activeFilterCount > 0 ? 'teal-8' : 'grey-3'"
+        :text-color="activeFilterCount > 0 ? 'white' : 'grey-7'"
+        icon="tune"
+        round
+        size="md"
+        class="cursor-pointer filter-tune-btn"
+        @click="openFilterSheet"
+      >
+        <q-badge
+          v-if="activeFilterCount > 0"
+          color="red-5"
+          floating
+          rounded
+          :label="activeFilterCount"
+        />
+      </q-btn>
+    </div>
 
-          <!-- 急件 checkbox -->
-          <q-checkbox
-            v-model="isUrgentFilter"
-            label="急件"
-            color="red-6"
-            dense
-            class="filter-urgent"
-          />
+    <!-- 篩選 Chips（永遠顯示，啟用/停用狀態） -->
+    <div class="filter-chips-row q-mb-sm">
+      <!-- 狀態 chip：有值才顯示，toggle applied -->
+      <q-chip
+        v-if="statusValue"
+        clickable dense
+        :color="statusApplied ? 'teal-8' : 'grey-4'"
+        :text-color="statusApplied ? 'white' : 'grey-6'"
+        icon="label"
+        class="filter-chip cursor-pointer"
+        @click="statusApplied = !statusApplied; search()"
+      >{{ statusLabelMap[statusValue] }}</q-chip>
 
-          <!-- 單日日期 -->
-          <div class="filter-date row items-center no-wrap">
-            <AppDateInput
-              v-model="filters.date"
-              label="預計取件日"
-              prepend-icon="event"
-              class="filter-date-input"
-            />
+      <!-- 急件 chip：曾設定才顯示，toggle applied -->
+      <q-chip
+        v-if="urgentChipShown"
+        clickable dense
+        :color="isUrgentApplied ? 'red-6' : 'grey-4'"
+        :text-color="isUrgentApplied ? 'white' : 'grey-6'"
+        icon="bolt"
+        class="filter-chip cursor-pointer"
+        @click="isUrgentApplied = !isUrgentApplied; search()"
+      >急件</q-chip>
+
+      <!-- 取件日 chip：有值才顯示，toggle applied -->
+      <q-chip
+        v-if="dateValue"
+        clickable dense
+        :color="dateApplied ? 'blue-7' : 'grey-4'"
+        :text-color="dateApplied ? 'white' : 'grey-6'"
+        icon="event"
+        class="filter-chip cursor-pointer"
+        @click="dateApplied = !dateApplied; search()"
+      >{{ dateValue }}</q-chip>
+
+      <!-- 排序 chip：永遠顯示，非預設時彩色 -->
+      <q-chip
+        clickable dense
+        :color="sortKey !== 'estimatedPickupDate,asc' ? 'purple-7' : 'grey-4'"
+        :text-color="sortKey !== 'estimatedPickupDate,asc' ? 'white' : 'grey-6'"
+        icon="sort"
+        class="filter-chip cursor-pointer"
+        @click="openFilterSheet"
+      >{{ sortKeyOptions.find(o => o.value === sortKey)?.shortLabel }}</q-chip>
+    </div>
+
+    <!-- 篩選底部抽屜 -->
+    <q-dialog v-model="filterSheetOpen" position="bottom">
+      <q-card class="filter-sheet-card">
+        <q-toolbar class="bg-teal-8 text-white filter-sheet-toolbar">
+          <q-icon name="tune" class="q-mr-sm" />
+          <q-toolbar-title class="text-subtitle1 text-weight-medium">篩選 &amp; 排序</q-toolbar-title>
+          <q-btn flat round dense icon="close" v-close-popup class="cursor-pointer" />
+        </q-toolbar>
+
+        <div class="filter-sheet-body">
+          <!-- 訂單狀態 -->
+          <div class="filter-section">
+            <div class="filter-section-label">訂單狀態</div>
+            <div class="row q-gutter-sm">
+              <q-btn
+                v-for="opt in statusOptions"
+                :key="opt.value"
+                unelevated no-caps
+                :color="draft.status === opt.value ? 'teal-8' : 'grey-2'"
+                :text-color="draft.status === opt.value ? 'white' : 'grey-8'"
+                :label="opt.label"
+                class="filter-chip-btn cursor-pointer"
+                @click="draft.status = draft.status === opt.value ? null : opt.value"
+              />
+            </div>
+          </div>
+
+          <!-- 急件 -->
+          <div class="filter-section">
+            <div class="filter-section-label">急件篩選</div>
             <q-btn
-              v-if="filters.date"
-              flat round dense size="xs"
-              icon="cancel"
-              color="grey-5"
-              class="cursor-pointer q-ml-xs"
-              @click="filters.date = ''"
+              unelevated no-caps
+              :color="draft.isUrgent ? 'red-1' : 'grey-2'"
+              :text-color="draft.isUrgent ? 'red-7' : 'grey-8'"
+              icon="bolt"
+              label="只顯示急件"
+              class="filter-chip-btn cursor-pointer"
+              :class="{ 'urgent-on': draft.isUrgent }"
+              @click="draft.isUrgent = !draft.isUrgent"
             />
+          </div>
+
+          <!-- 取件日 -->
+          <div class="filter-section">
+            <div class="filter-section-label">預計取件日</div>
+            <div class="row items-center no-wrap" style="max-width: 220px;">
+              <AppDateInput
+                v-model="draft.date"
+                label="選擇日期"
+                prepend-icon="event"
+                class="col"
+              />
+              <q-btn
+                v-if="draft.date"
+                flat round dense size="xs"
+                icon="close" color="grey-5"
+                class="cursor-pointer q-ml-xs"
+                @click="draft.date = ''"
+              />
+            </div>
           </div>
 
           <!-- 排序 -->
-          <div class="filter-sort row items-center no-wrap q-gutter-xs">
-            <AppSelect
-              v-model="sortField"
-              :options="sortFieldOptions"
-              label="排序"
-              dense
-              class="sort-field-select"
-            />
-            <q-btn
-              flat
-              round
-              dense
-              :icon="sortDir === 'asc' ? 'arrow_upward' : 'arrow_downward'"
-              color="teal-8"
-              class="cursor-pointer"
-              @click="sortDir = sortDir === 'asc' ? 'desc' : 'asc'"
-            >
-              <q-tooltip>{{ sortDir === 'asc' ? '由舊到新' : '由新到舊' }}</q-tooltip>
-            </q-btn>
+          <div class="filter-section">
+            <div class="filter-section-label">排序方式</div>
+            <div class="row q-gutter-sm">
+              <q-btn
+                v-for="opt in sortKeyOptions"
+                :key="opt.value"
+                unelevated no-caps
+                :color="draft.sortKey === opt.value ? 'teal-8' : 'grey-2'"
+                :text-color="draft.sortKey === opt.value ? 'white' : 'grey-8'"
+                :label="opt.label"
+                class="filter-chip-btn cursor-pointer"
+                @click="draft.sortKey = opt.value"
+              />
+            </div>
           </div>
+        </div>
 
-          <!-- 查詢按鈕 -->
+        <!-- 底部操作 -->
+        <div class="filter-sheet-actions row items-center">
+          <q-btn flat no-caps label="清除篩選" color="grey-6" class="cursor-pointer" @click="clearDraft" />
+          <q-space />
           <q-btn
-            unelevated
+            unelevated rounded no-caps
             color="teal-8"
-            icon="search"
-            label="查詢"
-            @click="search"
-            :loading="loading"
-            class="cursor-pointer filter-search-btn"
+            label="套用"
+            class="cursor-pointer q-px-xl"
+            @click="applyFilter"
           />
         </div>
-      </q-card-section>
-    </q-card>
+      </q-card>
+    </q-dialog>
 
     <!-- 訂單列表 -->
     <q-card class="section-card">
 
-      <!-- 載入中 -->
-      <div v-if="loading" class="text-center q-py-xl">
-        <q-spinner color="teal-8" size="3em" />
-        <div class="text-caption text-grey-6 q-mt-sm">載入中...</div>
-      </div>
+      <!-- 列表主體：固定最低高度避免換頁跳動 -->
+      <div class="list-body">
+        <!-- 無資料（非載入中） -->
+        <div v-if="!loading && orders.length === 0" class="list-body-center">
+          <q-icon name="inbox" size="4em" color="grey-4" />
+          <div class="text-subtitle1 text-grey-5 q-mt-sm">尚無訂單資料</div>
+          <div class="text-caption text-grey-4">點擊「新增訂單」開始開單</div>
+        </div>
 
-      <!-- 無資料 -->
-      <div v-else-if="orders.length === 0" class="text-center q-py-xl">
-        <q-icon name="inbox" size="4em" color="grey-4" />
-        <div class="text-subtitle1 text-grey-5 q-mt-sm">尚無訂單資料</div>
-        <div class="text-caption text-grey-4">點擊「新增訂單」開始開單</div>
-      </div>
-
-      <!-- 訂單列表 -->
-      <q-list v-else separator>
+        <!-- 訂單列表 -->
+        <q-list v-if="orders.length > 0" separator>
         <q-item
           v-for="order in orders"
           :key="order.id"
@@ -187,14 +270,20 @@
             </div>
           </q-item-section>
         </q-item>
-      </q-list>
+        </q-list>
+
+        <!-- Loading 遮罩 -->
+        <div v-if="loading" class="list-loading-overlay">
+          <q-spinner color="teal-8" size="2.5em" />
+        </div>
+      </div>
 
       <!-- 分頁 -->
       <div v-if="pagination.totalPages > 1" class="row justify-center q-py-sm">
         <q-pagination
           v-model="pagination.page"
           :max="pagination.totalPages"
-          :max-pages="3"
+          :max-pages="5"
           color="teal-8"
           active-color="teal-8"
           @update:model-value="loadOrders"
@@ -550,19 +639,27 @@ const $q = useQuasar();
 const orderNavStore = useOrderNavStore();
 
 // ── 篩選 ──────────────────────────────────────────────────
-const filters = reactive({
-  keyword: '',
-  status: null as OrderStatus | null,
-  date: '' as string,
-});
+const keyword = ref('');
 
-const isUrgentFilter = ref(false);
-const sortField = ref('estimatedPickupDate');
-const sortDir = ref<'asc' | 'desc'>('asc');
+// 狀態：value 保留值，applied 是否套用
+const statusValue = ref<OrderStatus | null>(null);
+const statusApplied = ref(false);
 
-const sortFieldOptions = [
-  { label: '取件日', value: 'estimatedPickupDate' },
-  { label: '建立時間', value: 'createTime' },
+// 取件日：value 保留值，applied 是否套用
+const dateValue = ref('');
+const dateApplied = ref(false);
+
+// 急件：applied 是否套用，shown 是否曾設定過（chip 可見性）
+const isUrgentApplied = ref(false);
+const urgentChipShown = ref(false);
+
+const sortKey = ref('estimatedPickupDate,asc');
+
+const sortKeyOptions = [
+  { label: '取件日↑（預設）', shortLabel: '取件日↑', value: 'estimatedPickupDate,asc' },
+  { label: '取件日↓',         shortLabel: '取件日↓', value: 'estimatedPickupDate,desc' },
+  { label: '建立時間↑',       shortLabel: '建立↑',   value: 'createTime,asc' },
+  { label: '建立時間↓',       shortLabel: '建立↓',   value: 'createTime,desc' },
 ];
 
 const statusOptions = [
@@ -572,6 +669,54 @@ const statusOptions = [
   { label: '已取件', value: 'PICKED_UP' },
   { label: '已取消', value: 'CANCELLED' },
 ];
+
+const statusLabelMap: Record<string, string> = {
+  PENDING: '待處理', IN_PROGRESS: '處理中', READY: '待取件', PICKED_UP: '已取件', CANCELLED: '已取消',
+};
+
+// ── 篩選底部抽屜 ──────────────────────────────────────────
+const filterSheetOpen = ref(false);
+
+const draft = reactive({
+  status: null as OrderStatus | null,
+  isUrgent: false,
+  date: '',
+  sortKey: 'estimatedPickupDate,asc',
+});
+
+const activeFilterCount = computed(() =>
+  (statusApplied.value && statusValue.value ? 1 : 0) +
+  (isUrgentApplied.value ? 1 : 0) +
+  (dateApplied.value && dateValue.value ? 1 : 0) +
+  (sortKey.value !== 'estimatedPickupDate,asc' ? 1 : 0)
+);
+
+function openFilterSheet() {
+  draft.status = statusValue.value;
+  draft.isUrgent = isUrgentApplied.value;
+  draft.date = dateValue.value;
+  draft.sortKey = sortKey.value;
+  filterSheetOpen.value = true;
+}
+
+function applyFilter() {
+  statusValue.value = draft.status;
+  statusApplied.value = draft.status !== null;
+  isUrgentApplied.value = draft.isUrgent;
+  urgentChipShown.value = draft.isUrgent; // sheet 明確設定時才顯示/隱藏 chip
+  dateValue.value = draft.date;
+  dateApplied.value = draft.date !== '';
+  sortKey.value = draft.sortKey;
+  filterSheetOpen.value = false;
+  search();
+}
+
+function clearDraft() {
+  draft.status = null;
+  draft.isUrgent = false;
+  draft.date = '';
+  draft.sortKey = 'estimatedPickupDate,asc';
+}
 
 const ACTIVE_STATUSES: OrderStatus[] = ['PENDING', 'IN_PROGRESS', 'READY'];
 
@@ -591,13 +736,13 @@ const loadOrders = async () => {
   try {
     loading.value = true;
     const res = await listOrders({
-      keyword: filters.keyword || undefined,
-      status: filters.status || undefined,
-      statuses: filters.status ? undefined : ACTIVE_STATUSES,
-      isUrgent: isUrgentFilter.value || undefined,
-      dateFrom: filters.date || undefined,
-      dateTo: filters.date || undefined,
-      sort: `${sortField.value},${sortDir.value}`,
+      keyword: keyword.value || undefined,
+      status: (statusApplied.value && statusValue.value) ? statusValue.value : undefined,
+      statuses: (statusApplied.value && statusValue.value) ? undefined : ACTIVE_STATUSES,
+      isUrgent: isUrgentApplied.value || undefined,
+      dateFrom: (dateApplied.value && dateValue.value) ? dateValue.value : undefined,
+      dateTo: (dateApplied.value && dateValue.value) ? dateValue.value : undefined,
+      sort: sortKey.value,
       page: pagination.page - 1,
       size: pagination.size,
     });
@@ -964,9 +1109,18 @@ onMounted(async () => {
 
   // 套用來自總覽的篩選條件
   if (pendingFilters) {
-    if (pendingFilters.status !== undefined) filters.status = pendingFilters.status;
-    if (pendingFilters.isUrgent !== undefined) isUrgentFilter.value = pendingFilters.isUrgent ?? false;
-    if (pendingFilters.dateFrom) filters.date = pendingFilters.dateFrom;
+    if (pendingFilters.status !== undefined) {
+      statusValue.value = pendingFilters.status;
+      statusApplied.value = pendingFilters.status !== null;
+    }
+    if (pendingFilters.isUrgent) {
+      isUrgentApplied.value = true;
+      urgentChipShown.value = true;
+    }
+    if (pendingFilters.dateFrom) {
+      dateValue.value = pendingFilters.dateFrom;
+      dateApplied.value = true;
+    }
   }
 
   await Promise.all([loadServices(), loadOrders()]);
@@ -1005,46 +1159,90 @@ onMounted(async () => {
   border-radius: 8px;
 }
 
-/* 篩選列 */
-.filter-card {
-  border-radius: 12px;
-}
-
-.filter-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+/* 搜尋列 */
+.search-bar-row {
   align-items: center;
 }
 
-.filter-keyword {
-  flex: 1;
-  min-width: 160px;
+.filter-tune-btn {
+  flex-shrink: 0;
 }
 
-.filter-status {
-  min-width: 110px;
+/* 篩選 chips 列 */
+.filter-chips-row {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  gap: 6px;
+  scrollbar-width: none;
 }
 
-.filter-urgent {
-  white-space: nowrap;
+.filter-chips-row::-webkit-scrollbar {
+  display: none;
 }
 
-.filter-date {
-  min-width: 210px;
-  flex: 1;
+.filter-chip {
+  flex-shrink: 0;
+  font-size: 0.8rem;
+  transition: background-color 0.15s, color 0.15s;
 }
 
-.filter-sort {
-  min-width: 160px;
+/* 篩選底部抽屜 */
+.filter-sheet-card {
+  width: 100vw;
+  max-height: 85dvh;
+  border-radius: 16px 16px 0 0;
+  overflow-y: auto;
 }
 
-.sort-field-select {
-  min-width: 100px;
+.filter-sheet-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
-.filter-search-btn {
-  white-space: nowrap;
+.filter-sheet-body {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.filter-section {
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.filter-section:last-child {
+  border-bottom: none;
+}
+
+.filter-section-label {
+  font-size: 0.75rem;
+  color: #9e9e9e;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.filter-chip-btn {
+  border-radius: 20px;
+  padding: 6px 16px;
+  font-size: 0.875rem;
+  min-height: 36px;
+}
+
+.filter-chip-btn.urgent-on {
+  border: 1px solid #ef9a9a;
+}
+
+.filter-sheet-actions {
+  padding: 12px 16px 24px;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  background: #fafafa;
+  position: sticky;
+  bottom: 0;
 }
 
 /* 列表 */
@@ -1055,6 +1253,29 @@ onMounted(async () => {
 
 .list-header {
   border-bottom: none;
+}
+
+.list-body {
+  min-height: 310px;
+  position: relative;
+}
+
+.list-body-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 310px;
+}
+
+.list-loading-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0 0 12px 12px;
 }
 
 .order-list-item {

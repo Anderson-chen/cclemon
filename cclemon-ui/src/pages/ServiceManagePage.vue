@@ -69,57 +69,53 @@
           <q-spinner color="teal-8" size="40px" />
         </div>
 
-        <q-list v-else bordered separator>
+        <div v-if="services.length === 0" class="text-center text-grey-5 q-pa-xl">
+          <q-icon name="list_alt" size="3em" color="grey-4" />
+          <div class="q-mt-sm">尚無服務項目，請點擊「新增服務」建立第一筆。</div>
+        </div>
+
+        <q-list v-else separator>
           <q-item
             v-for="svc in services"
             :key="svc.code"
-            :class="svc.isActive ? 'bg-white' : 'bg-grey-2'"
+            :class="['svc-item', svc.isActive ? 'svc-item--active' : 'svc-item--inactive']"
           >
             <q-item-section>
-              <q-item-label :class="svc.isActive ? '' : 'text-grey-5'">
-                <strong>{{ svc.name }}</strong>
-                <q-badge
-                  :color="svc.isActive ? 'teal-8' : 'grey-5'"
-                  class="q-ml-sm"
-                >
-                  {{ svc.isActive ? '啟用中' : '已停用' }}
-                </q-badge>
+              <q-item-label
+                class="text-weight-bold text-body2"
+                :class="svc.isActive ? 'text-grey-9' : 'text-grey-5'"
+              >
+                {{ svc.name }}
               </q-item-label>
-              <q-item-label caption :class="svc.isActive ? 'text-grey-7' : 'text-grey-5'">
-                代碼：{{ svc.code }} ／ 售價：NT$ {{ svc.defaultPrice }}
-                ／ 急件費率：{{ svc.urgentFeeRate !== null ? `${svc.urgentFeeRate * 100}%` : '使用全域' }}
+              <q-item-label caption :class="svc.isActive ? 'text-grey-6' : 'text-grey-4'">
+                NT$ {{ svc.defaultPrice.toLocaleString() }}
               </q-item-label>
             </q-item-section>
 
             <q-item-section side>
-              <div class="row q-gutter-xs">
+              <div class="row items-center q-gutter-xs">
+                <q-badge
+                  :color="svc.isActive ? 'teal-8' : 'grey-5'"
+                  :label="svc.isActive ? '啟用' : '停用'"
+                />
                 <q-btn
-                  flat
-                  round
-                  icon="edit"
-                  color="teal-8"
-                  size="sm"
+                  flat round icon="edit" color="teal-8" size="sm"
+                  class="cursor-pointer"
                   @click="openEditDialog(svc)"
                 >
                   <q-tooltip>編輯</q-tooltip>
                 </q-btn>
                 <q-btn
-                  flat
-                  round
+                  flat round
                   :icon="svc.isActive ? 'toggle_on' : 'toggle_off'"
-                  :color="svc.isActive ? 'orange-7' : 'grey-6'"
+                  :color="svc.isActive ? 'orange-7' : 'grey-5'"
                   size="lg"
+                  class="cursor-pointer"
                   @click="toggleActive(svc)"
                 >
                   <q-tooltip>{{ svc.isActive ? '停用此服務' : '重新啟用' }}</q-tooltip>
                 </q-btn>
               </div>
-            </q-item-section>
-          </q-item>
-
-          <q-item v-if="services.length === 0">
-            <q-item-section class="text-center text-grey-5 q-pa-md">
-              尚無服務項目，請點擊「新增服務」建立第一筆。
             </q-item-section>
           </q-item>
         </q-list>
@@ -311,5 +307,27 @@ onMounted(loadServices);
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.svc-item {
+  padding: 12px 16px;
+  border-left: 3px solid transparent;
+  transition: background-color 0.15s;
+}
+
+.svc-item--active {
+  border-left-color: #0f766e;
+}
+
+.svc-item--active:hover {
+  background-color: rgba(15, 118, 110, 0.04);
+}
+
+.svc-item--inactive {
+  border-left-color: #bdbdbd;
+}
+
+.svc-item--inactive:hover {
+  background-color: rgba(0, 0, 0, 0.02);
 }
 </style>

@@ -1,10 +1,12 @@
 <template>
   <q-dialog
     :model-value="modelValue"
-    maximized
+    :position="$q.screen.lt.md ? 'bottom' : 'standard'"
+    :maximized="!$q.screen.lt.md"
     @update:model-value="emit('update:modelValue', $event)"
   >
-    <q-card v-if="localOrder">
+    <q-card v-if="localOrder"
+      :style="$q.screen.lt.md ? 'width: 100vw; max-height: 90dvh; overflow-y: auto; border-radius: 16px 16px 0 0;' : 'height: 100%; overflow-y: auto;'">
       <q-toolbar class="bg-teal-8 text-white">
         <q-icon name="receipt_long" size="sm" class="q-mr-sm" />
         <q-toolbar-title>{{ localOrder.orderNo }}</q-toolbar-title>

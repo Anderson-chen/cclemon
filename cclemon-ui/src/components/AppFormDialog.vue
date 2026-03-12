@@ -1,6 +1,10 @@
 <template>
-  <q-dialog v-model="isOpen" persistent :maximized="$q.screen.lt.md">
-    <q-card :style="$q.screen.gt.sm ? `width: 95vw; max-width: ${maxWidth}` : ''">
+  <q-dialog
+    v-model="isOpen"
+    persistent
+    :position="$q.screen.lt.md ? 'bottom' : 'standard'"
+  >
+    <q-card :style="$q.screen.lt.md ? 'width: 100vw; border-radius: 16px 16px 0 0;' : `width: 95vw; max-width: ${maxWidth}`">
       <!-- 統一 Header/Toolbar (手機與桌機皆包含主要操作) -->
       <q-toolbar class="bg-teal-8 text-white dialog-top-bar">
         <q-btn flat round dense icon="close" @click="isOpen = false" class="cursor-pointer">
@@ -39,7 +43,7 @@
         class="q-pa-md"
         :style="
           $q.screen.lt.md
-            ? 'height: calc(100dvh - 50px); overflow-y: auto;'
+            ? 'max-height: 75dvh; overflow-y: auto;'
             : 'max-height: 75vh; overflow-y: auto;'
         "
       >

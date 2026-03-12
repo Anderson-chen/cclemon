@@ -45,14 +45,6 @@
             </template>
           </q-input>
 
-          <AppSelect
-            v-model="filters.tierCode"
-            :options="tierOptions"
-            label="會員等級"
-            clearable
-            style="min-width: 150px"
-          />
-
           <q-btn
             unelevated
             color="teal-8"
@@ -66,48 +58,12 @@
       </q-card-section>
     </q-card>
 
-    <!-- 統計卡片 -->
-    <div class="row q-gutter-md q-mb-md">
-      <q-card class="stat-card col">
-        <q-card-section class="text-center">
-          <q-icon name="group" size="2em" color="teal-8" />
-          <div class="text-h4 text-weight-bold text-teal-8 q-mt-xs">{{ pagination.totalElements }}</div>
-          <div class="text-caption text-grey-6">總會員數</div>
-        </q-card-section>
-      </q-card>
-      <q-card class="stat-card col">
-        <q-card-section class="text-center">
-          <q-icon name="workspace_premium" size="2em" color="amber-7" />
-          <div class="text-h4 text-weight-bold text-amber-7 q-mt-xs">{{ goldCount }}</div>
-          <div class="text-caption text-grey-6">金卡會員</div>
-        </q-card-section>
-      </q-card>
-      <q-card class="stat-card col">
-        <q-card-section class="text-center">
-          <q-icon name="grade" size="2em" color="blue-grey-5" />
-          <div class="text-h4 text-weight-bold text-blue-grey-5 q-mt-xs">{{ silverCount }}</div>
-          <div class="text-caption text-grey-6">銀卡會員</div>
-        </q-card-section>
-      </q-card>
-    </div>
-
     <!-- 會員列表 -->
     <q-card>
       <q-card-section class="card-header-accent">
-        <div class="row items-center justify-between">
-          <div class="row items-center">
-            <q-icon name="list" color="teal-8" size="sm" class="q-mr-sm" />
-            <span class="text-h6">會員列表</span>
-          </div>
-          <q-chip
-            v-if="pagination.totalElements > 0"
-            color="teal-1"
-            text-color="teal-9"
-            size="sm"
-            dense
-          >
-            共 {{ pagination.totalElements }} 筆
-          </q-chip>
+        <div class="row items-center">
+          <q-icon name="list" color="teal-8" size="sm" class="q-mr-sm" />
+          <span class="text-h6">會員列表</span>
         </div>
       </q-card-section>
 
@@ -125,85 +81,40 @@
       </q-card-section>
 
       <!-- 列表 -->
-      <q-list v-else separator>
+      <q-list v-if="!loading && customers.length > 0" separator>
         <q-item
           v-for="customer in customers"
           :key="customer.id"
-          class="customer-item cursor-pointer"
+          class="customer-item customer-item--default cursor-pointer"
           clickable
           @click="openDetailDialog(customer)"
         >
-          <q-item-section avatar>
-            <q-avatar
-              :color="tierColor(customer.tierCode)"
-              text-color="white"
-              size="44px"
-            >
-              {{ customer.name.charAt(0) }}
-            </q-avatar>
-          </q-item-section>
-
           <q-item-section>
-            <q-item-label class="text-weight-medium row items-center q-gutter-xs">
-              <span>{{ customer.name }}</span>
-              <q-badge
-                :color="tierColor(customer.tierCode)"
-                :label="tierLabel(customer.tierCode)"
-                class="q-ml-xs"
-              />
+            <q-item-label class="text-weight-bold text-grey-9 text-body2">
+              {{ customer.name }}
             </q-item-label>
-            <q-item-label caption>
-              <q-icon name="phone" size="xs" class="q-mr-xs" />{{ customer.phone }}
-              <span v-if="customer.email" class="q-ml-md">
-                <q-icon name="mail" size="xs" class="q-mr-xs" />{{ customer.email }}
-              </span>
+            <q-item-label caption class="text-grey-6">
+              {{ customer.phone }}
             </q-item-label>
-            <q-item-label caption v-if="customer.note" class="text-grey-6 q-mt-xs">
-              <q-icon name="notes" size="xs" class="q-mr-xs" />{{ customer.note }}
-            </q-item-label>
-          </q-item-section>
-
-          <q-item-section side>
-            <div class="text-right">
-              <div class="text-weight-bold text-teal-8">
-                NT$ {{ customer.totalSpend.toLocaleString() }}
-              </div>
-              <div class="text-caption text-grey-5">累積消費</div>
-              <div class="text-caption text-grey-6 q-mt-xs">
-                到店 {{ customer.visitCount }} 次
-              </div>
-            </div>
-          </q-item-section>
-
-          <q-item-section side>
-            <q-btn
-              flat
-              round
-              dense
-              icon="edit"
-              color="teal-6"
-              @click.stop="openEditDialog(customer)"
-              class="cursor-pointer"
-            >
-              <q-tooltip>編輯會員資料</q-tooltip>
-            </q-btn>
           </q-item-section>
         </q-item>
       </q-list>
-
-      <!-- 分頁 -->
-      <q-card-section v-if="pagination.totalPages > 1">
-        <div class="row justify-center">
-          <q-pagination
-            v-model="pagination.page"
-            :max="pagination.totalPages"
-            @update:model-value="loadCustomers"
-            direction-links
-            boundary-links
-          />
-        </div>
-      </q-card-section>
     </q-card>
+
+    <!-- 分頁 -->
+    <div v-if="pagination.totalPages > 1" class="row justify-center q-py-sm">
+      <q-pagination
+        v-model="pagination.page"
+        :max="pagination.totalPages"
+        :max-pages="5"
+        color="teal-8"
+        active-color="teal-8"
+        @update:model-value="loadCustomers"
+        boundary-links
+        direction-links
+        dense
+      />
+    </div>
 
     <!-- 新增 / 編輯 Dialog -->
     <CustomerFormDialog
@@ -214,7 +125,7 @@
     />
 
     <!-- 會員詳情 Dialog -->
-    <q-dialog v-model="detailDialog.open" maximized>
+    <q-dialog v-model="detailDialog.open" style="width: 700px; max-width: 95vw">
       <q-card v-if="detailDialog.customer">
         <q-toolbar class="bg-teal-8 text-white">
           <q-icon name="person" size="sm" class="q-mr-sm" />
@@ -228,7 +139,7 @@
         <q-card-section class="q-pa-md">
           <div class="row q-gutter-md">
             <!-- 基本資料 -->
-            <div class="col-12 col-md-4">
+            <div class="col-12">
               <q-card bordered flat>
                 <q-card-section class="card-header-accent">
                   <div class="row items-center">
@@ -237,25 +148,6 @@
                   </div>
                 </q-card-section>
                 <q-card-section>
-                  <!-- 會員等級 -->
-                  <div class="text-center q-mb-md">
-                    <q-avatar
-                      :color="tierColor(detailDialog.customer.tierCode)"
-                      text-color="white"
-                      size="64px"
-                      class="text-h5"
-                    >
-                      {{ detailDialog.customer.name.charAt(0) }}
-                    </q-avatar>
-                    <div class="q-mt-sm">
-                      <q-badge
-                        :color="tierColor(detailDialog.customer.tierCode)"
-                        :label="tierLabel(detailDialog.customer.tierCode)"
-                        class="text-caption"
-                      />
-                    </div>
-                  </div>
-
                   <q-list dense>
                     <q-item>
                       <q-item-section avatar>
@@ -305,58 +197,10 @@
                   </q-list>
                 </q-card-section>
               </q-card>
-
-              <!-- 消費摘要 -->
-              <q-card bordered flat class="q-mt-md">
-                <q-card-section class="card-header-accent">
-                  <div class="row items-center">
-                    <q-icon name="payments" color="teal-8" size="sm" class="q-mr-sm" />
-                    <span class="text-subtitle1 text-weight-medium">消費摘要</span>
-                  </div>
-                </q-card-section>
-                <q-card-section>
-                  <div class="row q-gutter-sm">
-                    <div class="col stat-mini-card text-center q-pa-sm">
-                      <div class="text-h6 text-weight-bold text-teal-8">
-                        NT$ {{ detailDialog.customer.totalSpend.toLocaleString() }}
-                      </div>
-                      <div class="text-caption text-grey-6">累積消費</div>
-                    </div>
-                    <div class="col stat-mini-card text-center q-pa-sm">
-                      <div class="text-h6 text-weight-bold text-teal-8">
-                        {{ detailDialog.customer.visitCount }}
-                      </div>
-                      <div class="text-caption text-grey-6">到店次數</div>
-                    </div>
-                  </div>
-
-                  <!-- 升級進度條 -->
-                  <div class="q-mt-md" v-if="detailDialog.customer.tierCode !== 'GOLD'">
-                    <div class="row items-center justify-between q-mb-xs">
-                      <span class="text-caption text-grey-6">升級進度</span>
-                      <span class="text-caption text-teal-7">
-                        距 {{ nextTierLabel(detailDialog.customer.tierCode) }} 還差
-                        NT$ {{ nextTierGap(detailDialog.customer).toLocaleString() }}
-                      </span>
-                    </div>
-                    <q-linear-progress
-                      :value="tierProgress(detailDialog.customer)"
-                      color="teal-6"
-                      track-color="teal-1"
-                      rounded
-                      size="8px"
-                    />
-                  </div>
-                  <div class="q-mt-md text-center" v-else>
-                    <q-icon name="workspace_premium" color="amber-7" size="2em" />
-                    <div class="text-caption text-amber-7 text-weight-medium">金卡頂級會員</div>
-                  </div>
-                </q-card-section>
-              </q-card>
             </div>
 
             <!-- 歷史訂單 -->
-            <div class="col">
+            <div class="col-12">
               <q-card bordered flat>
                 <q-card-section class="card-header-accent">
                   <div class="row items-center">
@@ -435,9 +279,8 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, computed, onMounted } from 'vue';
+import { reactive, ref, onMounted } from 'vue';
 import { useQuasar } from 'quasar';
-import AppSelect from '../components/AppSelect.vue';
 import CustomerFormDialog from '../components/CustomerFormDialog.vue';
 import {
   listCustomers,
@@ -446,7 +289,6 @@ import {
 import type {
   CustomerResult,
   CustomerOrderSummary,
-  MemberTierCode,
 } from '../api/customer/types';
 
 const $q = useQuasar();
@@ -454,33 +296,18 @@ const $q = useQuasar();
 // ── 篩選 ──────────────────────────────────────────────
 const filters = reactive({
   keyword: '',
-  tierCode: null as MemberTierCode | null,
 });
-
-const tierOptions = [
-  { label: '一般會員', value: 'STANDARD' },
-  { label: '銀卡會員', value: 'SILVER' },
-  { label: '金卡會員', value: 'GOLD' },
-];
 
 // ── 列表 ──────────────────────────────────────────────
 const customers = ref<CustomerResult[]>([]);
 const pagination = reactive({ page: 1, size: 20, totalPages: 0, totalElements: 0 });
 const loading = ref(false);
 
-const goldCount = computed(
-  () => customers.value.filter((c) => c.tierCode === 'GOLD').length
-);
-const silverCount = computed(
-  () => customers.value.filter((c) => c.tierCode === 'SILVER').length
-);
-
 const loadCustomers = async () => {
   try {
     loading.value = true;
     const res = await listCustomers({
       keyword: filters.keyword || undefined,
-      tierCode: filters.tierCode || undefined,
       page: pagination.page - 1,
       size: pagination.size,
     });
@@ -538,36 +365,7 @@ const openEditFromDetail = () => {
   openEditDialog(detailDialog.customer);
 };
 
-
 // ── 輔助函式 ───────────────────────────────────────────
-const TIER_THRESHOLDS = { STANDARD: 0, SILVER: 3000, GOLD: 10000 };
-
-function tierColor(tier: MemberTierCode): string {
-  return { STANDARD: 'teal-6', SILVER: 'blue-grey-5', GOLD: 'amber-7' }[tier];
-}
-
-function tierLabel(tier: MemberTierCode): string {
-  return { STANDARD: '一般', SILVER: '銀卡', GOLD: '金卡' }[tier];
-}
-
-function nextTierLabel(tier: MemberTierCode): string {
-  return tier === 'STANDARD' ? '銀卡' : '金卡';
-}
-
-function nextTierGap(customer: CustomerResult): number {
-  const next = customer.tierCode === 'STANDARD' ? TIER_THRESHOLDS.SILVER : TIER_THRESHOLDS.GOLD;
-  return Math.max(0, next - customer.totalSpend);
-}
-
-function tierProgress(customer: CustomerResult): number {
-  if (customer.tierCode === 'STANDARD') {
-    return Math.min(customer.totalSpend / TIER_THRESHOLDS.SILVER, 1);
-  }
-  const base = TIER_THRESHOLDS.SILVER;
-  const top = TIER_THRESHOLDS.GOLD;
-  return Math.min((customer.totalSpend - base) / (top - base), 1);
-}
-
 function statusColor(status: string): string {
   return (
     {
@@ -612,12 +410,21 @@ onMounted(loadCustomers);
 }
 
 .customer-item {
-  min-height: 72px;
-  transition: background-color 0.2s;
+  padding: 12px 16px;
+  border-left: 3px solid transparent;
+  transition: background-color 0.15s;
 }
 
 .customer-item:hover {
-  background-color: rgba(0, 150, 136, 0.04);
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+.customer-item--default {
+  border-left-color: #0f766e;
+}
+
+.customer-item--default:hover {
+  background-color: rgba(15, 118, 110, 0.04);
 }
 
 .order-item {
@@ -631,15 +438,5 @@ onMounted(loadCustomers);
 .card-header-accent {
   border-bottom: 1px solid rgba(0, 150, 136, 0.15);
   padding-bottom: 12px;
-}
-
-.stat-card {
-  min-width: 100px;
-  border-top: 3px solid #00695c;
-}
-
-.stat-mini-card {
-  border: 1px solid rgba(0, 150, 136, 0.2);
-  border-radius: 8px;
 }
 </style>

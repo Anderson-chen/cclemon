@@ -971,6 +971,48 @@ export const mockOrderList: OrderResult[] = [
     estimatedPickupDate: daysFromNow(1),
     createTime: '2026-03-11T08:00:00',
   },
+  // ── 50 筆 PENDING 訂單 ──────────────────────────────────────
+  ...Array.from({ length: 50 }, (_, i) => {
+    const customers = [
+      { id: 1, name: '陳雅婷', phone: '0912345678' },
+      { id: 2, name: '林建宏', phone: '0923456789' },
+      { id: 3, name: '王美玲', phone: '0934567890' },
+      { id: 4, name: '張志明', phone: '0945678901' },
+      { id: 5, name: '李淑芬', phone: '0956789012' },
+      { id: 6, name: '吳俊達', phone: '0967890123' },
+      { id: 7, name: '周雅文', phone: '0978901234' },
+      { id: 8, name: '劉宗翰', phone: '0989012345' },
+    ];
+    const svcs = [
+      { code: 'SVC-WASH',    name: '洗鞋', price: 350 },
+      { code: 'SVC-COATING', name: '鍍膜', price: 500 },
+      { code: 'SVC-BAG',     name: '洗包', price: 600 },
+      { code: 'SVC-RECOLOR', name: '補色', price: 800 },
+    ];
+    const c = customers[i % 8];
+    const svc = svcs[i % 4];
+    const qty = (i % 3) + 1;
+    const subtotal = svc.price * qty;
+    const isUrgent = i % 7 === 0;
+    const urgentFee = isUrgent ? Math.round(subtotal * 0.5) : 0;
+    const pickupDays = (i % 14) + 3;
+    return {
+      id: 5000 + i,
+      orderNo: `SR-PENDING-${String(i + 1).padStart(4, '0')}`,
+      customerId: c.id,
+      customerName: c.name,
+      customerPhone: c.phone,
+      status: 'PENDING' as const,
+      isUrgent,
+      items: [{ id: 5000 + i, serviceCode: svc.code, serviceName: svc.name, quantity: qty, unitPrice: svc.price, subtotal }],
+      storageLocations: [],
+      totalAmount: subtotal + urgentFee,
+      urgentFee,
+      estimatedPickupDate: daysFromNow(pickupDays),
+      createTime: new Date(Date.now() - i * 3600000 * 6).toISOString(),
+    };
+  }),
+
   // ── 增加即將到期 (Upcoming Due) 共 5 筆 ───────────────────────
   {
     id: 1201,
