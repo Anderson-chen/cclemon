@@ -46,6 +46,7 @@
         active-color="teal-8"
         indicator-color="teal-8"
         align="justify"
+        no-caps
       >
         <q-route-tab
           v-for="link in linksList"
@@ -54,7 +55,6 @@
           :icon="link.icon"
           :label="link.shortTitle"
           :exact="link.exact"
-          no-caps
         />
       </q-tabs>
     </q-footer>
@@ -150,11 +150,12 @@ watch(
 }
 
 .bottom-nav :deep(.q-tab--active) {
-  color: #00695c;
+  color: #0f766e;
 }
 
 .bottom-nav :deep(.q-tab__label) {
-  font-size: 0.7rem;
+  font-size: 0.72rem;
+  font-weight: 500;
   margin-top: 2px;
 }
 </style>

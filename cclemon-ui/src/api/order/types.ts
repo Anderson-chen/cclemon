@@ -37,7 +37,7 @@ export interface OrderResult {
 export interface OrderCreateRequest {
   customerId: number;
   isUrgent: boolean;
-  items: { serviceCode: string; quantity: number; imageUrls?: string[]; productName?: string; itemNote?: string; itemStorageLocation?: string }[];
+  items: { serviceCode: string; quantity: number; unitPrice?: number; imageUrls?: string[]; productName?: string; itemNote?: string; itemStorageLocation?: string }[];
   storageLocations?: string[];
   estimatedPickupDate: string;
   note?: string;

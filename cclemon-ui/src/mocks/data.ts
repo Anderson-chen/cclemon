@@ -1123,8 +1123,13 @@ export function calcTierCode(totalSpend: number) {
 
 // ── 模擬服務項目資料 ──────────────────────────────────────
 export const mockServices: ServiceTypeResult[] = [
-  { code: 'SVC-WASH',    name: '洗鞋',  defaultPrice: 350, urgentFeeRate: null, isActive: true },
-  { code: 'SVC-COATING', name: '鍍膜',  defaultPrice: 500, urgentFeeRate: null, isActive: true },
-  { code: 'SVC-BAG',     name: '洗包',  defaultPrice: 600, urgentFeeRate: null, isActive: true },
-  { code: 'SVC-RECOLOR', name: '補色',  defaultPrice: 800, urgentFeeRate: null, isActive: true },
+  { code: 'SVC-WASH',      name: '洗鞋',         defaultPrice: 350,  urgentFeeRate: null, isActive: true  },
+  { code: 'SVC-COATING',   name: '鍍膜',         defaultPrice: 500,  urgentFeeRate: null, isActive: true  },
+  { code: 'SVC-BAG',       name: '洗包',         defaultPrice: 600,  urgentFeeRate: null, isActive: true  },
+  { code: 'SVC-RECOLOR',   name: '補色',         defaultPrice: 800,  urgentFeeRate: null, isActive: true  },
+  { code: 'SVC-SOLE',      name: '換底',         defaultPrice: 1200, urgentFeeRate: 0.6,  isActive: true  },
+  { code: 'SVC-PROTECT',   name: '防水噴霧',     defaultPrice: 200,  urgentFeeRate: null, isActive: true  },
+  { code: 'SVC-REPAIR',    name: '皮革修復',     defaultPrice: 950,  urgentFeeRate: 0.5,  isActive: true  },
+  { code: 'SVC-LACE',      name: '換新鞋帶',     defaultPrice: 120,  urgentFeeRate: null, isActive: false },
+  { code: 'SVC-DEODOR',    name: '除臭處理',     defaultPrice: 180,  urgentFeeRate: null, isActive: true  },
 ];

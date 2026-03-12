@@ -38,7 +38,7 @@
             dense
             clearable
             style="flex: 1; min-width: 200px"
-            @keyup.enter="loadCustomers"
+            @keyup.enter="search"
           >
             <template v-slot:prepend>
               <q-icon name="search" />
@@ -50,7 +50,7 @@
             color="teal-8"
             icon="search"
             label="查詢"
-            @click="loadCustomers"
+            @click="search"
             :loading="loading"
             class="cursor-pointer"
           />
@@ -59,62 +59,66 @@
     </q-card>
 
     <!-- 會員列表 -->
-    <q-card>
+    <q-card class="section-card">
       <q-card-section class="card-header-accent">
         <div class="row items-center">
           <q-icon name="list" color="teal-8" size="sm" class="q-mr-sm" />
           <span class="text-h6">會員列表</span>
+          <q-space />
+          <span class="text-caption text-grey-5">共 {{ pagination.totalElements }} 筆</span>
         </div>
       </q-card-section>
 
-      <!-- 載入中 -->
-      <q-card-section v-if="loading" class="text-center q-py-xl">
-        <q-spinner color="teal-8" size="3em" />
-        <div class="text-caption text-grey-6 q-mt-sm">載入中...</div>
-      </q-card-section>
+      <!-- 列表主體 -->
+      <div class="list-body">
+        <!-- 無資料（非載入中） -->
+        <div v-if="!loading && customers.length === 0" class="list-body-center">
+          <q-icon name="person_off" size="4em" color="grey-4" />
+          <div class="text-subtitle1 text-grey-5 q-mt-sm">尚無會員資料</div>
+          <div class="text-caption text-grey-4">點擊右上角「新增會員」開始建立</div>
+        </div>
 
-      <!-- 無資料 -->
-      <q-card-section v-else-if="customers.length === 0" class="text-center q-py-xl">
-        <q-icon name="person_off" size="4em" color="grey-4" />
-        <div class="text-subtitle1 text-grey-5 q-mt-sm">尚無會員資料</div>
-        <div class="text-caption text-grey-4">點擊右上角「新增會員」開始建立</div>
-      </q-card-section>
+        <!-- 列表 -->
+        <q-list v-if="customers.length > 0" separator>
+          <q-item
+            v-for="customer in customers"
+            :key="customer.id"
+            class="customer-item customer-item--default cursor-pointer"
+            clickable
+            @click="openDetailDialog(customer)"
+          >
+            <q-item-section>
+              <q-item-label class="text-weight-bold text-grey-9 text-body2">
+                {{ customer.name }}
+              </q-item-label>
+              <q-item-label caption class="text-grey-6">
+                {{ customer.phone }}
+              </q-item-label>
+            </q-item-section>
+          </q-item>
+        </q-list>
 
-      <!-- 列表 -->
-      <q-list v-if="!loading && customers.length > 0" separator>
-        <q-item
-          v-for="customer in customers"
-          :key="customer.id"
-          class="customer-item customer-item--default cursor-pointer"
-          clickable
-          @click="openDetailDialog(customer)"
-        >
-          <q-item-section>
-            <q-item-label class="text-weight-bold text-grey-9 text-body2">
-              {{ customer.name }}
-            </q-item-label>
-            <q-item-label caption class="text-grey-6">
-              {{ customer.phone }}
-            </q-item-label>
-          </q-item-section>
-        </q-item>
-      </q-list>
+        <!-- Loading 遮罩 -->
+        <div v-if="loading" class="list-loading-overlay">
+          <q-spinner color="teal-8" size="2.5em" />
+        </div>
+      </div>
+
+      <!-- 分頁 -->
+      <div v-if="pagination.totalPages > 1" class="row justify-center q-py-sm">
+        <q-pagination
+          v-model="pagination.page"
+          :max="pagination.totalPages"
+          :max-pages="5"
+          color="teal-8"
+          active-color="teal-8"
+          @update:model-value="loadCustomers"
+          boundary-links
+          direction-links
+          dense
+        />
+      </div>
     </q-card>
-
-    <!-- 分頁 -->
-    <div v-if="pagination.totalPages > 1" class="row justify-center q-py-sm">
-      <q-pagination
-        v-model="pagination.page"
-        :max="pagination.totalPages"
-        :max-pages="5"
-        color="teal-8"
-        active-color="teal-8"
-        @update:model-value="loadCustomers"
-        boundary-links
-        direction-links
-        dense
-      />
-    </div>
 
     <!-- 新增 / 編輯 Dialog -->
     <CustomerFormDialog
@@ -124,10 +128,14 @@
       @updated="loadCustomers"
     />
 
-    <!-- 會員詳情 Dialog -->
-    <q-dialog v-model="detailDialog.open" style="width: 700px; max-width: 95vw">
-      <q-card v-if="detailDialog.customer">
-        <q-toolbar class="bg-teal-8 text-white">
+    <!-- 會員詳情：手機版用底部抽屜，桌面版用居中 Dialog -->
+    <q-dialog
+      v-model="detailDialog.open"
+      :position="$q.screen.lt.sm ? 'bottom' : 'standard'"
+      :style="$q.screen.lt.sm ? '' : 'width: 700px; max-width: 95vw'"
+    >
+      <q-card v-if="detailDialog.customer" :class="$q.screen.lt.sm ? 'cust-detail-sheet' : ''">
+        <q-toolbar class="bg-teal-8 text-white cust-detail-toolbar">
           <q-icon name="person" size="sm" class="q-mr-sm" />
           <q-toolbar-title>{{ detailDialog.customer.name }} 的會員資料</q-toolbar-title>
           <q-btn flat round dense icon="edit" @click="openEditFromDetail" class="cursor-pointer">
@@ -136,7 +144,7 @@
           <q-btn flat round dense icon="close" v-close-popup class="cursor-pointer" />
         </q-toolbar>
 
-        <q-card-section class="q-pa-md">
+        <div class="cust-detail-body">
           <div class="row q-gutter-md">
             <!-- 基本資料 -->
             <div class="col-12">
@@ -272,7 +280,7 @@
               </q-card>
             </div>
           </div>
-        </q-card-section>
+        </div>
       </q-card>
     </q-dialog>
   </q-page>
@@ -300,7 +308,7 @@ const filters = reactive({
 
 // ── 列表 ──────────────────────────────────────────────
 const customers = ref<CustomerResult[]>([]);
-const pagination = reactive({ page: 1, size: 20, totalPages: 0, totalElements: 0 });
+const pagination = reactive({ page: 1, size: 5, totalPages: 0, totalElements: 0 });
 const loading = ref(false);
 
 const loadCustomers = async () => {
@@ -319,6 +327,12 @@ const loadCustomers = async () => {
   } finally {
     loading.value = false;
   }
+};
+
+// 查詢（重置頁碼）
+const search = () => {
+  pagination.page = 1;
+  loadCustomers();
 };
 
 // ── 新增 / 編輯 Dialog ─────────────────────────────────
@@ -396,6 +410,7 @@ function formatDate(dateStr: string): string {
 }
 
 onMounted(loadCustomers);
+
 </script>
 
 <style scoped>
@@ -407,6 +422,55 @@ onMounted(loadCustomers);
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.section-card {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.list-body {
+  position: relative;
+  min-height: 200px;
+}
+
+.list-body-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 16px;
+}
+
+.list-loading-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+/* 手機版底部抽屜樣式 - 與 OrderPage 篩選抽屜一致 */
+.cust-detail-sheet {
+  width: 100vw;
+  max-height: 85dvh;
+  border-radius: 16px 16px 0 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.cust-detail-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.cust-detail-body {
+  padding: 16px;
+  overflow-y: auto;
+  flex: 1;
 }
 
 .customer-item {

@@ -305,11 +305,11 @@
       @submit="submitForm"
     >
       <q-form ref="formRef" @submit.prevent class="order-form-redesign">
-        <!-- 步驟 1: 顧客資訊 -->
+        <!-- Section: 顧客資訊 -->
         <div class="form-section">
-          <div class="section-title row items-center q-mb-md">
-            <q-icon name="person_search" color="teal-8" size="20px" class="q-mr-sm" />
-            <span>步驟 1: 選擇顧客</span>
+          <div class="row items-center q-mb-md">
+            <div class="modern-section-dot" />
+            <div class="text-subtitle1 text-weight-bold text-grey-9">選擇顧客</div>
           </div>
           
           <div class="row q-col-gutter-sm">
@@ -326,6 +326,7 @@
                 label="搜尋現有會員（姓名或電話）"
                 outlined
                 dense
+                bg-color="grey-1"
                 @filter="filterCustomers"
                 @update:model-value="onCustomerSelected"
                 @input-value="val => customerSearchText = val"
@@ -334,7 +335,7 @@
                 hide-dropdown-icon
                 behavior="menu"
                 debounce="1500"
-                class="customer-select-field"
+                class="modern-select"
                 :rules="[(val: unknown) => !!form.customerId || '請搜尋並選擇一個顧客']"
               >
                 <template v-slot:prepend>
@@ -377,23 +378,22 @@
 
         <q-separator class="q-my-lg" />
 
-        <!-- 步驟 2: 服務項目 -->
+        <!-- Section: 服務項目 -->
         <div class="form-section">
-          <div class="section-title row items-center q-mb-md">
-            <q-icon name="inventory_2" color="teal-8" size="20px" class="q-mr-sm" />
-            <span>步驟 2: 服務內容</span>
+          <div class="row items-center q-mb-md">
+            <div class="modern-section-dot" />
+            <div class="text-subtitle1 text-weight-bold text-grey-9">服務內容</div>
             <q-space />
             <q-btn
-              unelevated
+              flat
               rounded
               dense
-              icon="add"
-              color="teal-1"
-              text-color="teal-9"
+              icon="add_circle_outline"
+              color="teal-8"
               label="新增項目"
               @click="addServiceItem"
               :disable="formDialog.isEdit"
-              class="q-px-sm cursor-pointer"
+              class="q-px-sm cursor-pointer text-weight-bold"
             />
           </div>
 
@@ -404,39 +404,41 @@
               class="service-card shadow-1 q-mb-md"
               :class="{ 'is-collapsed': !item.isExpanded }"
             >
-              <!-- 服務卡片標題 (可折疊) -->
+              <!-- 服務卡片標題 (極簡風格) -->
               <div 
-                class="service-card-header row items-center justify-between cursor-pointer"
+                class="modern-card-header row items-center justify-between cursor-pointer"
                 @click="item.isExpanded = !item.isExpanded"
               >
                 <div class="row items-center">
-                  <q-avatar size="24px" color="teal-8" text-color="white" class="q-mr-sm">{{ idx + 1 }}</q-avatar>
+                  <div class="item-badge q-mr-md">{{ idx + 1 }}</div>
                   <div class="column">
-                    <span class="text-weight-bold">服務項目 #{{ idx + 1 }}</span>
-                    <div v-show="!item.isExpanded && item.serviceCode" class="text-caption text-teal-8">
-                      {{ serviceMap[item.serviceCode]?.name || item.serviceCode }} x {{ item.quantity }}
+                    <span v-if="item.serviceCode" class="text-weight-bold grey-9">
+                      {{ serviceMap[item.serviceCode]?.name || item.serviceCode }}
+                    </span>
+                    <span v-else class="text-weight-bold text-grey-6 italic">尚未選擇服務</span>
+                    
+                    <div v-show="!item.isExpanded && item.serviceCode" class="text-caption text-grey-6">
+                      NT$ {{ item.unitPrice.toLocaleString() }} x {{ item.quantity }}
                     </div>
                   </div>
                 </div>
                 <div class="row items-center">
                   <q-icon 
-                    :name="item.isExpanded ? 'expand_less' : 'expand_more'" 
+                    :name="item.isExpanded ? 'keyboard_arrow_up' : 'keyboard_arrow_down'" 
                     size="sm" 
-                    color="grey-6" 
+                    color="grey-5" 
                     class="q-mr-sm"
                   />
                   <q-btn
                     flat
                     round
                     dense
-                    icon="delete_outline"
-                    color="red-4"
+                    icon="remove_circle_outline"
+                    color="grey-4"
                     @click.stop="removeServiceItem(idx)"
                     :disable="form.items.length === 1 || formDialog.isEdit"
-                    class="cursor-pointer"
-                  >
-                    <q-tooltip>移除此項目</q-tooltip>
-                  </q-btn>
+                    class="hover-red-5 cursor-pointer"
+                  />
                 </div>
               </div>
 
@@ -456,8 +458,25 @@
                           @update:model-value="(val) => onServiceChange(idx, val as string)"
                         />
                       </div>
+                      <!-- 單價 -->
+                      <div class="col-12 col-sm-3">
+                        <q-input
+                          v-model.number="item.unitPrice"
+                          label="單價"
+                          outlined
+                          dense
+                          type="number"
+                          prefix="NT$"
+                          :disable="formDialog.isEdit"
+                          :rules="[(val) => val >= 0 || '不得為負']"
+                        >
+                          <template v-slot:prepend>
+                            <q-icon name="payments" size="xs" />
+                          </template>
+                        </q-input>
+                      </div>
                       <!-- 數量 -->
-                      <div class="col-12 col-sm-6">
+                      <div class="col-12 col-sm-3">
                         <q-input
                           v-model.number="item.quantity"
                           label="數量"
@@ -534,11 +553,11 @@
 
         <q-separator class="q-my-lg" />
 
-        <!-- 步驟 3: 結帳與設定 -->
+        <!-- Section: 結帳與設定 -->
         <div class="form-section">
-          <div class="section-title row items-center q-mb-md">
-            <q-icon name="payments" color="teal-8" size="20px" class="q-mr-sm" />
-            <span>步驟 3: 結帳與交期</span>
+          <div class="row items-center q-mb-md">
+            <div class="modern-section-dot" />
+            <div class="text-subtitle1 text-weight-bold text-grey-9">結帳與交期</div>
           </div>
 
           <div class="row q-col-gutter-lg">
@@ -577,25 +596,27 @@
             </div>
           </div>
 
-          <!-- 價格摘要卡片 -->
-          <div class="summary-card q-mt-xl q-pa-md shadow-2">
-            <div class="row justify-between items-center q-mb-sm">
+          <!-- 價格摘要卡片 (現代風格) -->
+          <div class="modern-summary-card q-mt-xl q-pa-lg">
+            <div class="row justify-between items-center q-mb-md">
               <span class="text-grey-7">服務小計</span>
               <span class="text-weight-medium">NT$ {{ serviceSubtotal.toLocaleString() }}</span>
             </div>
-            <div v-if="form.isUrgent" class="row justify-between items-center q-mb-sm text-red-7">
+            <div v-if="form.isUrgent" class="row justify-between items-center q-mb-md text-red-7">
               <span class="row items-center">
                 <q-icon name="bolt" size="xs" class="q-mr-xs" />
-                急件費 (50%)
+                加急處理費 (50%)
               </span>
               <span class="text-weight-medium">+ NT$ {{ urgentFeeAmount.toLocaleString() }}</span>
             </div>
-            <q-separator class="q-my-sm" />
+            <q-separator color="grey-3" class="q-my-md" />
             <div class="row justify-between items-center">
-              <span class="text-h6 text-weight-bold">應收總計</span>
-              <div class="column items-end">
-                <span class="text-h5 text-weight-bolder text-teal-8">NT$ {{ (serviceSubtotal + urgentFeeAmount).toLocaleString() }}</span>
-                <div class="text-caption text-grey-5">共 {{ form.items.length }} 個服務項目</div>
+              <div class="column">
+                <span class="text-weight-bold text-grey-9 text-h6">應收總計</span>
+                <span class="text-caption text-grey-5">共 {{ form.items.length }} 個服務項目</span>
+              </div>
+              <div class="text-h4 text-weight-bolder text-teal-8">
+                <small class="text-subtitle2">NT$</small> {{ (serviceSubtotal + urgentFeeAmount).toLocaleString() }}
               </div>
             </div>
           </div>
@@ -662,7 +683,7 @@ const sortKeyOptions = [
   { label: '建立時間↓',       shortLabel: '建立↓',   value: 'createTime,desc' },
 ];
 
-const statusOptions = [
+const statusOptions: { label: string; value: OrderStatus }[] = [
   { label: '待處理', value: 'PENDING' },
   { label: '處理中', value: 'IN_PROGRESS' },
   { label: '待取件', value: 'READY' },
@@ -983,6 +1004,7 @@ const submitForm = async () => {
         items: form.items.map((i) => ({
           serviceCode: i.serviceCode,
           quantity: i.quantity,
+          unitPrice: i.unitPrice,
           imageUrls: i.imageUrls,
           productName: i.productName || undefined,
           itemNote: i.itemNote || undefined,
@@ -1253,6 +1275,80 @@ onMounted(async () => {
 
 .list-header {
   border-bottom: none;
+}
+
+/* 現代化表單組件 */
+.modern-section-dot {
+  width: 8px;
+  height: 8px;
+  background: #0f766e;
+  border-radius: 50%;
+  margin-right: 12px;
+}
+
+.modern-select :deep(.q-field__control) {
+  border-radius: 12px;
+}
+
+.modern-card-header {
+  padding: 16px;
+  background: white;
+  transition: all 0.2s;
+}
+
+.item-badge {
+  width: 28px;
+  height: 28px;
+  background: #f0fdfa;
+  color: #0d9488;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 0.8rem;
+  border: 1px solid #ccfbf1;
+}
+
+.service-card {
+  border: 1px solid #f1f5f9;
+  border-radius: 16px;
+  overflow: hidden;
+  background: white;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.03) !important;
+  transition: all 0.3s ease;
+}
+
+.service-card.is-collapsed {
+  background: #fcfcfc;
+  border-color: #f1f5f9;
+}
+
+.service-card:hover {
+  border-color: #0f766e40;
+}
+
+.hover-red-5:hover {
+  color: #ef5350 !important;
+  background-color: #ffebee;
+}
+
+.modern-summary-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.modern-summary-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, #0d9488, #5eead4);
 }
 
 .list-body {

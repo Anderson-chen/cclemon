@@ -13,47 +13,16 @@
       </div>
     </div>
 
-    <!-- 全域急件費率 -->
-    <q-card class="q-mb-lg">
-      <q-card-section class="bg-teal-1">
-        <div class="row items-center">
-          <q-icon name="speed" color="teal-8" size="sm" class="q-mr-sm" />
-          <span class="text-h6">全域急件費率</span>
-          <q-space />
-          <span class="text-caption text-grey-6">未設定個別費率的服務項目將使用此費率</span>
-        </div>
-      </q-card-section>
-      <q-card-section>
-        <div class="row items-center q-gutter-md wrap">
-          <q-input
-            v-model.number="globalRateInput"
-            type="number"
-            label="全域急件費率 (%)"
-            outlined
-            dense
-            style="max-width: 200px"
-            :rules="[(v) => v >= 0 || '費率不得為負數']"
-            hint="例：50 代表 50%"
-          />
-          <q-btn
-            unelevated
-            color="teal-8"
-            label="儲存費率"
-            icon="save"
-            :loading="savingRate"
-            @click="saveGlobalRate"
-          />
-        </div>
-      </q-card-section>
-    </q-card>
+
 
     <!-- 服務項目清單 -->
-    <q-card>
+    <q-card class="section-card">
       <q-card-section class="bg-teal-1">
         <div class="row items-center">
           <q-icon name="list_alt" color="teal-8" size="sm" class="q-mr-sm" />
           <span class="text-h6">服務項目清單</span>
           <q-space />
+          <span class="text-caption text-grey-6 q-mr-md">共 {{ services.length }} 項</span>
           <q-btn
             unelevated
             color="teal-8"
@@ -64,19 +33,19 @@
         </div>
       </q-card-section>
 
-      <q-card-section>
-        <div v-if="loading" class="row justify-center q-pa-lg">
-          <q-spinner color="teal-8" size="40px" />
-        </div>
-
-        <div v-if="services.length === 0" class="text-center text-grey-5 q-pa-xl">
+      <!-- 列表主體 -->
+      <div class="list-body">
+        <!-- 無資料（非載入中） -->
+        <div v-if="!loading && services.length === 0" class="list-body-center">
           <q-icon name="list_alt" size="3em" color="grey-4" />
-          <div class="q-mt-sm">尚無服務項目，請點擊「新增服務」建立第一筆。</div>
+          <div class="text-subtitle1 text-grey-5 q-mt-sm">尚無服務項目</div>
+          <div class="text-caption text-grey-4">點擊「新增服務」建立第一筆</div>
         </div>
 
-        <q-list v-else separator>
+        <!-- 列表（分頁切片） -->
+        <q-list v-if="pagedServices.length > 0" separator>
           <q-item
-            v-for="svc in services"
+            v-for="svc in pagedServices"
             :key="svc.code"
             :class="['svc-item', svc.isActive ? 'svc-item--active' : 'svc-item--inactive']"
           >
@@ -119,6 +88,59 @@
             </q-item-section>
           </q-item>
         </q-list>
+
+        <!-- Loading 遮罩 -->
+        <div v-if="loading" class="list-loading-overlay">
+          <q-spinner color="teal-8" size="2.5em" />
+        </div>
+      </div>
+
+      <!-- 分頁 -->
+      <div v-if="pagination.totalPages > 1" class="row justify-center q-py-sm">
+        <q-pagination
+          v-model="pagination.page"
+          :max="pagination.totalPages"
+          :max-pages="5"
+          color="teal-8"
+          active-color="teal-8"
+          boundary-links
+          direction-links
+          dense
+        />
+      </div>
+    </q-card>
+
+    <!-- 全域急件費率 -->
+    <q-card class="q-mt-lg">
+      <q-card-section class="bg-teal-1">
+        <div class="row items-center">
+          <q-icon name="speed" color="teal-8" size="sm" class="q-mr-sm" />
+          <span class="text-h6">全域急件費率</span>
+          <q-space />
+          <span class="text-caption text-grey-5">未設定個別費率的服務項目將使用此費率</span>
+        </div>
+      </q-card-section>
+      <q-card-section>
+        <div class="row items-center q-gutter-md wrap">
+          <q-input
+            v-model.number="globalRateInput"
+            type="number"
+            label="全域急件費率 (%)"
+            outlined
+            dense
+            style="max-width: 200px"
+            :rules="[(v) => v >= 0 || '費率不得為負數']"
+            hint="例：50 代表 50%"
+          />
+          <q-btn
+            unelevated
+            color="teal-8"
+            label="儲存費率"
+            icon="save"
+            :loading="savingRate"
+            @click="saveGlobalRate"
+          />
+        </div>
       </q-card-section>
     </q-card>
 
@@ -172,7 +194,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, reactive, computed, onMounted } from 'vue';
 import { useQuasar } from 'quasar';
 import AppFormDialog from '../components/AppFormDialog.vue';
 import { listServices, createService, updateService, updateGlobalUrgentFeeRate } from '../api/service/service';
@@ -186,10 +208,28 @@ const $q = useQuasar();
 const loading = ref(false);
 const services = ref<ServiceTypeResult[]>([]);
 
+// ── 分頁（客戶端） ────────────────────────────────────────
+const PAGE_SIZE = 5;
+const pagination = reactive({
+  page: 1,
+  get totalPages() {
+    return Math.max(1, Math.ceil(services.value.length / PAGE_SIZE));
+  },
+});
+
+const pagedServices = computed(() => {
+  const start = (pagination.page - 1) * PAGE_SIZE;
+  return services.value.slice(start, start + PAGE_SIZE);
+});
+
 const loadServices = async () => {
   try {
     loading.value = true;
     services.value = await listServices({ includeInactive: true });
+    // 若刪除後當前頁已無資料，退到上一頁
+    if (pagination.page > pagination.totalPages) {
+      pagination.page = pagination.totalPages;
+    }
   } catch {
     $q.notify({ type: 'negative', message: '載入服務項目失敗，請稍後再試' });
   } finally {
@@ -307,6 +347,34 @@ onMounted(loadServices);
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.section-card {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.list-body {
+  position: relative;
+  min-height: 200px;
+}
+
+.list-body-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 16px;
+}
+
+.list-loading-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
 }
 
 .svc-item {

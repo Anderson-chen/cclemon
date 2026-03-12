@@ -23,13 +23,12 @@
 
       <q-input
         v-model="form.phone"
-        label="手機號碼"
+        label="手機號碼 (選填)"
         outlined
         dense
         :disable="isEdit"
         :rules="[
-          (val) => !!val || '請輸入手機號碼',
-          (val) => /^[0-9]{8,15}$/.test(val) || '請輸入有效的手機號碼',
+          (val) => !val || /^[0-9]{8,15}$/.test(val) || '請輸入有效的手機號碼',
         ]"
       >
         <template v-slot:prepend>
