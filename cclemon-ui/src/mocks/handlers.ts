@@ -206,8 +206,11 @@ export const handlers = [
           o.customerPhone.includes(keyword)
       );
     }
+    const statuses = url.searchParams.getAll('statuses');
     if (status) {
       filtered = filtered.filter((o) => o.status === status);
+    } else if (statuses.length > 0) {
+      filtered = filtered.filter((o) => statuses.includes(o.status));
     }
     if (isUrgentStr !== null && isUrgentStr !== '') {
       const isUrgent = isUrgentStr === 'true';

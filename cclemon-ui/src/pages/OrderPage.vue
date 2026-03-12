@@ -15,301 +15,194 @@
         unelevated
         color="teal-8"
         icon="add_circle"
-        :label="$q.screen.gt.xs ? '新增訂單' : ''"
+        label="新增訂單"
         @click="openCreateDialog"
         class="cursor-pointer"
       />
     </div>
 
     <!-- 搜尋與篩選 -->
-    <q-card class="q-mb-md">
-      <q-card-section class="card-header-accent">
-        <div class="row items-center">
-          <q-icon name="search" color="teal-8" size="sm" class="q-mr-sm" />
-          <span class="text-h6">搜尋訂單</span>
-        </div>
-      </q-card-section>
-      <q-card-section>
-        <div class="row q-gutter-md wrap">
+    <q-card class="q-mb-md filter-card">
+      <q-card-section class="q-py-sm q-px-md">
+        <div class="filter-row">
+          <!-- 關鍵字 -->
           <q-input
             v-model="filters.keyword"
-            label="訂單編號 / 姓名 / 電話"
+            placeholder="姓名 / 電話"
             outlined
             dense
             clearable
-            style="flex: 1; min-width: 200px"
-            @keyup.enter="loadOrders"
+            class="filter-keyword"
+            @keyup.enter="search"
           >
             <template v-slot:prepend>
-              <q-icon name="search" />
+              <q-icon name="search" size="xs" />
             </template>
           </q-input>
 
+          <!-- 狀態 -->
           <AppSelect
             v-model="filters.status"
             :options="statusOptions"
             label="狀態"
             clearable
-            style="min-width: 130px"
+            class="filter-status"
           />
 
-          <AppSelect
-            v-model="filters.isUrgent"
-            :options="urgentOptions"
+          <!-- 急件 checkbox -->
+          <q-checkbox
+            v-model="isUrgentFilter"
             label="急件"
-            clearable
-            style="min-width: 100px"
-          />
-
-          <q-input
-            :model-value="dateRangeLabel"
-            label="預計取件日期"
-            outlined
+            color="red-6"
             dense
-            readonly
-            style="min-width: 300px"
-          >
-            <template v-slot:prepend>
-              <q-icon name="event" />
-            </template>
-            <template v-slot:append>
-              <q-icon
-                v-if="dateRangeLabel"
-                name="cancel"
-                class="cursor-pointer"
-                @click.stop="clearDateRange"
-              />
-              <q-icon name="calendar_today" class="cursor-pointer">
-                <q-popup-proxy
-                  ref="datePickerRef"
-                  cover
-                  transition-show="scale"
-                  transition-hide="scale"
-                  @show="rangeClickCount = 0"
-                >
-                  <q-date
-                    :model-value="pickerValue"
-                    range
-                    mask="YYYY-MM-DD"
-                    color="teal-8"
-                    today-btn
-                    @update:model-value="onDateRangeSelect"
-                  />
-                </q-popup-proxy>
-              </q-icon>
-            </template>
-          </q-input>
-
-          <AppSelect
-            v-model="sortKey"
-            :options="sortOptions"
-            label="排序"
-            prepend-icon="sort"
-            style="min-width: 190px"
-            @update:model-value="loadOrders"
+            class="filter-urgent"
           />
 
+          <!-- 單日日期 -->
+          <div class="filter-date row items-center no-wrap">
+            <AppDateInput
+              v-model="filters.date"
+              label="預計取件日"
+              prepend-icon="event"
+              class="filter-date-input"
+            />
+            <q-btn
+              v-if="filters.date"
+              flat round dense size="xs"
+              icon="cancel"
+              color="grey-5"
+              class="cursor-pointer q-ml-xs"
+              @click="filters.date = ''"
+            />
+          </div>
+
+          <!-- 排序 -->
+          <div class="filter-sort row items-center no-wrap q-gutter-xs">
+            <AppSelect
+              v-model="sortField"
+              :options="sortFieldOptions"
+              label="排序"
+              dense
+              class="sort-field-select"
+            />
+            <q-btn
+              flat
+              round
+              dense
+              :icon="sortDir === 'asc' ? 'arrow_upward' : 'arrow_downward'"
+              color="teal-8"
+              class="cursor-pointer"
+              @click="sortDir = sortDir === 'asc' ? 'desc' : 'asc'"
+            >
+              <q-tooltip>{{ sortDir === 'asc' ? '由舊到新' : '由新到舊' }}</q-tooltip>
+            </q-btn>
+          </div>
+
+          <!-- 查詢按鈕 -->
           <q-btn
             unelevated
             color="teal-8"
             icon="search"
             label="查詢"
-            @click="loadOrders"
+            @click="search"
             :loading="loading"
-            class="cursor-pointer"
+            class="cursor-pointer filter-search-btn"
           />
         </div>
       </q-card-section>
     </q-card>
 
     <!-- 訂單列表 -->
-    <q-card>
-      <q-card-section class="card-header-accent">
-        <div class="row items-center justify-between">
-          <div class="row items-center">
-            <q-icon name="list" color="teal-8" size="sm" class="q-mr-sm" />
-            <span class="text-h6">訂單列表</span>
-          </div>
-          <q-chip
-            v-if="pagination.totalElements > 0"
-            color="teal-1"
-            text-color="teal-9"
-            size="sm"
-            dense
-          >
-            共 {{ pagination.totalElements }} 筆
-          </q-chip>
-        </div>
-      </q-card-section>
+    <q-card class="section-card">
 
       <!-- 載入中 -->
-      <q-card-section v-if="loading" class="text-center q-py-xl">
+      <div v-if="loading" class="text-center q-py-xl">
         <q-spinner color="teal-8" size="3em" />
         <div class="text-caption text-grey-6 q-mt-sm">載入中...</div>
-      </q-card-section>
+      </div>
 
       <!-- 無資料 -->
-      <q-card-section v-else-if="orders.length === 0" class="text-center q-py-xl">
+      <div v-else-if="orders.length === 0" class="text-center q-py-xl">
         <q-icon name="inbox" size="4em" color="grey-4" />
         <div class="text-subtitle1 text-grey-5 q-mt-sm">尚無訂單資料</div>
-        <div class="text-caption text-grey-4">點擊右上角「新增訂單」開始開單</div>
-      </q-card-section>
+        <div class="text-caption text-grey-4">點擊「新增訂單」開始開單</div>
+      </div>
 
-      <!-- 列表 (Table) -->
-      <q-table
-        v-else
-        class="order-table no-shadow"
-        :rows="orders"
-        :columns="columns"
-        row-key="id"
-        :loading="loading"
-        :pagination="tablePagination"
-        @request="onRequest"
-        :grid="$q.screen.lt.md"
-        card-class="bg-grey-1"
-        flat
-        bordered
-        dense
-      >
-        <!-- 狀態欄位 -->
-        <template v-slot:body-cell-status="props">
-          <q-td :props="props">
-            <q-badge v-if="props.row.isUrgent" color="red-6" label="急件" class="q-mr-xs" style="font-size: 13px; padding: 4px 8px;" />
+      <!-- 訂單列表 -->
+      <q-list v-else separator>
+        <q-item
+          v-for="order in orders"
+          :key="order.id"
+          class="order-list-item cursor-pointer"
+          :class="orderItemClass(order)"
+          clickable
+          @click="openDetailDialog(order)"
+        >
+          <!-- 姓名 + 電話 -->
+          <q-item-section>
+            <q-item-label class="text-weight-bold text-grey-9 text-body2 row items-center q-gutter-xs">
+              <span>{{ order.customerName }}</span>
+              <q-badge v-if="order.isUrgent" color="red-6" label="急件" dense style="font-size: 0.68rem;" />
+            </q-item-label>
+            <q-item-label caption class="text-grey-6 q-mt-xs">{{ order.customerPhone }}</q-item-label>
+          </q-item-section>
+
+          <!-- 取件日 -->
+          <q-item-section side class="items-end q-mr-sm">
+            <div class="pickup-date" :class="pickupDateClass(order.status)">
+              {{ order.estimatedPickupDate || '–' }}
+            </div>
+            <div class="pickup-label text-grey-5">預計取件</div>
+          </q-item-section>
+
+          <!-- 狀態 + 操作 -->
+          <q-item-section side class="items-end">
             <q-badge
-              :color="statusColor(props.value)"
-              :label="statusLabel(props.value)"
+              :color="statusColor(order.status)"
+              :label="statusLabel(order.status)"
               outline
-              style="font-size: 13px; padding: 4px 8px;"
+              class="q-mb-xs"
+              style="font-size: 0.72rem;"
             />
-          </q-td>
-        </template>
-
-        <!-- 顧客欄位 -->
-        <template v-slot:body-cell-customer="props">
-          <q-td :props="props">
-            <div class="text-weight-medium">{{ props.row.customerName }}</div>
-            <div class="text-caption text-grey-6">{{ props.row.customerPhone }}</div>
-          </q-td>
-        </template>
-
-        <!-- 服務項目欄位 -->
-        <template v-slot:body-cell-items="props">
-          <q-td :props="props">
-            <div class="row q-gutter-xs items-center" style="max-width: 250px; flex-wrap: wrap;">
-              <template v-for="(item, index) in props.value" :key="index">
-                <q-chip v-if="Number(index) < 2" outline color="teal-6">
-                  {{ item.serviceName }}
-                </q-chip>
-              </template>
-              <q-chip v-if="props.value.length > 2" color="grey-3" text-color="grey-8">
-                +{{ props.value.length - 2 }}
-                <q-tooltip>{{ props.value.map((i: OrderItem) => i.serviceName).join('、') }}</q-tooltip>
-              </q-chip>
-            </div>
-          </q-td>
-        </template>
-
-        <!-- 總金額欄位 -->
-        <template v-slot:body-cell-amount="props">
-          <q-td :props="props" class="text-right">
-            <div class="text-weight-bold text-teal-8">
-              NT$ {{ props.value.toLocaleString() }}
-            </div>
-            <div v-if="Number(props.row.urgentFee) > 0" class="text-caption text-red-6">
-              含急件費
-              <q-tooltip>加急處理費用：NT$ {{ props.row.urgentFee.toLocaleString() }}</q-tooltip>
-            </div>
-          </q-td>
-        </template>
-
-        <!-- 日期欄位 -->
-        <template v-slot:body-cell-dates="props">
-          <q-td :props="props">
-            <div class="row items-center no-wrap">
-              <q-icon name="event_available" color="teal-7" size="16px" class="q-mr-xs" />
-              <span
-                class="text-weight-bold"
-                :class="props.row.estimatedPickupDate ? 'text-teal-8' : 'text-grey-4'"
-                style="font-size: 0.92rem;"
+            <div class="row items-center q-gutter-xs">
+              <q-btn
+                flat round dense size="sm"
+                icon="visibility"
+                color="teal-8"
+                @click.stop="openDetailDialog(order)"
+                class="cursor-pointer"
               >
-                {{ props.row.estimatedPickupDate || '尚未安排' }}
-              </span>
+                <q-tooltip>檢視</q-tooltip>
+              </q-btn>
+              <q-btn
+                flat round dense size="sm"
+                icon="edit"
+                color="teal-6"
+                @click.stop="openEditDialog(order)"
+                :disable="order.status === 'PICKED_UP' || order.status === 'CANCELLED'"
+                class="cursor-pointer"
+              >
+                <q-tooltip>編輯</q-tooltip>
+              </q-btn>
             </div>
-          </q-td>
-        </template>
+          </q-item-section>
+        </q-item>
+      </q-list>
 
-        <!-- 操作欄位 -->
-        <template v-slot:body-cell-actions="props">
-          <q-td :props="props" class="text-right">
-            <q-btn
-              flat
-              round
-              dense
-              icon="visibility"
-              color="teal-8"
-              @click.stop="openDetailDialog(props.row)"
-              class="cursor-pointer"
-            >
-              <q-tooltip>檢視詳情</q-tooltip>
-            </q-btn>
-            <q-btn
-              flat
-              round
-              dense
-              icon="edit"
-              color="teal-6"
-              @click.stop="openEditDialog(props.row)"
-              :disable="props.row.status === 'PICKED_UP' || props.row.status === 'CANCELLED'"
-              class="cursor-pointer"
-            >
-              <q-tooltip>編輯訂單</q-tooltip>
-            </q-btn>
-          </q-td>
-        </template>
-
-        <!-- 手機版 Grid (卡片) 視圖 -->
-        <template v-slot:item="props">
-          <div class="q-pa-xs col-12 col-sm-6 col-md-4">
-            <q-card bordered flat class="cursor-pointer order-grid-card" @click="openDetailDialog(props.row)">
-              <q-card-section class="q-pb-xs flex justify-between items-center">
-                <div class="text-subtitle2 font-mono">{{ props.row.orderNo }}</div>
-                <div>
-                  <q-badge v-if="props.row.isUrgent" color="red-6" label="急件" class="q-mr-xs" style="font-size: 13px; padding: 4px 8px;" />
-                  <q-badge :color="statusColor(props.row.status)" :label="statusLabel(props.row.status)" outline style="font-size: 13px; padding: 4px 8px;" />
-                </div>
-              </q-card-section>
-
-              <q-card-section class="q-py-sm">
-                <div class="row q-col-gutter-sm">
-                  <div class="col-8">
-                    <div class="text-weight-medium">{{ props.row.customerName }}</div>
-                    <div class="text-caption text-grey-6">{{ props.row.customerPhone }}</div>
-                    
-                    <div class="row q-gutter-xs items-center q-mt-sm">
-                      <q-chip v-for="(item, idx) in props.row.items.slice(0, 2)" :key="idx" outline color="teal-6">
-                        {{ item.serviceName }}
-                      </q-chip>
-                      <span v-if="Number(props.row.items.length) > 2" class="text-caption text-grey-6">+{{ props.row.items.length - 2 }} 項</span>
-                    </div>
-                  </div>
-                  
-                  <div class="col-4 text-right">
-                    <div class="text-weight-bold text-teal-8">NT$ {{ props.row.totalAmount.toLocaleString() }}</div>
-                    <div class="text-caption text-grey-6 q-mt-xs">預計取件：{{ props.row.estimatedPickupDate || '-' }}</div>
-                  </div>
-                </div>
-              </q-card-section>
-
-              <q-separator />
-              
-              <q-card-actions align="right" class="q-pa-sm">
-                <q-btn flat dense icon="edit" color="teal-6" label="編輯" @click.stop="openEditDialog(props.row)" :disable="props.row.status === 'PICKED_UP' || props.row.status === 'CANCELLED'" />
-              </q-card-actions>
-            </q-card>
-          </div>
-        </template>
-
-      </q-table>
+      <!-- 分頁 -->
+      <div v-if="pagination.totalPages > 1" class="row justify-center q-py-sm">
+        <q-pagination
+          v-model="pagination.page"
+          :max="pagination.totalPages"
+          :max-pages="3"
+          color="teal-8"
+          active-color="teal-8"
+          @update:model-value="loadOrders"
+          boundary-links
+          direction-links
+          dense
+        />
+      </div>
     </q-card>
 
     <AppFormDialog
@@ -649,7 +542,7 @@ import { useOrderNavStore } from '../stores/orderNavStore';
 import { listOrders, createOrder, updateOrder } from '../api/order/order';
 import { searchCustomers } from '../api/customer/customer';
 import { listServices } from '../api/service/service';
-import type { OrderResult, OrderStatus, OrderItem } from '../api/order/types';
+import type { OrderResult, OrderStatus } from '../api/order/types';
 import type { CustomerResult } from '../api/customer/types';
 import type { ServiceTypeResult } from '../api/service/types';
 
@@ -660,30 +553,17 @@ const orderNavStore = useOrderNavStore();
 const filters = reactive({
   keyword: '',
   status: null as OrderStatus | null,
-  isUrgent: null as boolean | null,
-  dateFrom: '' as string,
-  dateTo: '' as string,
-  sortField: 'estimatedPickupDate',
-  sortDir: 'asc' as 'asc' | 'desc',
+  date: '' as string,
 });
 
-const sortOptions = [
-  { label: '取件日：從早到晚', value: 'estimatedPickupDate,asc' },
-  { label: '取件日：從晚到早', value: 'estimatedPickupDate,desc' },
-  { label: '建立時間：從早到晚', value: 'createTime,asc' },
-  { label: '建立時間：從晚到早', value: 'createTime,desc' },
-  { label: '訂單金額：從低到高', value: 'totalAmount,asc' },
-  { label: '訂單金額：從高到低', value: 'totalAmount,desc' },
+const isUrgentFilter = ref(false);
+const sortField = ref('estimatedPickupDate');
+const sortDir = ref<'asc' | 'desc'>('asc');
+
+const sortFieldOptions = [
+  { label: '取件日', value: 'estimatedPickupDate' },
+  { label: '建立時間', value: 'createTime' },
 ];
-
-const sortKey = computed({
-  get: () => `${filters.sortField},${filters.sortDir}`,
-  set: (val: string) => {
-    const [field, dir] = val.split(',');
-    filters.sortField = field ?? 'estimatedPickupDate';
-    filters.sortDir = (dir ?? 'asc') as 'asc' | 'desc';
-  },
-});
 
 const statusOptions = [
   { label: '待處理', value: 'PENDING' },
@@ -693,77 +573,17 @@ const statusOptions = [
   { label: '已取消', value: 'CANCELLED' },
 ];
 
-const urgentOptions = [
-  { label: '急件', value: true },
-  { label: '一般', value: false },
-];
+const ACTIVE_STATUSES: OrderStatus[] = ['PENDING', 'IN_PROGRESS', 'READY'];
 
 // ── 列表 ──────────────────────────────────────────────────
 const orders = ref<OrderResult[]>([]);
 const pagination = reactive({
   page: 1,
-  size: 15,
+  size: 5,
   totalPages: 1,
   totalElements: 0,
 });
 
-// q-table 專用的分頁格式
-const tablePagination = computed(() => ({
-  page: pagination.page,
-  rowsPerPage: pagination.size,
-  rowsNumber: pagination.totalElements,
-}));
-
-// q-table 分頁事件
-const onRequest = (props: { pagination: { page: number; rowsPerPage: number } }) => {
-  const { page, rowsPerPage } = props.pagination;
-  pagination.page = page;
-  pagination.size = rowsPerPage;
-  loadOrders();
-};
-
-const columns = [
-  { name: 'orderNo', label: '訂單編號', field: 'orderNo', align: 'left' as const, style: 'font-family: monospace; font-weight: 500;' },
-  { name: 'status', label: '狀態', field: 'status', align: 'left' as const },
-  { name: 'customer', label: '顧客', field: 'customerName', align: 'left' as const },
-  { name: 'items', label: '服務項目', field: 'items', align: 'left' as const },
-  { name: 'amount', label: '總金額', field: 'totalAmount', align: 'right' as const },
-  { name: 'dates', label: '預計取件日', field: 'estimatedPickupDate', align: 'left' as const },
-  { name: 'actions', label: '操作', field: 'actions', align: 'right' as const }
-];
-
-const datePickerRef = ref();
-const rangeClickCount = ref(0);
-const pickerValue = ref<{ from: string; to: string } | null>(null);
-
-const dateRangeLabel = computed(() => {
-  if (filters.dateFrom && filters.dateTo) return `${filters.dateFrom} ~ ${filters.dateTo}`;
-  return '';
-});
-
-function onDateRangeSelect(val: { from: string; to: string } | string | null) {
-  if (!val) return;
-  rangeClickCount.value++;
-  if (rangeClickCount.value < 2) {
-    // 第一次點擊：不更新 pickerValue，讓 q-date 自行維護內部起始狀態
-    return;
-  }
-  // 第二次點擊：提交並關閉
-  const from = typeof val === 'string' ? val : val.from;
-  const to = typeof val === 'string' ? val : val.to;
-  pickerValue.value = { from, to };
-  filters.dateFrom = from;
-  filters.dateTo = to;
-  rangeClickCount.value = 0;
-  datePickerRef.value?.hide();
-}
-
-function clearDateRange() {
-  filters.dateFrom = '';
-  filters.dateTo = '';
-  pickerValue.value = null;
-  rangeClickCount.value = 0;
-}
 
 const loading = ref(false);
 
@@ -773,10 +593,11 @@ const loadOrders = async () => {
     const res = await listOrders({
       keyword: filters.keyword || undefined,
       status: filters.status || undefined,
-      isUrgent: filters.isUrgent ?? undefined,
-      dateFrom: filters.dateFrom || undefined,
-      dateTo: filters.dateTo || undefined,
-      sort: `${filters.sortField},${filters.sortDir}`,
+      statuses: filters.status ? undefined : ACTIVE_STATUSES,
+      isUrgent: isUrgentFilter.value || undefined,
+      dateFrom: filters.date || undefined,
+      dateTo: filters.date || undefined,
+      sort: `${sortField.value},${sortDir.value}`,
       page: pagination.page - 1,
       size: pagination.size,
     });
@@ -788,6 +609,12 @@ const loadOrders = async () => {
   } finally {
     loading.value = false;
   }
+};
+
+// 查詢（重置頁碼）
+const search = () => {
+  pagination.page = 1;
+  loadOrders();
 };
 
 // ── 服務項目設定 ───────────────────────────────────────────
@@ -1092,6 +919,19 @@ const onEditRequested = async (order: OrderResult) => {
 
 
 // ── 輔助函式 ──────────────────────────────────────────────
+function orderItemClass(order: OrderResult): string {
+  if (order.isUrgent && order.status === 'PENDING') return 'order-item--urgent';
+  if (order.status === 'READY') return 'order-item--ready';
+  if (order.status === 'IN_PROGRESS') return 'order-item--in-progress';
+  return '';
+}
+
+function pickupDateClass(status: string): string {
+  if (status === 'READY') return 'text-teal-8';
+  if (status === 'PENDING') return 'text-orange-8';
+  return 'text-grey-8';
+}
+
 function statusColor(status: string): string {
   return (
     {
@@ -1125,9 +965,8 @@ onMounted(async () => {
   // 套用來自總覽的篩選條件
   if (pendingFilters) {
     if (pendingFilters.status !== undefined) filters.status = pendingFilters.status;
-    if (pendingFilters.isUrgent !== undefined) filters.isUrgent = pendingFilters.isUrgent;
-    if (pendingFilters.dateFrom) filters.dateFrom = pendingFilters.dateFrom;
-    if (pendingFilters.dateTo) filters.dateTo = pendingFilters.dateTo;
+    if (pendingFilters.isUrgent !== undefined) isUrgentFilter.value = pendingFilters.isUrgent ?? false;
+    if (pendingFilters.dateFrom) filters.date = pendingFilters.dateFrom;
   }
 
   await Promise.all([loadServices(), loadOrders()]);
@@ -1150,29 +989,6 @@ onMounted(async () => {
   justify-content: center;
 }
 
-.order-table :deep(th) {
-  font-weight: 600;
-  font-size: 0.85rem;
-  color: #455a64;
-  background-color: #fcfcfc;
-}
-
-.order-table :deep(td) {
-  font-size: 0.9rem;
-}
-
-.order-table :deep(tr.q-tr) td {
-  padding-top: 6px;
-  padding-bottom: 6px;
-}
-
-.order-grid-card {
-  transition: all 0.2s;
-}
-.order-grid-card:hover {
-  border-color: #009688;
-  box-shadow: 0 1px 5px rgba(0,0,0,0.1);
-}
 
 .card-header-accent {
   border-bottom: 1px solid rgba(0, 150, 136, 0.15);
@@ -1187,6 +1003,104 @@ onMounted(async () => {
 .stat-mini-card {
   border: 1px solid rgba(0, 150, 136, 0.2);
   border-radius: 8px;
+}
+
+/* 篩選列 */
+.filter-card {
+  border-radius: 12px;
+}
+
+.filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.filter-keyword {
+  flex: 1;
+  min-width: 160px;
+}
+
+.filter-status {
+  min-width: 110px;
+}
+
+.filter-urgent {
+  white-space: nowrap;
+}
+
+.filter-date {
+  min-width: 210px;
+  flex: 1;
+}
+
+.filter-sort {
+  min-width: 160px;
+}
+
+.sort-field-select {
+  min-width: 100px;
+}
+
+.filter-search-btn {
+  white-space: nowrap;
+}
+
+/* 列表 */
+.section-card {
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.07), 0 4px 12px rgba(0,0,0,0.04);
+}
+
+.list-header {
+  border-bottom: none;
+}
+
+.order-list-item {
+  min-height: 60px;
+  padding: 10px 16px;
+  border-left: 3px solid #e2e8f0;
+  transition: background 0.18s ease;
+}
+
+.order-list-item:hover {
+  background: rgba(0, 0, 0, 0.025);
+}
+
+.order-item--urgent {
+  border-left-color: #ef4444;
+}
+
+.order-item--urgent:hover {
+  background: rgba(239, 68, 68, 0.04);
+}
+
+.order-item--ready {
+  border-left-color: #0f766e;
+}
+
+.order-item--ready:hover {
+  background: rgba(15, 118, 110, 0.04);
+}
+
+.order-item--in-progress {
+  border-left-color: #0ea5e9;
+}
+
+.order-item--in-progress:hover {
+  background: rgba(14, 165, 233, 0.04);
+}
+
+.pickup-date {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+.pickup-label {
+  font-size: 0.72rem;
+  margin-top: 2px;
 }
 
 /* 重新設計的表單樣式 */

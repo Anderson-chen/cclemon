@@ -58,6 +58,7 @@ export interface OrderStatusUpdateRequest {
 export interface ListOrdersParams {
   keyword?: string;
   status?: OrderStatus;
+  statuses?: OrderStatus[];
   isUrgent?: boolean;
   dateFrom?: string;
   dateTo?: string;
