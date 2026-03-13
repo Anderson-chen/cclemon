@@ -10,15 +10,15 @@
     "types": ["@quasar/app-vite"],
     "skipLibCheck": true,
     "noEmit": true,
-    "isolatedModules": true,
-    "verbatimModuleSyntax": true,
+    "allowJs": true,
     "jsx": "preserve"
   },
   "include": [
     "src/**/*.ts",
     "src/**/*.d.ts",
     "src/**/*.tsx",
-    "src/**/*.vue"
+    "src/**/*.vue",
+    "src/quasar.d.ts"
   ],
   "exclude": [
     "./dist",

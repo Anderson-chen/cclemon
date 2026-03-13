@@ -10,8 +10,7 @@
     "types": ["@quasar/app-vite"],
     "skipLibCheck": true,
     "noEmit": true,
-    "isolatedModules": true,
-    "verbatimModuleSyntax": true,
+    "allowJs": true,
     "jsx": "preserve"
   },
   "include": [
