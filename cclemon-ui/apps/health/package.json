@@ -27,7 +27,7 @@
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-vue": "^9.0.0",
-    "typescript": "~5.3.0",
+    "typescript": "^5.6.0",
     "vue-tsc": "^1.8.22"
   },
   "engines": {

@@ -2,6 +2,16 @@
   "name": "cclemon-ui-workspace",
   "version": "1.0.0",
   "private": true,
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@parcel/watcher",
+      "esbuild",
+      "msw",
+      "sharp",
+      "vue-demi",
+      "workerd"
+    ]
+  },
   "scripts": {
     "dev:shoes": "pnpm --filter @cclemon/shoes dev",
     "dev:health": "pnpm --filter @cclemon/health dev",
