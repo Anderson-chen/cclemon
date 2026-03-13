@@ -30,7 +30,14 @@
       "Bash(cd \"C:\\\\project\\\\cclemon\\\\cclemon-ui\" && npx vue-tsc --noEmit 2>&1 | grep \"^src/\")",
       "Bash(cd \"C:\\\\project\\\\cclemon\\\\cclemon-ui\" && npx vue-tsc --noEmit 2>&1 | grep \"^src/\" && echo \"OK\")",
       "Bash(npx vue-tsc:*)",
-      "Bash(npx tsc:*)"
+      "Bash(npx tsc:*)",
+      "Bash(pnpm --version)",
+      "Bash(pnpm install:*)",
+      "Bash(cd /c/project/cclemon/cclemon-ui/apps/shoes && pnpm lint 2>&1)",
+      "Bash(cd /c/project/cclemon/cclemon-ui/apps/health && pnpm lint 2>&1)",
+      "Bash(cd /c/project/cclemon/cclemon-ui/apps/shoes && pnpm build 2>&1)",
+      "Bash(cd /c/project/cclemon/cclemon-ui/apps/health && pnpm build 2>&1)",
+      "Bash(node -e \"const p = require\\('/c/project/cclemon/cclemon-ui/node_modules/.pnpm/@quasar+app-vite@2.4.1_@typ_c5dc61feb557d291da1cd76d81bf7b2f/node_modules/@quasar/app-vite/package.json'\\); console.log\\(JSON.stringify\\(Object.keys\\(p.exports || {}\\), null, 2\\)\\)\")"
     ]
   }
 }
