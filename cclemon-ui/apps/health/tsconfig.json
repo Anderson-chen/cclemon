@@ -1,25 +1,8 @@
 {
+  "extends": "@quasar/app-vite/tsconfig-preset",
   "compilerOptions": {
-    "module": "Preserve",
-    "moduleResolution": "Bundler",
-    "target": "ESNext",
-    "strict": true,
-    "lib": ["ESNext", "DOM"],
-    "baseUrl": ".",
-    "paths": {},
-    "types": ["@quasar/app-vite"],
-    "skipLibCheck": true,
-    "noEmit": true,
-    "isolatedModules": true,
-    "verbatimModuleSyntax": true,
-    "jsx": "preserve"
+    "baseUrl": "."
   },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.d.ts",
-    "src/**/*.tsx",
-    "src/**/*.vue"
-  ],
   "exclude": [
     "./dist",
     "./.quasar",
