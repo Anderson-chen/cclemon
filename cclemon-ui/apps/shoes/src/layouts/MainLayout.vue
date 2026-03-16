@@ -76,8 +76,9 @@
 import { ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { useQuasar } from 'quasar';
-import EssentialLink from 'components/EssentialLink.vue';
-import type { EssentialLinkProps } from 'components/EssentialLink.vue';
+import EssentialLink, {
+  EssentialLinkProps,
+} from 'components/EssentialLink.vue';
 
 defineOptions({
   name: 'MainLayout',
