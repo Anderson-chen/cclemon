@@ -27,6 +27,7 @@ import org.springframework.security.oauth2.server.authorization.oidc.authenticat
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
+import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -138,6 +139,13 @@ public class SecurityConfig {
     @Order(2)
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http, UserRepositoryOAuth2UserHandler userRepository)
             throws Exception {
+
+        // 只儲存 /oauth2/authorize 發起的請求，排除瀏覽器背景探測（.well-known 等）
+        HttpSessionRequestCache requestCache = new HttpSessionRequestCache();
+        requestCache.setRequestMatcher(request ->
+                request.getRequestURI().startsWith("/oauth2/authorize")
+        );
+        http.requestCache(cache -> cache.requestCache(requestCache));
 
         // request filter for auth
         http.authorizeHttpRequests((authorize) -> authorize
