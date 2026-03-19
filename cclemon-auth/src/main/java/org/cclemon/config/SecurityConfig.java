@@ -86,7 +86,7 @@ public class SecurityConfig {
                 // Redirect to the login page when not authenticated from the authorization endpoint
                 .exceptionHandling((exceptions) -> exceptions
                         .defaultAuthenticationEntryPointFor(
-                                new LoginUrlAuthenticationEntryPoint(cclemonUiUrl + "/login"),
+                                new LoginUrlAuthenticationEntryPoint("/login.html"),
                                 new MediaTypeRequestMatcher(MediaType.TEXT_HTML)
                         )
                 );
@@ -141,16 +141,20 @@ public class SecurityConfig {
 
         // request filter for auth
         http.authorizeHttpRequests((authorize) -> authorize
-                .requestMatchers("/csrf-token", "/actuator/health").permitAll()
+                .requestMatchers("/csrf-token", "/actuator/health", "/login.html").permitAll()
                 .anyRequest().authenticated()
         );
 
         // sso login page
-        http.formLogin(login -> login.loginProcessingUrl("/login"));
+        http.formLogin(login -> login
+                .loginPage("/login.html")
+                .loginProcessingUrl("/login")
+        );
 
         //social login page
         http.oauth2Login(configurer -> {
-            configurer.failureUrl(cclemonUiUrl + "/login?error");
+            configurer.loginPage("/login.html");
+            configurer.failureUrl("/login.html?error");
             configurer.successHandler(new FederatedIdentityAuthenticationSuccessHandler(userRepository));
         });
 

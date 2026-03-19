@@ -419,6 +419,7 @@
                     behavior="menu"
                     debounce="300"
                     class="modern-select"
+                    popup-content-style="z-index: 7000 !important"
                   >
                     <template v-slot:prepend>
                       <q-icon name="search" color="teal-8" />
