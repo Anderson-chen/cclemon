@@ -343,7 +343,6 @@
       // ── 拒絕按鈕 ─────────────────────────────────────────────
       document.getElementById('btnCancel').addEventListener('click', () => {
         document.getElementById('inputAction').value = 'cancel';
-        // 取消時不送任何 scope
         scopeInputs.querySelectorAll('input').forEach(el => el.disabled = true);
         document.getElementById('consentForm').submit();
       });
