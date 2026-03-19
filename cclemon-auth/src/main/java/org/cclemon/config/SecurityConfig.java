@@ -73,7 +73,10 @@ public class SecurityConfig {
                 .oauth2AuthorizationServer((authorizationServer) -> {
                     http.securityMatcher(authorizationServer.getEndpointsMatcher());
                     authorizationServer
-                            .oidc(oidc -> oidc.userInfoEndpoint((userinfo -> userinfo.userInfoMapper(getUserInfoMapper(userRepository)))));    // Enable OpenID Connect 1.0
+                            .oidc(oidc -> oidc.userInfoEndpoint((userinfo -> userinfo.userInfoMapper(getUserInfoMapper(userRepository)))))
+                            .authorizationEndpoint(authorization -> authorization
+                                    .consentPage("/consent.html")
+                            );
                 })
                 .authorizeHttpRequests((authorize) ->
                         authorize.anyRequest().authenticated()
@@ -149,7 +152,7 @@ public class SecurityConfig {
 
         // request filter for auth
         http.authorizeHttpRequests((authorize) -> authorize
-                .requestMatchers("/csrf-token", "/actuator/health", "/login.html").permitAll()
+                .requestMatchers("/csrf-token", "/actuator/health", "/login.html", "/consent.html").permitAll()
                 .anyRequest().authenticated()
         );
 

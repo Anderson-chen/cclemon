@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>授權確認</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: #F0F9FF;
+      min-height: 100dvh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+      color: #0C4A6E;
+      line-height: 1.5;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 440px;
+      background: #fff;
+      border-radius: 16px;
+      padding: 36px 32px;
+      box-shadow: 0 4px 24px rgba(3,105,161,.1), 0 1px 4px rgba(3,105,161,.06);
+      border: 1px solid #BAE6FD;
+      animation: fadeIn .2s ease-out both;
+    }
+
+    /* ── Header ─────────────────────────────────────────────── */
+    .header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .logo-wrap {
+      width: 52px; height: 52px;
+      border-radius: 13px;
+      background: linear-gradient(135deg, #0369A1 0%, #0EA5E9 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 14px;
+      box-shadow: 0 4px 12px rgba(3,105,161,.3);
+    }
+
+    .logo-wrap svg { width: 28px; height: 28px; fill: #fff; }
+
+    .header h1 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #0C4A6E;
+      letter-spacing: -0.01em;
+      margin-bottom: 6px;
+    }
+
+    .client-name {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: .875rem;
+      font-weight: 600;
+      color: #0369A1;
+      background: #E0F2FE;
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+
+    .client-name svg { width: 13px; height: 13px; fill: #0369A1; }
+
+    /* ── User pill ───────────────────────────────────────────── */
+    .user-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #F0F9FF;
+      border: 1px solid #BAE6FD;
+      border-radius: 8px;
+      padding: 8px 12px;
+      margin-bottom: 20px;
+      font-size: .8125rem;
+      color: #0369A1;
+    }
+
+    .user-pill svg { width: 15px; height: 15px; fill: #0369A1; opacity: .7; flex-shrink: 0; }
+    .user-pill span { font-weight: 600; }
+
+    /* ── Scope list ──────────────────────────────────────────── */
+    .scope-label {
+      font-size: .75rem;
+      font-weight: 600;
+      color: #64748B;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      margin-bottom: 10px;
+    }
+
+    .scope-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+
+    .scope-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      border: 1.5px solid #BAE6FD;
+      border-radius: 8px;
+      background: #fff;
+      cursor: pointer;
+      transition: border-color .15s, background .15s;
+      user-select: none;
+    }
+
+    .scope-item:hover { background: #F0F9FF; border-color: #7DD3FC; }
+    .scope-item input[type="checkbox"] { display: none; }
+
+    .scope-check {
+      width: 18px; height: 18px;
+      border: 2px solid #BAE6FD;
+      border-radius: 5px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .15s, border-color .15s;
+      background: #fff;
+    }
+
+    .scope-check svg { width: 11px; height: 11px; fill: #fff; display: none; }
+
+    .scope-item.checked .scope-check {
+      background: #0369A1;
+      border-color: #0369A1;
+    }
+
+    .scope-item.checked .scope-check svg { display: block; }
+    .scope-item.checked { border-color: #0369A1; background: #F0F9FF; }
+
+    .scope-info { flex: 1; min-width: 0; }
+
+    .scope-name {
+      font-size: .875rem;
+      font-weight: 600;
+      color: #0C4A6E;
+    }
+
+    .scope-desc {
+      font-size: .75rem;
+      color: #64748B;
+      margin-top: 1px;
+    }
+
+    .scope-icon { width: 18px; height: 18px; fill: #0369A1; opacity: .6; flex-shrink: 0; }
+
+    /* ── Buttons ─────────────────────────────────────────────── */
+    .actions { display: flex; gap: 10px; }
+
+    .btn-approve {
+      flex: 1;
+      height: 44px;
+      background: linear-gradient(135deg, #0369A1 0%, #0EA5E9 100%);
+      color: #fff;
+      font-size: .9375rem;
+      font-weight: 600;
+      font-family: inherit;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: opacity .15s;
+    }
+
+    .btn-approve:hover { opacity: .9; }
+
+    .btn-cancel {
+      flex: 0 0 auto;
+      height: 44px;
+      padding: 0 20px;
+      background: transparent;
+      color: #64748B;
+      font-size: .9rem;
+      font-weight: 500;
+      font-family: inherit;
+      border: 1.5px solid #CBD5E1;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background .15s, border-color .15s, color .15s;
+    }
+
+    .btn-cancel:hover { background: #F1F5F9; border-color: #94A3B8; color: #0C4A6E; }
+
+    /* ── Notice ──────────────────────────────────────────────── */
+    .notice {
+      margin-top: 16px;
+      font-size: .75rem;
+      color: #94A3B8;
+      text-align: center;
+      line-height: 1.6;
+    }
+
+    /* ── Animations ──────────────────────────────────────────── */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    :focus-visible { outline: 2px solid #0369A1; outline-offset: 2px; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
+    }
+
+    @media (max-width: 480px) {
+      body { padding: 0; background: #fff; }
+      .card { border-radius: 0; box-shadow: none; border: none; padding: 28px 20px; max-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+
+    <header class="header">
+      <div class="logo-wrap" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 4c1.4 0 2.8.47 3.93 1.4l-7.55 7.55A5.96 5.96 0 0 1 6 10c0-3.31 2.69-6 6-6zm0 12c-1.4 0-2.8-.47-3.93-1.4l7.55-7.55A5.96 5.96 0 0 1 18 10c0 3.31-2.69 6-6 6z"/></svg>
+      </div>
+      <h1>應用程式請求存取授權</h1>
+      <div class="client-name" id="clientLabel">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
+        <span id="clientId">載入中...</span>
+      </div>
+    </header>
+
+    <!-- 目前登入使用者 -->
+    <div class="user-pill">
+      <svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+      以 <span id="principalName">—</span> 身份登入
+    </div>
+
+    <!-- Scope 清單 -->
+    <div class="scope-label">請求以下存取權限</div>
+    <div class="scope-list" id="scopeList"></div>
+
+    <!-- 操作按鈕 -->
+    <form id="consentForm" method="post" action="/oauth2/authorize">
+      <input type="hidden" name="client_id"        id="inputClientId" />
+      <input type="hidden" name="state"            id="inputState" />
+      <input type="hidden" name="consent_action"   id="inputAction" value="approve" />
+      <div id="scopeInputs"></div>
+      <div class="actions">
+        <button type="button" class="btn-cancel" id="btnCancel">拒絕</button>
+        <button type="submit" class="btn-approve" id="btnApprove">同意授權</button>
+      </div>
+    </form>
+
+    <p class="notice">
+      同意後，此應用程式將可在您的授權範圍內存取您的資料。<br>
+      您可以隨時在帳號設定中撤銷此授權。
+    </p>
+  </div>
+
+  <script>
+    (function () {
+      'use strict';
+
+      // ── Scope 顯示設定 ────────────────────────────────────────
+      const SCOPE_META = {
+        openid:  { label: 'OpenID',   desc: '確認您的身份識別',         icon: 'M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z' },
+        profile: { label: '個人資料', desc: '存取您的姓名與基本資訊',   icon: 'M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z' },
+        email:   { label: '電子郵件', desc: '讀取您的電子郵件地址',     icon: 'M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z' },
+      };
+
+      // ── 解析 URL 參數 ─────────────────────────────────────────
+      const params    = new URLSearchParams(window.location.search);
+      const clientId  = params.get('client_id')      ?? '';
+      const state     = params.get('state')           ?? '';
+      const principal = params.get('principal_name')  ?? '';
+      const scopes    = (params.get('scope') ?? '').split(' ').filter(Boolean);
+
+      // 填入隱藏欄位
+      document.getElementById('inputClientId').value = clientId;
+      document.getElementById('inputState').value    = state;
+
+      // 顯示 client 與 user
+      document.getElementById('clientId').textContent      = clientId || '未知應用程式';
+      document.getElementById('principalName').textContent = principal || '未知使用者';
+
+      // ── 動態產生 scope 項目 ───────────────────────────────────
+      const scopeList   = document.getElementById('scopeList');
+      const scopeInputs = document.getElementById('scopeInputs');
+      const checkedSet  = new Set(scopes);
+
+      scopes.forEach(scope => {
+        const meta = SCOPE_META[scope] ?? { label: scope, desc: '存取此權限', icon: 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z' };
+
+        // UI 項目
+        const item = document.createElement('label');
+        item.className = 'scope-item checked';
+        item.innerHTML = `
+          <input type="checkbox" checked data-scope="${scope}" />
+          <div class="scope-check">
+            <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+          </div>
+          <svg class="scope-icon" viewBox="0 0 24 24"><path d="${meta.icon}"/></svg>
+          <div class="scope-info">
+            <div class="scope-name">${meta.label}</div>
+            <div class="scope-desc">${meta.desc}</div>
+          </div>`;
+        scopeList.appendChild(item);
+
+        item.addEventListener('click', () => {
+          const cb = item.querySelector('input[type="checkbox"]');
+          cb.checked = !cb.checked;
+          item.classList.toggle('checked', cb.checked);
+          if (cb.checked) checkedSet.add(scope);
+          else            checkedSet.delete(scope);
+          syncScopeInputs();
+        });
+
+        // Hidden input
+        const hidden = document.createElement('input');
+        hidden.type  = 'hidden';
+        hidden.name  = 'scope';
+        hidden.value = scope;
+        hidden.dataset.scope = scope;
+        scopeInputs.appendChild(hidden);
+      });
+
+      function syncScopeInputs() {
+        scopeInputs.querySelectorAll('input[data-scope]').forEach(el => {
+          el.disabled = !checkedSet.has(el.dataset.scope);
+        });
+      }
+
+      // ── 拒絕按鈕 ─────────────────────────────────────────────
+      document.getElementById('btnCancel').addEventListener('click', () => {
+        document.getElementById('inputAction').value = 'cancel';
+        // 取消時不送任何 scope
+        scopeInputs.querySelectorAll('input').forEach(el => el.disabled = true);
+        document.getElementById('consentForm').submit();
+      });
+
+    })();
+  </script>
+</body>
+</html>
