@@ -1,0 +1,67 @@
+╔══════════════════════════════════════════════════════════════════════╗
+║                   cclemon Web API Flow (Web to DB)                   ║
+╚══════════════════════════════════════════════════════════════════════╝
+
+  HTTP Request: POST /api/v1/weights
+        │
+        ▼
+╔══════════════════════════════════════════════════════════════════════╗
+║  MODULE: cclemon-web                                                 ║
+╠══════════════════════════════════════════════════════════════════════╣
+║  WeightController                                                    ║
+║                                                                      ║
+║  POST   /        -> upsertWeight(WeightUpsertRequest)                ║
+║  GET    /        -> listWeights(startDate, endDate, page, size)      ║
+║  GET    /chart   -> getChart(range, startDate, endDate)              ║
+║  DELETE /{id}    -> delete(id)                                       ║
+║                                                                      ║
+║  - protocol translation only, no business logic                      ║
+║  - builds Command / Query DTO from request                           ║
+╚══════════════════════════════════════════════════════════════════════╝
+                                   │ inject WeightHandler (interface)
+                                   ▼
+╔══════════════════════════════════════════════════════════════════════╗
+║  MODULE: cclemon-api                                                 ║
+╠══════════════════════════════════════════════════════════════════════╣
+║  WeightHandler  (interface)                                          ║
+║                                                                      ║
+║  record(RecordWeightCommand)   -> WeightRecordResult                 ║
+║  delete(DeleteWeightCommand)   -> void                               ║
+║  list(ListWeightsQuery)        -> PagedResult<WeightRecordResult>    ║
+║  getChart(GetWeightChartQuery) -> WeightChartData                    ║
+╚══════════════════════════════════════════════════════════════════════╝
+                                   │ runtimeOnly implementation
+                                   ▼
+╔══════════════════════════════════════════════════════════════════════╗
+║  MODULE: cclemon-health                                              ║
+╠══════════════════════════════════════════════════════════════════════╣
+║  WeightHandlerImpl                                                   ║
+║                                                                      ║
+║  @Transactional           <-- transaction boundary                   ║
+║  @Transactional(readOnly=true)                                       ║
+║                                                                      ║
+║  - maps Command/Query to Service calls                               ║
+║  - maps Entity result back to VO                                     ║
+║  ·  ·  ·  ·  ·  ·  ·  ·  ·  ·  ·  ·  ·  ·  ·  ·  ·  ·  ·  ·  ·  ║
+║  WeightService  (internal)                                           ║
+║                                                                      ║
+║  upsertManualWeight()  -  find existing or create new record         ║
+║  listWeights()         -  paginated / date-range query               ║
+║  softDelete()          -  set deleted = true                         ║
+║  hasRecord()           -  check if record exists on given date       ║
+║  ·  ·  ·  ·  ·  ·  ·  ·  ·  ·  ·  ·  ·  ·  ·  ·  ·  ·  ·  ·  ·  ║
+║  CclemonUserRepository          UserWeightLogRepository              ║
+║  JpaRepository<                 JpaRepository<                       ║
+║    CclemonUser, Long>             UserWeightLog, Long>               ║
+╚══════════════════════════════════════════════════════════════════════╝
+                                   │ JPA / Hibernate
+                                   ▼
+╔══════════════════════════════════════════════════════════════════════╗
+║  MySQL  (port 3306)                                                  ║
+╠══════════════════════════════════════════════════════════════════════╣
+║  table: user_weight_logs                                             ║
+║                                                                      ║
+║  ┌─────┬─────────┬──────────────┬───────────┬─────────┬─────────┐  ║
+║  │ id  │ user_id │ measure_date │ weight_kg │ deleted │ version │  ║
+║  └─────┴─────────┴──────────────┴───────────┴─────────┴─────────┘  ║
+╚══════════════════════════════════════════════════════════════════════╝
