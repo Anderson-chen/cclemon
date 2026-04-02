@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-CclemonAuthApplication<cclemon-auth>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "org.cclemon.CclemonAuthApplication",
+            "projectName": "cclemon-auth",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

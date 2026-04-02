@@ -1,0 +1,172 @@
+╔══════════════════════════════════════════════════════════════════════╗
+║          cclemon - DDD & Multi-Entry-Point Architecture              ║
+╚══════════════════════════════════════════════════════════════════════╝
+
+  DDD 的核心目的
+  ─────────────
+  讓程式碼說「業務的語言」，而不是「技術的語言」。
+  業務邏輯集中在一處，技術細節（HTTP / DB / Kafka / Lambda）向外推。
+  清楚的邊界讓每個模組可以獨立替換、部署、甚至擴展到不同運算環境。
+
+
+╔══════════════════════════════════════════════════════════════════════╗
+║  Hexagonal Architecture (Ports & Adapters)  ─  cclemon 已實現的版本  ║
+╚══════════════════════════════════════════════════════════════════════╝
+
+            ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐
+            │cclemon   │  │cclemon   │  │cclemon   │  │(未來)    │
+            │-web      │  │-job      │  │-consumer │  │cclemon   │
+            │REST API  │  │排程任務  │  │Kafka 消費│  │-lambda   │
+            └────┬─────┘  └────┬─────┘  └────┬─────┘  └────┬─────┘
+                 │              │              │              │
+                 │         Adapter 層 (入口適配器)            │
+                 └──────────────┴──────────────┴──────────────┘
+                                      │
+                                      ▼
+╔══════════════════════════════════════════════════════════════════════╗
+║  MODULE: cclemon-api                  ← Port 層（應用程式邊界）       ║
+╠══════════════════════════════════════════════════════════════════════╣
+║  WeightHandler  (interface)                                          ║
+║                                                                      ║
+║  record(RecordWeightCommand)   -> WeightRecordResult                 ║
+║  delete(DeleteWeightCommand)   -> void                               ║
+║  list(ListWeightsQuery)        -> PagedResult<WeightRecordResult>    ║
+║  getChart(GetWeightChartQuery) -> WeightChartData                    ║
+║                                                                      ║
+║  - 零 Spring 依賴，純 Java 介面                                       ║
+║  - 所有入口層都只依賴這個介面，不依賴實作                              ║
+╚══════════════════════════════════════════════════════════════════════╝
+                                      │ runtimeOnly implementation
+                                      ▼
+╔══════════════════════════════════════════════════════════════════════╗
+║  MODULE: cclemon-health               ← Domain 層（業務核心）         ║
+╠══════════════════════════════════════════════════════════════════════╣
+║  WeightHandlerImpl    (Application Service)                          ║
+║                                                                      ║
+║  - 實作 WeightHandler 介面                                            ║
+║  - 事務邊界：@Transactional / @Transactional(readOnly=true)           ║
+║  - 協調 Service 呼叫，轉換 Command/Query ↔ Entity ↔ Result VO         ║
+║  ·  ·  ·  ·  ·  ·  ·  ·  ·  ·  ·  ·  ·  ·  ·  ·  ·  ·  ·  ·  ·  ║
+║  WeightService  (Domain Service, internal)                           ║
+║                                                                      ║
+║  upsertManualWeight()  -  新增或更新體重記錄                           ║
+║  listWeights()         -  分頁 / 日期區間查詢                          ║
+║  softDelete()          -  軟刪除 (deleted = true)                    ║
+║  hasRecord()           -  檢查當日是否已有紀錄                         ║
+║  ·  ·  ·  ·  ·  ·  ·  ·  ·  ·  ·  ·  ·  ·  ·  ·  ·  ·  ·  ·  ·  ║
+║  UserWeightLog (Entity / Aggregate Root)                             ║
+║                                                                      ║
+║  id, user, measureDate, measureTime, weightKg, source, deleted       ║
+║  unique: (user_id, measure_date, source)                             ║
+╚══════════════════════════════════════════════════════════════════════╝
+                                      │ JPA / Hibernate
+                                      ▼
+                               MySQL / H2 (test)
+
+
+╔══════════════════════════════════════════════════════════════════════╗
+║  各入口方案細節                                                        ║
+╚══════════════════════════════════════════════════════════════════════╝
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │  REST API  (cclemon-web, port 8888)              ✅ 已支援       │
+  ├─────────────────────────────────────────────────────────────────┤
+  │  WeightController                                                │
+  │    - 職責：HTTP 協議轉換，無業務邏輯                               │
+  │    - 注入 WeightHandler 介面                                     │
+  │    - 建立 Command / Query DTO → 呼叫 Handler → 回傳結果           │
+  │                                                                  │
+  │  build.gradle:                                                   │
+  │    implementation project(":cclemon-api")    // 編譯期依賴介面     │
+  │    runtimeOnly   project(":cclemon-health")  // 執行期注入實作     │
+  └─────────────────────────────────────────────────────────────────┘
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │  排程 Job  (cclemon-job)                         ✅ 已支援       │
+  ├─────────────────────────────────────────────────────────────────┤
+  │  Job 直接注入 WeightHandler，不需要 HTTP                          │
+  │  例：每日統計任務直接呼叫 handler.list(query)                      │
+  │                                                                  │
+  │  build.gradle:                                                   │
+  │    implementation project(":cclemon-api")                        │
+  │    runtimeOnly   project(":cclemon-health")                      │
+  └─────────────────────────────────────────────────────────────────┘
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │  Kafka Consumer  (cclemon-consumer)              ✅ 已支援       │
+  ├─────────────────────────────────────────────────────────────────┤
+  │  KafkaListenerDispatcherImpl                                     │
+  │    - 根據 topic 分發至對應的 KafkaMessageHandler 實作              │
+  │    - ApiLogHandlerImpl 負責處理 CCLEMON_HEALTH_API_LOG topic      │
+  │                                                                  │
+  │  擴展方式：實作 KafkaMessageHandler，宣告對應 topic 即可            │
+  └─────────────────────────────────────────────────────────────────┘
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │  AWS Lambda  (未來: cclemon-lambda)              🔧 需新增模組   │
+  ├─────────────────────────────────────────────────────────────────┤
+  │  使用 Spring Cloud Function Adapter                               │
+  │                                                                  │
+  │  @Bean                                                           │
+  │  Function<RecordWeightCommand, WeightRecordResult> recordWeight( │
+  │      WeightHandler handler) {                                    │
+  │    return handler::record;   // Handler 介面完全不動              │
+  │  }                                                               │
+  │                                                                  │
+  │  build.gradle:                                                   │
+  │    implementation project(":cclemon-api")                        │
+  │    runtimeOnly   project(":cclemon-health")                      │
+  │    implementation 'org.springframework.cloud:                    │
+  │                    spring-cloud-function-adapter-aws'            │
+  │                                                                  │
+  │  冷啟動優化選項：                                                  │
+  │    - Provisioned Concurrency (AWS 端設定)                        │
+  │    - GraalVM Native Image (啟動 < 100ms，build 時間較長)          │
+  └─────────────────────────────────────────────────────────────────┘
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │  Cloudflare Workers                              ⚠️  不直接支援  │
+  ├─────────────────────────────────────────────────────────────────┤
+  │  Workers 只支援 JavaScript / TypeScript / WASM                   │
+  │  Java 無法直接部署                                                │
+  │                                                                  │
+  │  建議作法：                                                       │
+  │    Workers ──HTTP──→ cclemon-web REST API                        │
+  │    Workers 負責 edge 路由 / 認證 / 快取                            │
+  │    業務邏輯仍在 cclemon-health                                    │
+  └─────────────────────────────────────────────────────────────────┘
+
+
+╔══════════════════════════════════════════════════════════════════════╗
+║  模組依賴總覽                                                          ║
+╚══════════════════════════════════════════════════════════════════════╝
+
+  cclemon-web      ─impl→ cclemon-api   ─runtime→ cclemon-health
+  cclemon-job      ─impl→ cclemon-api   ─runtime→ cclemon-health
+  cclemon-consumer ─impl→ cclemon-kafka, cclemon-interface
+  cclemon-lambda   ─impl→ cclemon-api   ─runtime→ cclemon-health  (未來)
+
+  cclemon-api      ─impl→ jakarta.validation  (零 Spring)
+  cclemon-health   ─impl→ cclemon-api, cclemon-data, cclemon-security,
+                           cclemon-cache, cclemon-kafka, cclemon-logging
+
+
+╔══════════════════════════════════════════════════════════════════════╗
+║  設計原則摘要                                                          ║
+╚══════════════════════════════════════════════════════════════════════╝
+
+  1. Handler 介面 = Port
+       任何入口都只依賴介面，不依賴 Spring / JPA / 任何框架
+
+  2. 新增入口 = 新增 Adapter 模組
+       業務邏輯（cclemon-health）完全不動
+       只需新建一個模組，注入 Handler 介面
+
+  3. runtimeOnly 依賴策略
+       編譯期：看不到實作，強制依賴介面
+       執行期：Spring 自動注入實作 Bean
+
+  4. 測試邊界清晰
+       Handler 層：MockitoExtension，mock Service
+       Web 層：MockMvc，mock Handler
+       Lambda 層：直接測試 Function<Command, Result>
