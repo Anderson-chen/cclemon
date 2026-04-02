@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NestDown — Proper Design System</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ── Design Tokens (from ui-ux-pro-max output) ── */
+:root {
+  --color-primary:    #0891B2;
+  --color-secondary:  #22D3EE;
+  --color-cta:        #059669;
+  --color-bg:         #ECFEFF;
+  --color-text:       #164E63;
+  --color-text-muted: #4E8AA0;
+  --glass-bg:         rgba(255,255,255,0.22);
+  --glass-border:     rgba(255,255,255,0.35);
+  --blur:             blur(18px);
+  --radius-card:      22px;
+  --radius-sm:        14px;
+  --transition:       200ms ease;
+  --gap-section:      16px;
+  --font-heading:     'Lora', serif;
+  --font-body:        'Raleway', sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--font-body);
+  background: #d8f0f4;
+  min-height: 100vh;
+  padding: 32px 16px 80px;
+}
+
+/* ── Page header ── */
+.page-title { font-family: var(--font-heading); font-size: 22px; font-weight: 600; color: var(--color-text); margin-bottom: 6px; }
+.page-sub { font-size: 12px; color: var(--color-text-muted); margin-bottom: 36px; line-height: 1.6; }
+
+/* ── Layout ── */
+.phone-row { display: flex; gap: 32px; flex-wrap: wrap; justify-content: center; align-items: flex-start; }
+.phone-wrap { display: flex; flex-direction: column; align-items: center; }
+.phone-tag { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--color-text-muted); margin-bottom: 12px; font-family: var(--font-body); }
+
+/* ── Phone frame ── */
+.phone {
+  width: 300px;
+  border-radius: 44px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(8, 145, 178, 0.15), 0 4px 16px rgba(0,0,0,0.06);
+  border: 1.5px solid rgba(255,255,255,0.85);
+  cursor: pointer;
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+.phone:hover { transform: translateY(-4px); box-shadow: 0 28px 72px rgba(8,145,178,0.2), 0 4px 16px rgba(0,0,0,0.06); }
+.phone.picked { box-shadow: 0 28px 72px rgba(8,145,178,0.2), 0 0 0 3px var(--color-cta); }
+
+/* ── Glass card ── */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: var(--blur) saturate(160%);
+  -webkit-backdrop-filter: var(--blur) saturate(160%);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-card);
+  position: relative;
+}
+/* Top light reflection line */
+.glass::before {
+  content: '';
+  position: absolute; top: 0; left: 12px; right: 12px; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
+  border-radius: var(--radius-card) var(--radius-card) 0 0;
+}
+
+.glass-sm {
+  background: rgba(255,255,255,0.18);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+}
+
+/* ── Typography scale ── */
+.t-display { font-family: var(--font-heading); font-size: 48px; font-weight: 700; line-height: 1; }
+.t-section  { font-family: var(--font-heading); font-size: 16px; font-weight: 500; }
+.t-label    { font-size: 9px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; font-family: var(--font-body); opacity: 0.5; }
+.t-num      { font-family: var(--font-heading); font-size: 22px; font-weight: 700; line-height: 1.15; }
+.t-sub      { font-size: 8px; margin-top: 2px; opacity: 0.45; }
+
+/* ── Misc ── */
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+.badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 4px 11px; border-radius: 20px;
+  font-size: 10px; font-weight: 600; font-family: var(--font-body);
+  background: rgba(255,255,255,0.3);
+  border: 1px solid rgba(255,255,255,0.45);
+}
+
+.btn-cta {
+  width: 100%; padding: 13px;
+  border-radius: var(--radius-sm);
+  text-align: center;
+  font-family: var(--font-body); font-size: 11px; font-weight: 700;
+  letter-spacing: 1px; text-transform: uppercase;
+  background: rgba(255,255,255,0.28);
+  border: 1px solid rgba(255,255,255,0.45);
+  backdrop-filter: blur(12px);
+  transition: background var(--transition);
+  cursor: pointer;
+}
+
+/* ── Bottom nav ── */
+.nav {
+  display: flex; justify-content: space-around;
+  padding: 11px 8px 16px;
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-top: 1px solid rgba(255,255,255,0.5);
+}
+.nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 4px 10px; min-width: 44px; min-height: 44px; justify-content: center; }
+.nav-label { font-size: 9px; font-family: var(--font-body); font-weight: 500; }
+
+/* ── Spec panel ── */
+.spec-panel {
+  margin-top: 32px; max-width: 700px;
+  background: rgba(255,255,255,0.4);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,0.6);
+  border-radius: 20px; padding: 20px 22px;
+}
+.spec-title { font-size: 10px; letter-spacing: 1.2px; text-transform: uppercase; color: var(--color-text-muted); margin-bottom: 14px; }
+.spec-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; }
+.spec-item { font-size: 11px; color: #4E8AA0; line-height: 1.6; }
+.spec-item strong { color: var(--color-primary); font-weight: 600; display: block; margin-bottom: 2px; }
+.swatch { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 4px; vertical-align: middle; border: 1px solid rgba(0,0,0,0.08); }
+
+#sel {
+  position: fixed; bottom: 20px; right: 20px;
+  padding: 10px 18px; border-radius: 24px; font-size: 12px;
+  font-family: var(--font-body);
+  background: rgba(255,255,255,0.7);
+  border: 1px solid rgba(255,255,255,0.9);
+  color: var(--color-text-muted);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 4px 20px rgba(8,145,178,0.1);
+  transition: all var(--transition);
+}
+#sel.on { background: rgba(5,150,105,0.12); border-color: rgba(5,150,105,0.3); color: var(--color-cta); }
+</style>
+</head>
+
+<!-- Page bg: vibrant enough for glassmorphism to work -->
+<body style="background: linear-gradient(145deg, #cef0f8 0%, #d4f0e8 35%, #e8f0d4 65%, #f0e8d4 100%);">
+
+<div class="page-title">NestDown — 設計系統正式版</div>
+<p class="page-sub">完全遵循 ui-ux-pro-max 輸出：Calm Cyan #0891B2 · Health Green #059669 · Glassmorphism blur(18px) · Lora + Raleway</p>
+
+<div class="phone-row">
+
+  <!-- ─────── PHONE A: 首頁 Dashboard ─────── -->
+  <div class="phone-wrap">
+    <div class="phone-tag">首頁 — 今日儀表板</div>
+    <div class="phone" id="pa" onclick="pick('a',this)">
+
+      <div style="background: linear-gradient(155deg, #cef4fc 0%, #d0f4e8 50%, #e4f4d8 100%); padding: 30px 20px 22px; position: relative; overflow: hidden;">
+
+        <!-- Ambient blobs — make glass pop -->
+        <div style="position:absolute;top:-60px;right:-40px;width:200px;height:200px;background:radial-gradient(circle,rgba(34,211,238,0.2) 0%,transparent 65%);pointer-events:none;"></div>
+        <div style="position:absolute;bottom:-50px;left:-30px;width:160px;height:160px;background:radial-gradient(circle,rgba(5,150,105,0.12) 0%,transparent 65%);pointer-events:none;"></div>
+
+        <!-- Header row -->
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;">
+          <div>
+            <div class="t-label" style="color:var(--color-text-muted);margin-bottom:3px;">星期三，3月18日</div>
+            <div class="t-section" style="color:var(--color-text);">早安，你好 👋</div>
+          </div>
+          <!-- Avatar — 44x44 touch target -->
+          <div style="width:44px;height:44px;border-radius:50%;background:var(--glass-bg);border:1px solid var(--glass-border);backdrop-filter:var(--blur);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(8,145,178,0.1);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+          </div>
+        </div>
+
+        <!-- ── Score card: Peak-End focal point ── -->
+        <div class="glass" style="padding:22px 20px;margin-bottom:var(--gap-section);text-align:center;box-shadow:0 8px 32px rgba(8,145,178,0.1);">
+          <div class="t-label" style="color:var(--color-primary);margin-bottom:12px;">今日健康分數</div>
+          <!-- 峰終定律: 48px display number = dominant focal point -->
+          <div class="t-display" style="color:var(--color-text);">82</div>
+          <div style="font-family:var(--font-heading);font-size:11px;font-style:italic;color:var(--color-text-muted);margin:10px 0 12px;">身體正在好的方向</div>
+          <div class="badge" style="color:var(--color-cta);border-color:rgba(5,150,105,0.25);">
+            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+            比昨天提升 5 分
+          </div>
+        </div>
+
+        <!-- ── Stat grid ── -->
+        <div class="grid2" style="margin-bottom:var(--gap-section);">
+          <!-- 熱量 — warm accent -->
+          <div class="glass-sm" style="box-shadow:0 4px 20px rgba(234,88,12,0.06);">
+            <div class="t-label" style="color:#9a6040;margin-bottom:4px;">熱量</div>
+            <div class="t-num" style="color:#c06030;">1,240</div>
+            <div class="t-sub" style="color:#a07050;">/ 1,800 kcal</div>
+          </div>
+          <!-- 運動 — cta green -->
+          <div class="glass-sm" style="box-shadow:0 4px 20px rgba(5,150,105,0.07);">
+            <div class="t-label" style="color:var(--color-cta);margin-bottom:4px;">運動</div>
+            <div class="t-num" style="color:#047857;">45 min</div>
+            <div class="t-sub" style="color:#059669;">胸背訓練</div>
+          </div>
+          <!-- 體重 — primary blue -->
+          <div class="glass-sm" style="box-shadow:0 4px 20px rgba(8,145,178,0.07);">
+            <div class="t-label" style="color:var(--color-primary);margin-bottom:4px;">體重</div>
+            <div class="t-num" style="color:var(--color-text);">72.3</div>
+            <div class="t-sub" style="color:var(--color-text-muted);">▼ -0.2 kg</div>
+          </div>
+          <!-- 連續 — amber -->
+          <div class="glass-sm" style="box-shadow:0 4px 20px rgba(180,130,40,0.06);">
+            <div class="t-label" style="color:#907040;margin-bottom:4px;">連續</div>
+            <div class="t-num" style="color:#7a5e20;">12 天</div>
+            <div class="t-sub" style="color:#a08040;">保持下去</div>
+          </div>
+        </div>
+
+        <!-- CTA button — min 44px height -->
+        <div class="btn-cta" style="color:var(--color-cta);box-shadow:0 4px 20px rgba(5,150,105,0.1);">
+          ＋ 記錄今天
+        </div>
+      </div>
+
+      <!-- Bottom nav — glass -->
+      <div class="nav" style="background:rgba(214,248,240,0.75);">
+        <div class="nav-item">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          <div class="nav-label" style="color:var(--color-primary);font-weight:700;">首頁</div>
+        </div>
+        <div class="nav-item" style="opacity:0.4;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-text)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+          <div class="nav-label" style="color:var(--color-text);">飲食</div>
+        </div>
+        <div class="nav-item" style="opacity:0.4;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-text)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+          <div class="nav-label" style="color:var(--color-text);">運動</div>
+        </div>
+        <div class="nav-item" style="opacity:0.4;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-text)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          <div class="nav-label" style="color:var(--color-text);">體重</div>
+        </div>
+        <div class="nav-item" style="opacity:0.4;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-text)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          <div class="nav-label" style="color:var(--color-text);">報告</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ─────── PHONE B: 飲食記錄頁 ─────── -->
+  <div class="phone-wrap">
+    <div class="phone-tag">飲食 — 今日記錄</div>
+    <div class="phone" id="pb" onclick="pick('b',this)">
+
+      <div style="background: linear-gradient(155deg, #d4f0e0 0%, #d8eed0 50%, #f0ecd4 100%); padding: 30px 20px 22px; position: relative; overflow: hidden; min-height: 560px;">
+
+        <div style="position:absolute;top:-60px;right:-40px;width:180px;height:180px;background:radial-gradient(circle,rgba(5,150,105,0.15) 0%,transparent 65%);pointer-events:none;"></div>
+
+        <!-- Header -->
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;">
+          <div>
+            <div class="t-label" style="color:var(--color-cta);margin-bottom:3px;">今日飲食</div>
+            <div class="t-section" style="color:var(--color-text);">1,240 / 1,800 kcal</div>
+          </div>
+          <!-- 44px add button -->
+          <div style="width:44px;height:44px;border-radius:50%;background:var(--color-cta);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(5,150,105,0.25);cursor:pointer;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </div>
+        </div>
+
+        <!-- Progress bar -->
+        <div class="glass" style="padding:14px 16px;margin-bottom:var(--gap-section);">
+          <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+            <span class="t-label" style="color:var(--color-cta);">熱量進度</span>
+            <span style="font-size:10px;color:var(--color-text-muted);font-family:var(--font-body);">69%</span>
+          </div>
+          <div style="height:6px;background:rgba(0,0,0,0.07);border-radius:6px;overflow:hidden;">
+            <div style="height:100%;width:69%;background:linear-gradient(90deg,var(--color-cta),var(--color-secondary));border-radius:6px;"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;margin-top:10px;gap:8px;">
+            <div style="text-align:center;flex:1;">
+              <div style="font-family:var(--font-heading);font-size:15px;font-weight:600;color:#c06030;">78g</div>
+              <div class="t-label" style="color:#a07050;">蛋白質</div>
+            </div>
+            <div style="text-align:center;flex:1;">
+              <div style="font-family:var(--font-heading);font-size:15px;font-weight:600;color:var(--color-primary);">142g</div>
+              <div class="t-label" style="color:var(--color-text-muted);">碳水</div>
+            </div>
+            <div style="text-align:center;flex:1;">
+              <div style="font-family:var(--font-heading);font-size:15px;font-weight:600;color:#7a5e20;">38g</div>
+              <div class="t-label" style="color:#907040;">脂肪</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Meal list -->
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <!-- Breakfast -->
+          <div class="glass-sm" style="display:flex;justify-content:space-between;align-items:center;">
+            <div>
+              <div class="t-label" style="color:var(--color-text-muted);margin-bottom:2px;">早餐</div>
+              <div style="font-family:var(--font-heading);font-size:13px;color:var(--color-text);font-weight:500;">燕麥 + 香蕉</div>
+            </div>
+            <div style="font-family:var(--font-heading);font-size:16px;font-weight:600;color:var(--color-primary);">380</div>
+          </div>
+          <!-- Lunch -->
+          <div class="glass-sm" style="display:flex;justify-content:space-between;align-items:center;">
+            <div>
+              <div class="t-label" style="color:var(--color-text-muted);margin-bottom:2px;">午餐</div>
+              <div style="font-family:var(--font-heading);font-size:13px;color:var(--color-text);font-weight:500;">雞腿飯 + 湯</div>
+            </div>
+            <div style="font-family:var(--font-heading);font-size:16px;font-weight:600;color:var(--color-primary);">620</div>
+          </div>
+          <!-- Dinner — empty -->
+          <div class="glass-sm" style="display:flex;justify-content:space-between;align-items:center;opacity:0.5;">
+            <div>
+              <div class="t-label" style="color:var(--color-text-muted);margin-bottom:2px;">晚餐</div>
+              <div style="font-family:var(--font-heading);font-size:13px;color:var(--color-text-muted);font-style:italic;">尚未記錄</div>
+            </div>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-muted)" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+          </div>
+          <!-- Water -->
+          <div class="glass-sm" style="display:flex;align-items:center;gap:12px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-secondary)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L6 13a6 6 0 1 0 12 0L12 2z"/></svg>
+            <div style="flex:1;">
+              <div class="t-label" style="color:var(--color-secondary);margin-bottom:3px;">飲水</div>
+              <div style="height:5px;background:rgba(0,0,0,0.07);border-radius:5px;overflow:hidden;">
+                <div style="height:100%;width:55%;background:var(--color-secondary);border-radius:5px;"></div>
+              </div>
+            </div>
+            <div style="font-family:var(--font-heading);font-size:14px;font-weight:600;color:var(--color-primary);">1,100ml</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav" style="background:rgba(204,240,216,0.8);">
+        <div class="nav-item" style="opacity:0.4;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-text)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          <div class="nav-label" style="color:var(--color-text);">首頁</div>
+        </div>
+        <div class="nav-item">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-cta)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+          <div class="nav-label" style="color:var(--color-cta);font-weight:700;">飲食</div>
+        </div>
+        <div class="nav-item" style="opacity:0.4;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-text)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+          <div class="nav-label" style="color:var(--color-text);">運動</div>
+        </div>
+        <div class="nav-item" style="opacity:0.4;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-text)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          <div class="nav-label" style="color:var(--color-text);">體重</div>
+        </div>
+        <div class="nav-item" style="opacity:0.4;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-text)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          <div class="nav-label" style="color:var(--color-text);">報告</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Design token reference -->
+<div class="spec-panel" style="margin: 32px auto 0;">
+  <div class="spec-title">設計系統 Token（ui-ux-pro-max 正式輸出）</div>
+  <div class="spec-grid">
+    <div class="spec-item"><strong>主色 Primary</strong><span class="swatch" style="background:#0891B2;"></span>#0891B2 · 鎮靜青</div>
+    <div class="spec-item"><strong>次色 Secondary</strong><span class="swatch" style="background:#22D3EE;"></span>#22D3EE · 淺青</div>
+    <div class="spec-item"><strong>CTA</strong><span class="swatch" style="background:#059669;"></span>#059669 · 健康綠</div>
+    <div class="spec-item"><strong>背景</strong><span class="swatch" style="background:#ECFEFF;"></span>#ECFEFF + 自然漸層</div>
+    <div class="spec-item"><strong>文字</strong><span class="swatch" style="background:#164E63;"></span>#164E63 · 對比 ≥ 4.5:1 ✓</div>
+    <div class="spec-item"><strong>字體</strong>Lora（標題）/ Raleway（內文）</div>
+    <div class="spec-item"><strong>玻璃效果</strong>blur(18px) · rgba(255,255,255,0.22)</div>
+    <div class="spec-item"><strong>圓角</strong>Card: 22px · Small: 14px</div>
+    <div class="spec-item"><strong>觸控目標</strong>最小 44×44px ✓</div>
+    <div class="spec-item"><strong>過渡動畫</strong>200ms ease（微互動）</div>
+  </div>
+</div>
+
+<div id="sel">尚未選擇</div>
+
+<script>
+function pick(id, el) {
+  document.querySelectorAll('.phone').forEach(p => p.classList.remove('picked'));
+  el.classList.add('picked');
+  const lbl = el.closest('.phone-wrap').querySelector('.phone-tag').textContent;
+  const ind = document.getElementById('sel');
+  ind.className = 'on';
+  ind.textContent = '已確認設計系統';
+  fetch('/__record', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ type:'click', choice: id, text: lbl, timestamp: Date.now() }) }).catch(()=>{});
+}
+</script>
+</body>
+</html>

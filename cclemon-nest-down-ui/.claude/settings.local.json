@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(C:/Users/wits/.claude/skills/brainstorming/scripts/start-server.sh --project-dir C:/project/nest-down-ui)",
+      "Bash(cat C:/project/nest-down-ui/.superpowers/brainstorm/*/. server-info)",
+      "Bash(python3:*)",
+      "Bash(npm run:*)",
+      "Bash(npm install:*)",
+      "Bash(npx msw:*)"
+    ]
+  }
+}

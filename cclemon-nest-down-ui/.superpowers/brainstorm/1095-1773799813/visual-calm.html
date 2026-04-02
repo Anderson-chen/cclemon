@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NestDown — 重新設計風格</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #1a1a1a; color: #f0f0f0; font-family: 'Raleway', sans-serif; padding: 24px 16px 80px; }
+h2 { font-family: 'Lora', serif; font-size: 22px; font-weight: 600; margin-bottom: 6px; }
+.subtitle { color: #666; font-size: 13px; margin-bottom: 28px; line-height: 1.5; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+.card { border-radius: 20px; overflow: hidden; border: 2px solid transparent; cursor: pointer; transition: border-color 200ms, transform 150ms; }
+.card:hover { transform: translateY(-2px); }
+.card.selected { border-color: #a8d5a2; }
+.card-body { padding: 14px 16px 18px; }
+.card-body h3 { font-family: 'Lora', serif; font-size: 15px; font-weight: 600; margin-bottom: 5px; }
+.card-body p { font-size: 12px; line-height: 1.6; }
+
+.stat { border-radius: 12px; padding: 10px 12px; }
+.val { font-family: 'Lora', serif; font-size: 20px; font-weight: 700; }
+.lbl { font-size: 9px; margin-top: 2px; opacity: 0.5; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 10px 0; }
+.pill { display: inline-block; padding: 3px 9px; border-radius: 20px; font-size: 9px; font-weight: 600; margin-top: 3px; }
+
+#sel { position: fixed; bottom: 20px; right: 20px; background: #2a2a2a; border: 1px solid #3a3a3a; color: #888; padding: 8px 16px; border-radius: 20px; font-size: 12px; transition: all 200ms; }
+#sel.on { background: #4a7c59; border-color: #4a7c59; color: #fff; }
+</style>
+</head>
+<body>
+
+<h2>重新設計風格</h2>
+<p class="subtitle">同樣功能，三種不讓人有壓力的視覺語言</p>
+
+<div class="cards">
+
+  <!-- A: Warm light — 溫暖日記感 -->
+  <div class="card" id="c-a" onclick="pick('A',this)">
+    <div style="background:#faf7f2; padding:20px;">
+      <div style="font-size:10px;color:#b5a898;letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;font-family:'Raleway',sans-serif;">今日 · 3月18日</div>
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+        <div style="width:52px;height:52px;border-radius:50%;border:2.5px solid #c8a882;display:flex;align-items:center;justify-content:center;">
+          <span style="font-family:'Lora',serif;font-size:18px;font-weight:700;color:#8a6a4a;">82</span>
+        </div>
+        <div>
+          <div style="font-family:'Lora',serif;font-size:13px;color:#5a4030;">今日健康分數</div>
+          <div class="pill" style="background:#f3e9dd;color:#a07850;">今天狀態不錯 ↑</div>
+        </div>
+      </div>
+      <div class="grid2">
+        <div class="stat" style="background:#fff3e8;">
+          <div class="val" style="color:#d4845a;">1,240</div>
+          <div class="lbl" style="color:#8a6040;">熱量 kcal</div>
+        </div>
+        <div class="stat" style="background:#edf5ec;">
+          <div class="val" style="color:#5a8a60;">45 min</div>
+          <div class="lbl" style="color:#3a6040;">運動時間</div>
+        </div>
+        <div class="stat" style="background:#edf0f5;">
+          <div class="val" style="color:#6070a0;">72.3</div>
+          <div class="lbl" style="color:#404870;">體重 kg</div>
+        </div>
+        <div class="stat" style="background:#fff8ec;">
+          <div class="val" style="color:#c09040;">12 天</div>
+          <div class="lbl" style="color:#806020;">連續記錄</div>
+        </div>
+      </div>
+      <div style="background:#c8a882;border-radius:10px;padding:9px;text-align:center;color:#fff;font-family:'Raleway',sans-serif;font-size:12px;font-weight:600;">記錄今天</div>
+    </div>
+    <div class="card-body" style="background:#f5f0e8;">
+      <h3 style="color:#4a3020;">暖米 × 溫木棕</h3>
+      <p style="color:#7a6050;">像日記一樣的質感。溫暖、不催促，記錄生活而非完成任務。適合把健康當成一種日常儀式的人</p>
+    </div>
+  </div>
+
+  <!-- B: Soft dark sage — 柔和深色+鼠尾草綠 -->
+  <div class="card" id="c-b" onclick="pick('B',this)">
+    <div style="background:#1e2420; padding:20px;">
+      <div style="font-size:10px;color:#4a6050;letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;font-family:'Raleway',sans-serif;">今日 · 3月18日</div>
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+        <div style="width:52px;height:52px;border-radius:50%;border:2.5px solid #5a8060;display:flex;align-items:center;justify-content:center;">
+          <span style="font-family:'Lora',serif;font-size:18px;font-weight:700;color:#8abf9a;">82</span>
+        </div>
+        <div>
+          <div style="font-family:'Lora',serif;font-size:13px;color:#c8d8c0;">今日健康分數</div>
+          <div class="pill" style="background:#2a3a2a;color:#8abf9a;">今天狀態不錯 ↑</div>
+        </div>
+      </div>
+      <div class="grid2">
+        <div class="stat" style="background:#2a2e28;">
+          <div class="val" style="color:#d4a870;">1,240</div>
+          <div class="lbl" style="color:#6a5a40;">熱量 kcal</div>
+        </div>
+        <div class="stat" style="background:#242e24;">
+          <div class="val" style="color:#7abf8a;">45 min</div>
+          <div class="lbl" style="color:#4a6a50;">運動時間</div>
+        </div>
+        <div class="stat" style="background:#242830;">
+          <div class="val" style="color:#8a9fd4;">72.3</div>
+          <div class="lbl" style="color:#4a5080;">體重 kg</div>
+        </div>
+        <div class="stat" style="background:#2a2e28;">
+          <div class="val" style="color:#c0b070;">12 天</div>
+          <div class="lbl" style="color:#6a5a30;">連續記錄</div>
+        </div>
+      </div>
+      <div style="background:#4a7a58;border-radius:10px;padding:9px;text-align:center;color:#e8f5ec;font-family:'Raleway',sans-serif;font-size:12px;font-weight:600;">記錄今天</div>
+    </div>
+    <div class="card-body" style="background:#1a2018;">
+      <h3 style="color:#c8d8c0;">深林綠 × 柔金</h3>
+      <p style="color:#6a8a70;">深色但不黑洞感，像森林般沉靜。色調偏自然、不刺眼，護眼且放鬆。適合習慣深色介面但不想要科技感的人</p>
+    </div>
+  </div>
+
+  <!-- C: Soft lavender light — 薰衣草+舒眠感 -->
+  <div class="card" id="c-c" onclick="pick('C',this)">
+    <div style="background:#f4f2fa; padding:20px;">
+      <div style="font-size:10px;color:#a090c0;letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;font-family:'Raleway',sans-serif;">今日 · 3月18日</div>
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+        <div style="width:52px;height:52px;border-radius:50%;border:2.5px solid #9880c8;display:flex;align-items:center;justify-content:center;">
+          <span style="font-family:'Lora',serif;font-size:18px;font-weight:700;color:#7060a8;">82</span>
+        </div>
+        <div>
+          <div style="font-family:'Lora',serif;font-size:13px;color:#4030708;">今日健康分數</div>
+          <div class="pill" style="background:#ece8f8;color:#7060a8;">今天狀態不錯 ↑</div>
+        </div>
+      </div>
+      <div class="grid2">
+        <div class="stat" style="background:#fef0e8;">
+          <div class="val" style="color:#c07050;">1,240</div>
+          <div class="lbl" style="color:#806050;">熱量 kcal</div>
+        </div>
+        <div class="stat" style="background:#eaf4ec;">
+          <div class="val" style="color:#408060;">45 min</div>
+          <div class="lbl" style="color:#306050;">運動時間</div>
+        </div>
+        <div class="stat" style="background:#eeeaf8;">
+          <div class="val" style="color:#7060a8;">72.3</div>
+          <div class="lbl" style="color:#504080;">體重 kg</div>
+        </div>
+        <div class="stat" style="background:#fdf6e8;">
+          <div class="val" style="color:#a08040;">12 天</div>
+          <div class="lbl" style="color:#706030;">連續記錄</div>
+        </div>
+      </div>
+      <div style="background:#8870c0;border-radius:10px;padding:9px;text-align:center;color:#fff;font-family:'Raleway',sans-serif;font-size:12px;font-weight:600;">記錄今天</div>
+    </div>
+    <div class="card-body" style="background:#ede9f8;">
+      <h3 style="color:#503878;">薰衣草 × 自然彩</h3>
+      <p style="color:#706090;">輕柔、有溫度，每個數字用不同的自然色彩呈現，不單調但也不刺激。適合喜歡柔和、有個性但不張揚的人</p>
+    </div>
+  </div>
+
+</div>
+
+<div id="sel">尚未選擇</div>
+
+<script>
+function pick(id, el) {
+  document.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  const ind = document.getElementById('sel');
+  ind.className = 'on';
+  ind.textContent = '已選擇：' + el.querySelector('h3').textContent;
+  const data = { type:'click', choice: id.toLowerCase(), text: el.querySelector('h3').textContent, timestamp: Date.now() };
+  fetch('/__record', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(data) }).catch(()=>{});
+}
+</script>
+</body>
+</html>

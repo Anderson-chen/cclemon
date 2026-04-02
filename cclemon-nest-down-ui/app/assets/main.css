@@ -1,0 +1,95 @@
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Raleway:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --color-primary: #0A9488;
+  --color-primary-dark: #087870;
+  --color-primary-text: #083830;
+  --color-secondary: #2AACA8;
+  --color-cta: #E86010;
+  --color-cta-dark: #C05010;
+  --color-bg: #F0FDFA;
+  --color-surface: #A8E8E0;
+  --color-text: #083830;
+  --color-text-muted: #0A7870;
+  --color-border-glass: rgba(255,255,255,0.42);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 12px rgba(10,148,136,0.12);
+  --shadow-lg: 0 8px 32px rgba(10,148,136,0.15);
+  --shadow-cta: 0 4px 16px rgba(232,96,16,0.25);
+  --space-xs: 4px; --space-sm: 8px; --space-md: 16px;
+  --space-lg: 24px; --space-xl: 32px; --space-2xl: 48px; --space-3xl: 64px;
+  --r-sm: 8px; --r-md: 14px; --r-lg: 22px; --r-xl: 28px; --r-full: 9999px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Raleway', sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--color-text);
+  background: var(--color-bg);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+h1, h2, h3, h4 { font-family: 'Lora', serif; color: var(--color-primary-text); }
+
+a { color: var(--color-primary); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+button { font-family: 'Raleway', sans-serif; }
+
+input, textarea, select {
+  font-family: 'Raleway', sans-serif;
+  font-size: 16px;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(10,148,136,0.25); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(10,148,136,0.4); }
+
+/* Screen blob background helper */
+.screen-bg {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.screen-bg .blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.35;
+}
+
+.screen-bg .blob-1 {
+  width: 380px; height: 380px;
+  background: radial-gradient(circle, #2AACA8 0%, transparent 70%);
+  top: -100px; right: -80px;
+}
+
+.screen-bg .blob-2 {
+  width: 280px; height: 280px;
+  background: radial-gradient(circle, #0A9488 0%, transparent 70%);
+  bottom: 80px; left: -60px;
+}
+
+.screen-bg .blob-3 {
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, #E86010 0%, transparent 70%);
+  top: 45%; right: 20%;
+  opacity: 0.12;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

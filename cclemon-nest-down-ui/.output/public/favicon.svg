@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#34d399"/>
+      <stop offset="100%" stop-color="#059669"/>
+    </linearGradient>
+    <linearGradient id="line" x1="5" y1="10" x2="27" y2="23" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#ffffff"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Rounded square background -->
+  <rect width="32" height="32" rx="7" fill="url(#bg)"/>
+
+  <!-- Nest arc (top) - subtle arc suggesting a nest/home -->
+  <path d="M10 11 Q16 7 22 11" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-opacity="0.5" fill="none"/>
+
+  <!-- Downward trending chart line -->
+  <polyline
+    points="5,13 11,16 17,14 24,21"
+    stroke="url(#line)"
+    stroke-width="2.5"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+
+  <!-- Arrow head (down-right) -->
+  <polyline
+    points="19,21 24,21 24,16"
+    stroke="white"
+    stroke-width="2.5"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+
+  <!-- Small dot at start of trend line -->
+  <circle cx="5" cy="13" r="1.5" fill="white" fill-opacity="0.8"/>
+</svg>

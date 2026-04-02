@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NestDown — Vibrant Comfortable Colors</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root { --font-h:'Lora',serif; --font-b:'Raleway',sans-serif; --r:22px; }
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--font-b);background:#dde8d0;padding:24px 14px 80px;min-height:100vh;}
+h2{font-family:var(--font-h);font-size:20px;color:#1a3010;margin-bottom:5px;}
+.sub{font-size:12px;color:#6a8058;margin-bottom:28px;line-height:1.6;}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(262px,1fr));gap:20px;}
+
+.card{border-radius:28px;overflow:hidden;cursor:pointer;border:2.5px solid transparent;
+      box-shadow:0 8px 32px rgba(0,0,0,0.10);
+      transition:transform 180ms,box-shadow 180ms,border-color 180ms;}
+.card:hover{transform:translateY(-3px);box-shadow:0 16px 48px rgba(0,0,0,0.15);}
+.card.picked{border-color:rgba(0,0,0,0.25);}
+
+.screen{padding:20px 18px 18px;position:relative;overflow:hidden;min-height:350px;}
+.blob{position:absolute;border-radius:50%;pointer-events:none;}
+
+.g{background:rgba(255,255,255,0.32);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+   border:1px solid rgba(255,255,255,0.55);border-radius:var(--r);position:relative;}
+.g::before{content:'';position:absolute;top:0;left:12px;right:12px;height:1px;
+           background:linear-gradient(90deg,transparent,rgba(255,255,255,0.9),transparent);}
+.gsm{background:rgba(255,255,255,0.26);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+     border:1px solid rgba(255,255,255,0.42);}
+
+.disp{font-family:var(--font-h);font-size:48px;font-weight:700;line-height:1;}
+.lbl{font-size:8px;font-weight:600;letter-spacing:.9px;text-transform:uppercase;font-family:var(--font-b);opacity:.5;}
+.num{font-family:var(--font-h);font-size:20px;font-weight:700;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.bdg{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:16px;
+     font-size:9px;font-weight:600;font-family:var(--font-b);
+     background:rgba(255,255,255,0.35);border:1px solid rgba(255,255,255,0.55);}
+.btn{padding:12px;border-radius:13px;text-align:center;font-family:var(--font-b);
+     font-size:10px;font-weight:700;letter-spacing:.9px;text-transform:uppercase;}
+.nav{display:flex;justify-content:space-around;padding:10px 0 15px;
+     backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+     border-top:1px solid rgba(255,255,255,0.5);}
+.ni{display:flex;flex-direction:column;align-items:center;gap:3px;min-width:40px;}
+.nl{font-size:8px;font-family:var(--font-b);font-weight:500;}
+.foot{padding:14px 16px 18px;}
+.foot h3{font-family:var(--font-h);font-size:15px;font-weight:600;margin-bottom:5px;}
+.foot p{font-size:11px;line-height:1.55;opacity:.75;}
+.swatches{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;}
+.sw{display:flex;flex-direction:column;align-items:center;gap:2px;}
+.dot{width:22px;height:22px;border-radius:50%;border:2px solid rgba(255,255,255,0.7);box-shadow:0 1px 5px rgba(0,0,0,0.12);}
+.hex{font-size:8px;font-family:var(--font-b);opacity:.55;}
+
+#sel{position:fixed;bottom:18px;right:18px;padding:9px 18px;border-radius:22px;font-size:11px;
+     font-family:var(--font-b);background:rgba(255,255,255,0.85);border:1px solid rgba(0,0,0,0.08);
+     color:#6a8058;backdrop-filter:blur(12px);transition:all 180ms;}
+#sel.on{background:rgba(60,140,40,0.15);border-color:rgba(50,130,30,0.4);color:#205010;}
+</style>
+</head>
+<body>
+<h2>舒適色系 · 飽滿版</h2>
+<p class="sub">提高飽和度 — 同款玻璃系統，色彩更鮮活有生命力</p>
+<div class="grid">
+
+<!-- ─── A: 翠葉森林 Forest Jade ─── -->
+<div class="card" id="ca" onclick="pick('a',this)">
+  <div class="screen" style="background:linear-gradient(148deg,#c8e8b4 0%,#b4dc9c 45%,#d4e8c0 100%);">
+    <div class="blob" style="top:-45px;right:-25px;width:170px;height:170px;background:radial-gradient(circle,rgba(60,180,60,0.28) 0%,transparent 65%);"></div>
+    <div class="blob" style="bottom:-40px;left:-20px;width:130px;height:130px;background:radial-gradient(circle,rgba(220,180,60,0.20) 0%,transparent 65%);"></div>
+    <!-- header -->
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <div>
+        <div class="lbl" style="color:#2d7a18;">星期三</div>
+        <div style="font-family:var(--font-h);font-size:14px;color:#1a4a0a;font-weight:600;margin-top:2px;">3月 18日</div>
+      </div>
+      <div style="width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,0.45);border:1.5px solid rgba(255,255,255,0.7);display:flex;align-items:center;justify-content:center;">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#2d8a18" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      </div>
+    </div>
+    <!-- score card -->
+    <div class="g" style="padding:18px;text-align:center;margin-bottom:9px;box-shadow:0 6px 28px rgba(30,140,30,0.15);">
+      <div class="lbl" style="color:#2d8a18;margin-bottom:9px;">今日健康分數</div>
+      <div class="disp" style="color:#1a3a0a;">82</div>
+      <div style="font-family:var(--font-h);font-size:11px;font-style:italic;color:#3a8a28;margin:8px 0 10px;">身體正在好的方向</div>
+      <div class="bdg" style="color:#1d7a18;border-color:rgba(30,130,24,0.35);">
+        <svg width="7" height="7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>比昨天好
+      </div>
+    </div>
+    <!-- stat grid -->
+    <div class="g2" style="margin-bottom:8px;">
+      <div class="gsm" style="border-radius:14px 6px 14px 6px;padding:9px 11px;box-shadow:0 3px 14px rgba(220,100,30,0.10);"><div class="lbl" style="color:#b05010;margin-bottom:3px;">熱量</div><div class="num" style="color:#c05810;">1,240</div></div>
+      <div class="gsm" style="border-radius:6px 14px 6px 14px;padding:9px 11px;box-shadow:0 3px 14px rgba(30,150,30,0.10);"><div class="lbl" style="color:#1a8820;margin-bottom:3px;">運動</div><div class="num" style="color:#157018;">45m</div></div>
+      <div class="gsm" style="border-radius:6px 14px 6px 14px;padding:9px 11px;box-shadow:0 3px 14px rgba(50,100,190,0.08);"><div class="lbl" style="color:#3858a0;margin-bottom:3px;">體重</div><div class="num" style="color:#2a4888;">72.3</div></div>
+      <div class="gsm" style="border-radius:14px 6px 14px 6px;padding:9px 11px;box-shadow:0 3px 14px rgba(200,160,20,0.10);"><div class="lbl" style="color:#8a7010;margin-bottom:3px;">連續</div><div class="num" style="color:#6a5408;">12天</div></div>
+    </div>
+    <div class="btn" style="color:#1a5a10;background:rgba(255,255,255,0.35);border:1px solid rgba(255,255,255,0.55);">＋ 記錄今天</div>
+  </div>
+  <div class="nav" style="background:rgba(168,220,148,0.88);">
+    <div class="ni"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1d8a18" stroke-width="2.2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><div class="nl" style="color:#1d8a18;font-weight:700;">首頁</div></div>
+    <div class="ni" style="opacity:.4;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1a3a0a" stroke-width="1.8" stroke-linecap="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg><div class="nl" style="color:#1a3a0a;">飲食</div></div>
+    <div class="ni" style="opacity:.4;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1a3a0a" stroke-width="1.8" stroke-linecap="round"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg><div class="nl" style="color:#1a3a0a;">運動</div></div>
+    <div class="ni" style="opacity:.4;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1a3a0a" stroke-width="1.8" stroke-linecap="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg><div class="nl" style="color:#1a3a0a;">體重</div></div>
+    <div class="ni" style="opacity:.4;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1a3a0a" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg><div class="nl" style="color:#1a3a0a;">報告</div></div>
+  </div>
+  <div class="foot" style="background:#c8e8b0;">
+    <h3 style="color:#1a3a0a;">翠葉森林</h3>
+    <p style="color:#2d6818;">飽滿翠綠，背景充滿活力的草葉色。清新自然不失活力，像走進一片生機勃勃的森林</p>
+    <div class="swatches">
+      <div class="sw"><div class="dot" style="background:#2d8a18;"></div><div class="hex">#2D8A18</div></div>
+      <div class="sw"><div class="dot" style="background:#c05810;"></div><div class="hex">#C05810</div></div>
+      <div class="sw"><div class="dot" style="background:#c8e8b4;"></div><div class="hex">#C8E8B4</div></div>
+      <div class="sw"><div class="dot" style="background:#1a3a0a;"></div><div class="hex">#1A3A0A</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── B: 琥珀暖陽 Amber Glow ─── -->
+<div class="card" id="cb" onclick="pick('b',this)">
+  <div class="screen" style="background:linear-gradient(148deg,#fdd8a0 0%,#fcc880 45%,#fde8b0 100%);">
+    <div class="blob" style="top:-45px;right:-25px;width:170px;height:170px;background:radial-gradient(circle,rgba(255,170,30,0.30) 0%,transparent 65%);"></div>
+    <div class="blob" style="bottom:-40px;left:-20px;width:130px;height:130px;background:radial-gradient(circle,rgba(230,100,40,0.18) 0%,transparent 65%);"></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <div>
+        <div class="lbl" style="color:#b86818;">星期三</div>
+        <div style="font-family:var(--font-h);font-size:14px;color:#5a2808;font-weight:600;margin-top:2px;">3月 18日</div>
+      </div>
+      <div style="width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,0.45);border:1.5px solid rgba(255,255,255,0.7);display:flex;align-items:center;justify-content:center;">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#c87818" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      </div>
+    </div>
+    <div class="g" style="padding:18px;text-align:center;margin-bottom:9px;box-shadow:0 6px 28px rgba(200,110,20,0.18);">
+      <div class="lbl" style="color:#c87818;margin-bottom:9px;">今日健康分數</div>
+      <div class="disp" style="color:#5a2808;">82</div>
+      <div style="font-family:var(--font-h);font-size:11px;font-style:italic;color:#b06828;margin:8px 0 10px;">身體正在好的方向</div>
+      <div class="bdg" style="color:#5a8a18;border-color:rgba(90,138,24,0.38);">
+        <svg width="7" height="7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>比昨天好
+      </div>
+    </div>
+    <div class="g2" style="margin-bottom:8px;">
+      <div class="gsm" style="border-radius:14px 6px 14px 6px;padding:9px 11px;box-shadow:0 3px 14px rgba(210,90,20,0.12);"><div class="lbl" style="color:#b05010;margin-bottom:3px;">熱量</div><div class="num" style="color:#c06820;">1,240</div></div>
+      <div class="gsm" style="border-radius:6px 14px 6px 14px;padding:9px 11px;box-shadow:0 3px 14px rgba(70,140,20,0.10);"><div class="lbl" style="color:#4a8018;margin-bottom:3px;">運動</div><div class="num" style="color:#386010;">45m</div></div>
+      <div class="gsm" style="border-radius:6px 14px 6px 14px;padding:9px 11px;box-shadow:0 3px 14px rgba(100,60,160,0.08);"><div class="lbl" style="color:#6040a0;margin-bottom:3px;">體重</div><div class="num" style="color:#4a2888;">72.3</div></div>
+      <div class="gsm" style="border-radius:14px 6px 14px 6px;padding:9px 11px;box-shadow:0 3px 14px rgba(200,140,20,0.10);"><div class="lbl" style="color:#987018;margin-bottom:3px;">連續</div><div class="num" style="color:#785008;">12天</div></div>
+    </div>
+    <div class="btn" style="color:#7a4010;background:rgba(255,255,255,0.35);border:1px solid rgba(255,255,255,0.55);">＋ 記錄今天</div>
+  </div>
+  <div class="nav" style="background:rgba(248,204,128,0.88);">
+    <div class="ni"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#c87818" stroke-width="2.2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><div class="nl" style="color:#c87818;font-weight:700;">首頁</div></div>
+    <div class="ni" style="opacity:.4;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#5a2808" stroke-width="1.8" stroke-linecap="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg><div class="nl" style="color:#5a2808;">飲食</div></div>
+    <div class="ni" style="opacity:.4;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#5a2808" stroke-width="1.8" stroke-linecap="round"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg><div class="nl" style="color:#5a2808;">運動</div></div>
+    <div class="ni" style="opacity:.4;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#5a2808" stroke-width="1.8" stroke-linecap="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg><div class="nl" style="color:#5a2808;">體重</div></div>
+    <div class="ni" style="opacity:.4;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#5a2808" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg><div class="nl" style="color:#5a2808;">報告</div></div>
+  </div>
+  <div class="foot" style="background:#fad4a0;">
+    <h3 style="color:#5a2808;">琥珀暖陽</h3>
+    <p style="color:#8a4c18;">金琥珀色系，像液態陽光，背景如奶油麥田。飽滿而溫暖，充滿生活能量但不刺眼</p>
+    <div class="swatches">
+      <div class="sw"><div class="dot" style="background:#c87818;"></div><div class="hex">#C87818</div></div>
+      <div class="sw"><div class="dot" style="background:#5a8a18;"></div><div class="hex">#5A8A18</div></div>
+      <div class="sw"><div class="dot" style="background:#fdd8a0;"></div><div class="hex">#FDD8A0</div></div>
+      <div class="sw"><div class="dot" style="background:#5a2808;"></div><div class="hex">#5A2808</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── C: 珊瑚玫瑰 Coral Rose ─── -->
+<div class="card" id="cc" onclick="pick('c',this)">
+  <div class="screen" style="background:linear-gradient(148deg,#fac8c8 0%,#f8b4b4 45%,#fac4d8 100%);">
+    <div class="blob" style="top:-45px;right:-25px;width:170px;height:170px;background:radial-gradient(circle,rgba(240,100,120,0.28) 0%,transparent 65%);"></div>
+    <div class="blob" style="bottom:-40px;left:-20px;width:130px;height:130px;background:radial-gradient(circle,rgba(160,100,220,0.16) 0%,transparent 65%);"></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <div>
+        <div class="lbl" style="color:#b03858;">星期三</div>
+        <div style="font-family:var(--font-h);font-size:14px;color:#5a1030;font-weight:600;margin-top:2px;">3月 18日</div>
+      </div>
+      <div style="width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,0.5);border:1.5px solid rgba(255,255,255,0.72);display:flex;align-items:center;justify-content:center;">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#c04060" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      </div>
+    </div>
+    <div class="g" style="padding:18px;text-align:center;margin-bottom:9px;box-shadow:0 6px 28px rgba(200,60,90,0.15);">
+      <div class="lbl" style="color:#c04060;margin-bottom:9px;">今日健康分數</div>
+      <div class="disp" style="color:#5a1030;">82</div>
+      <div style="font-family:var(--font-h);font-size:11px;font-style:italic;color:#a84868;margin:8px 0 10px;">身體正在好的方向</div>
+      <div class="bdg" style="color:#3a8848;border-color:rgba(58,136,72,0.35);">
+        <svg width="7" height="7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>比昨天好
+      </div>
+    </div>
+    <div class="g2" style="margin-bottom:8px;">
+      <div class="gsm" style="border-radius:14px 6px 14px 6px;padding:9px 11px;box-shadow:0 3px 14px rgba(210,60,60,0.10);"><div class="lbl" style="color:#b03040;margin-bottom:3px;">熱量</div><div class="num" style="color:#c04050;">1,240</div></div>
+      <div class="gsm" style="border-radius:6px 14px 6px 14px;padding:9px 11px;box-shadow:0 3px 14px rgba(40,160,70,0.10);"><div class="lbl" style="color:#2a8840;margin-bottom:3px;">運動</div><div class="num" style="color:#1a6830;">45m</div></div>
+      <div class="gsm" style="border-radius:6px 14px 6px 14px;padding:9px 11px;box-shadow:0 3px 14px rgba(120,60,180,0.09);"><div class="lbl" style="color:#7848a8;margin-bottom:3px;">體重</div><div class="num" style="color:#5a2888;">72.3</div></div>
+      <div class="gsm" style="border-radius:14px 6px 14px 6px;padding:9px 11px;box-shadow:0 3px 14px rgba(190,150,30,0.08);"><div class="lbl" style="color:#987020;margin-bottom:3px;">連續</div><div class="num" style="color:#785010;">12天</div></div>
+    </div>
+    <div class="btn" style="color:#7a1840;background:rgba(255,255,255,0.38);border:1px solid rgba(255,255,255,0.58);">＋ 記錄今天</div>
+  </div>
+  <div class="nav" style="background:rgba(244,168,172,0.88);">
+    <div class="ni"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#c04060" stroke-width="2.2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><div class="nl" style="color:#c04060;font-weight:700;">首頁</div></div>
+    <div class="ni" style="opacity:.4;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#5a1030" stroke-width="1.8" stroke-linecap="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg><div class="nl" style="color:#5a1030;">飲食</div></div>
+    <div class="ni" style="opacity:.4;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#5a1030" stroke-width="1.8" stroke-linecap="round"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg><div class="nl" style="color:#5a1030;">運動</div></div>
+    <div class="ni" style="opacity:.4;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#5a1030" stroke-width="1.8" stroke-linecap="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg><div class="nl" style="color:#5a1030;">體重</div></div>
+    <div class="ni" style="opacity:.4;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#5a1030" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg><div class="nl" style="color:#5a1030;">報告</div></div>
+  </div>
+  <div class="foot" style="background:#f8c0c4;">
+    <h3 style="color:#5a1030;">珊瑚玫瑰</h3>
+    <p style="color:#902848;">飽滿珊瑚粉紅，背景如盛開玫瑰花瓣。比前版更有溫度與存在感，活潑中帶柔美</p>
+    <div class="swatches">
+      <div class="sw"><div class="dot" style="background:#c04060;"></div><div class="hex">#C04060</div></div>
+      <div class="sw"><div class="dot" style="background:#2a8840;"></div><div class="hex">#2A8840</div></div>
+      <div class="sw"><div class="dot" style="background:#fac8c8;"></div><div class="hex">#FAC8C8</div></div>
+      <div class="sw"><div class="dot" style="background:#5a1030;"></div><div class="hex">#5A1030</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── D: 青碧療癒 Caring Teal ─── -->
+<div class="card" id="cd" onclick="pick('d',this)">
+  <div class="screen" style="background:linear-gradient(148deg,#a8e8e0 0%,#88ddd0 45%,#a0e8d4 100%);">
+    <div class="blob" style="top:-45px;right:-25px;width:170px;height:170px;background:radial-gradient(circle,rgba(10,200,180,0.30) 0%,transparent 65%);"></div>
+    <div class="blob" style="bottom:-40px;left:-20px;width:130px;height:130px;background:radial-gradient(circle,rgba(249,115,22,0.18) 0%,transparent 65%);"></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <div>
+        <div class="lbl" style="color:#0a7870;">星期三</div>
+        <div style="font-family:var(--font-h);font-size:14px;color:#083830;font-weight:600;margin-top:2px;">3月 18日</div>
+      </div>
+      <div style="width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,0.45);border:1.5px solid rgba(255,255,255,0.7);display:flex;align-items:center;justify-content:center;">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#0a9488" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      </div>
+    </div>
+    <div class="g" style="padding:18px;text-align:center;margin-bottom:9px;box-shadow:0 6px 28px rgba(10,148,136,0.18);">
+      <div class="lbl" style="color:#0a9488;margin-bottom:9px;">今日健康分數</div>
+      <div class="disp" style="color:#083830;">82</div>
+      <div style="font-family:var(--font-h);font-size:11px;font-style:italic;color:#2aaa98;margin:8px 0 10px;">身體正在好的方向</div>
+      <div class="bdg" style="color:#e86010;border-color:rgba(232,96,16,0.35);">
+        <svg width="7" height="7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>比昨天好
+      </div>
+    </div>
+    <div class="g2" style="margin-bottom:8px;">
+      <div class="gsm" style="border-radius:14px 6px 14px 6px;padding:9px 11px;box-shadow:0 3px 14px rgba(240,110,20,0.12);"><div class="lbl" style="color:#b85810;margin-bottom:3px;">熱量</div><div class="num" style="color:#d07020;">1,240</div></div>
+      <div class="gsm" style="border-radius:6px 14px 6px 14px;padding:9px 11px;box-shadow:0 3px 14px rgba(10,148,136,0.12);"><div class="lbl" style="color:#0a9488;margin-bottom:3px;">運動</div><div class="num" style="color:#087870;">45m</div></div>
+      <div class="gsm" style="border-radius:6px 14px 6px 14px;padding:9px 11px;box-shadow:0 3px 14px rgba(10,148,136,0.08);"><div class="lbl" style="color:#0a9488;margin-bottom:3px;">體重</div><div class="num" style="color:#083830;">72.3</div></div>
+      <div class="gsm" style="border-radius:14px 6px 14px 6px;padding:9px 11px;box-shadow:0 3px 14px rgba(180,130,20,0.08);"><div class="lbl" style="color:#907010;margin-bottom:3px;">連續</div><div class="num" style="color:#6a5008;">12天</div></div>
+    </div>
+    <div class="btn" style="color:#085840;background:rgba(255,255,255,0.35);border:1px solid rgba(255,255,255,0.55);">＋ 記錄今天</div>
+  </div>
+  <div class="nav" style="background:rgba(120,220,204,0.88);">
+    <div class="ni"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#0a9488" stroke-width="2.2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><div class="nl" style="color:#0a9488;font-weight:700;">首頁</div></div>
+    <div class="ni" style="opacity:.4;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#083830" stroke-width="1.8" stroke-linecap="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg><div class="nl" style="color:#083830;">飲食</div></div>
+    <div class="ni" style="opacity:.4;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#083830" stroke-width="1.8" stroke-linecap="round"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg><div class="nl" style="color:#083830;">運動</div></div>
+    <div class="ni" style="opacity:.4;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#083830" stroke-width="1.8" stroke-linecap="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg><div class="nl" style="color:#083830;">體重</div></div>
+    <div class="ni" style="opacity:.4;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#083830" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg><div class="nl" style="color:#083830;">報告</div></div>
+  </div>
+  <div class="foot" style="background:#90dcd0;">
+    <h3 style="color:#083830;">青碧療癒 <span style="font-size:10px;opacity:.5;">（ui-ux-pro-max DB）</span></h3>
+    <p style="color:#0a7870;">飽滿青碧 + 暖橘 CTA，背景升至飽滿薄荷碧藍。清爽舒適，是四款裡最清新的選擇</p>
+    <div class="swatches">
+      <div class="sw"><div class="dot" style="background:#0a9488;"></div><div class="hex">#0A9488</div></div>
+      <div class="sw"><div class="dot" style="background:#e86010;"></div><div class="hex">#E86010</div></div>
+      <div class="sw"><div class="dot" style="background:#a8e8e0;"></div><div class="hex">#A8E8E0</div></div>
+      <div class="sw"><div class="dot" style="background:#083830;"></div><div class="hex">#083830</div></div>
+    </div>
+  </div>
+</div>
+
+</div>
+<div id="sel">尚未選擇</div>
+<script>
+function pick(id,el){
+  document.querySelectorAll('.card').forEach(c=>c.classList.remove('picked'));
+  el.classList.add('picked');
+  const name=el.querySelector('h3').textContent.trim();
+  const s=document.getElementById('sel');
+  s.className='on';s.textContent='已選擇：'+name;
+  fetch('/__record',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({type:'click',choice:id,text:name,timestamp:Date.now()})}).catch(()=>{});
+}
+</script>
+</body>
+</html>

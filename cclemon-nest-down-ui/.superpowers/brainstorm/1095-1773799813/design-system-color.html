@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NestDown Design System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #0a0a0a; color: #f8fafc; font-family: 'Barlow', sans-serif; padding: 20px; }
+  h2 { font-family: 'Barlow Condensed', sans-serif; font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+  .subtitle { color: #64748b; font-size: 13px; margin-bottom: 24px; }
+
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+  .card { border-radius: 16px; overflow: hidden; border: 2px solid transparent; cursor: pointer; transition: border-color 200ms, transform 150ms; }
+  .card:hover { transform: scale(1.01); }
+  .card.selected { border-color: #fff; }
+  .card-image { padding: 20px; }
+  .card-body { padding: 14px 16px 16px; background: #111; }
+  .card-body h3 { font-family: 'Barlow Condensed', sans-serif; font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+  .card-body p { font-size: 12px; color: #94a3b8; line-height: 1.5; }
+
+  /* Mock phone screen elements */
+  .screen { background: #111; border-radius: 12px; padding: 14px; }
+  .score-ring { width: 56px; height: 56px; border-radius: 50%; border-width: 3px; border-style: solid; display: flex; align-items: center; justify-content: center; font-family: 'Barlow Condensed', sans-serif; font-size: 20px; font-weight: 800; }
+  .stat-card { border-radius: 10px; padding: 10px 12px; }
+  .stat-val { font-family: 'Barlow Condensed', sans-serif; font-size: 22px; font-weight: 800; }
+  .stat-lbl { font-size: 9px; color: #555; margin-top: 1px; }
+  .btn { border-radius: 10px; padding: 10px; text-align: center; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 13px; letter-spacing: 0.5px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 10px 0; }
+  .label { font-size: 10px; color: #666; margin-bottom: 8px; font-family: 'Barlow Condensed', sans-serif; letter-spacing: 1px; text-transform: uppercase; }
+  .badge { display: inline-block; padding: 3px 8px; border-radius: 20px; font-size: 9px; font-weight: 600; margin-top: 4px; }
+
+  /* indicator */
+  #selection-indicator { position: fixed; bottom: 16px; right: 16px; background: #1e293b; border: 1px solid #334155; color: #94a3b8; padding: 8px 14px; border-radius: 20px; font-size: 12px; transition: all 200ms; }
+  #selection-indicator.has-selection { background: #16a34a; border-color: #16a34a; color: #fff; }
+</style>
+</head>
+<body>
+<h2>選擇主色調方向</h2>
+<p class="subtitle">設計系統：Dark OLED + Barlow Condensed 字體（運動感）× 微互動效果</p>
+
+<div class="cards">
+
+  <!-- Option A: Orange + Green (Fitness recommended) -->
+  <div class="card" id="card-orange" onclick="selectCard('orange', this)">
+    <div class="card-image" style="background:#0f0f0f;">
+      <div class="label">⚡ 健身App 最佳實踐配色</div>
+      <div class="screen">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+          <div class="score-ring" style="border-color:#f97316;color:#f97316;">82</div>
+          <div>
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;">今日健康分數</div>
+            <div class="badge" style="background:#f9731620;color:#f97316;">▲ 比昨天好 5 分</div>
+          </div>
+        </div>
+        <div class="grid2">
+          <div class="stat-card" style="background:#1a1a1a;">
+            <div class="stat-val" style="color:#f97316;">1,240</div>
+            <div class="stat-lbl">熱量 kcal</div>
+          </div>
+          <div class="stat-card" style="background:#1a1a1a;">
+            <div class="stat-val" style="color:#22c55e;">45 min</div>
+            <div class="stat-lbl">運動時間</div>
+          </div>
+          <div class="stat-card" style="background:#1a1a1a;">
+            <div class="stat-val" style="color:#fb923c;">72.3</div>
+            <div class="stat-lbl">體重 kg</div>
+          </div>
+          <div class="stat-card" style="background:#1a1a1a;">
+            <div class="stat-val" style="color:#22c55e;">🔥 12</div>
+            <div class="stat-lbl">連續天數</div>
+          </div>
+        </div>
+        <div class="btn" style="background:#f97316;color:#000;">+ 快速記錄</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>橘火 × 活力綠</h3>
+      <p>橘色=能量爆發感，綠色=目標達成感。UI-UX Pro Max 健身 App 首選配色。適合激勵型、行動導向的使用者</p>
+    </div>
+  </div>
+
+  <!-- Option B: Blue + Cyan (Health/Calm) -->
+  <div class="card" id="card-blue" onclick="selectCard('blue', this)">
+    <div class="card-image" style="background:#060d18;">
+      <div class="label">💙 健康追蹤 冷靜感</div>
+      <div class="screen" style="background:#0d1b2e;">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+          <div class="score-ring" style="border-color:#0891b2;color:#22d3ee;">82</div>
+          <div>
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;">今日健康分數</div>
+            <div class="badge" style="background:#0891b220;color:#22d3ee;">▲ 比昨天好 5 分</div>
+          </div>
+        </div>
+        <div class="grid2">
+          <div class="stat-card" style="background:#0f1e30;">
+            <div class="stat-val" style="color:#22d3ee;">1,240</div>
+            <div class="stat-lbl">熱量 kcal</div>
+          </div>
+          <div class="stat-card" style="background:#0f1e30;">
+            <div class="stat-val" style="color:#059669;">45 min</div>
+            <div class="stat-lbl">運動時間</div>
+          </div>
+          <div class="stat-card" style="background:#0f1e30;">
+            <div class="stat-val" style="color:#38bdf8;">72.3</div>
+            <div class="stat-lbl">體重 kg</div>
+          </div>
+          <div class="stat-card" style="background:#0f1e30;">
+            <div class="stat-val" style="color:#059669;">🔥 12</div>
+            <div class="stat-lbl">連續天數</div>
+          </div>
+        </div>
+        <div class="btn" style="background:linear-gradient(135deg,#0891b2,#22d3ee);color:#000;">+ 快速記錄</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>深海藍 × 青色</h3>
+      <p>冷靜、專業的健康管理感，類似 Apple Health / Garmin 風格。適合長期追蹤、數據導向的使用者</p>
+    </div>
+  </div>
+
+  <!-- Option C: Purple + Gradient (Premium) -->
+  <div class="card" id="card-purple" onclick="selectCard('purple', this)">
+    <div class="card-image" style="background:#0a0812;">
+      <div class="label">👑 質感精品 漸層感</div>
+      <div class="screen" style="background:#120d1f;">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+          <div class="score-ring" style="border-color:#a855f7;color:#c084fc;">82</div>
+          <div>
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;">今日健康分數</div>
+            <div class="badge" style="background:#a855f720;color:#c084fc;">▲ 比昨天好 5 分</div>
+          </div>
+        </div>
+        <div class="grid2">
+          <div class="stat-card" style="background:#1a1228;">
+            <div class="stat-val" style="color:#c084fc;">1,240</div>
+            <div class="stat-lbl">熱量 kcal</div>
+          </div>
+          <div class="stat-card" style="background:#1a1228;">
+            <div class="stat-val" style="color:#f472b6;">45 min</div>
+            <div class="stat-lbl">運動時間</div>
+          </div>
+          <div class="stat-card" style="background:#1a1228;">
+            <div class="stat-val" style="color:#a78bfa;">72.3</div>
+            <div class="stat-lbl">體重 kg</div>
+          </div>
+          <div class="stat-card" style="background:#1a1228;">
+            <div class="stat-val" style="color:#f472b6;">🔥 12</div>
+            <div class="stat-lbl">連續天數</div>
+          </div>
+        </div>
+        <div class="btn" style="background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;">+ 快速記錄</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>暗夜紫 × 漸層</h3>
+      <p>高質感、個性化，類似 Whoop / Oura Ring 風格。適合想要精品感、與眾不同的使用者</p>
+    </div>
+  </div>
+
+</div>
+
+<div id="selection-indicator">尚未選擇</div>
+
+<script>
+let selected = null;
+function selectCard(choice, el) {
+  document.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  selected = choice;
+  const ind = document.getElementById('selection-indicator');
+  ind.classList.add('has-selection');
+  ind.textContent = '已選擇：' + el.querySelector('h3').textContent;
+
+  // record event
+  const data = { type: 'click', choice, text: el.querySelector('h3').textContent, timestamp: Date.now() };
+  fetch('/__record', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(data) }).catch(()=>{});
+}
+</script>
+</body>
+</html>

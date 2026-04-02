@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NestDown — 自然玻璃風</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Raleway', sans-serif; padding: 24px 16px 80px; min-height: 100vh; }
+
+h2 { font-family: 'Lora', serif; font-size: 21px; font-weight: 600; margin-bottom: 6px; }
+.subtitle { font-size: 12px; margin-bottom: 28px; line-height: 1.6; opacity: 0.6; }
+
+.cards-wrap { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
+
+.card { border-radius: 24px; overflow: hidden; border: 2px solid transparent; cursor: pointer; transition: border-color 200ms, transform 200ms; }
+.card:hover { transform: translateY(-3px); }
+.card.selected { border-color: rgba(255,255,255,0.6); }
+.card-label { font-size: 10px; letter-spacing: 1.2px; text-transform: uppercase; margin-bottom: 14px; opacity: 0.5; font-family: 'Raleway', sans-serif; }
+
+/* Glass card component */
+.glass { background: rgba(255,255,255,0.25); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.4); border-radius: 20px; padding: 14px; }
+.glass-sm { background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.3); border-radius: 14px; padding: 10px 12px; }
+
+.val { font-family: 'Lora', serif; font-size: 21px; font-weight: 700; }
+.lbl { font-size: 9px; margin-top: 2px; opacity: 0.45; letter-spacing: 0.5px; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 10px 0; }
+.pill { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 9px; font-weight: 600; margin-top: 4px; background: rgba(255,255,255,0.3); backdrop-filter: blur(8px); }
+.btn-glass { border-radius: 12px; padding: 10px; text-align: center; font-family: 'Raleway', sans-serif; font-size: 12px; font-weight: 600; background: rgba(255,255,255,0.35); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.5); letter-spacing: 0.3px; transition: background 150ms; }
+.ring { width: 54px; height: 54px; border-radius: 50%; border-width: 2.5px; border-style: solid; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.2); backdrop-filter: blur(8px); }
+
+.card-foot { padding: 14px 16px 18px; }
+.card-foot h3 { font-family: 'Lora', serif; font-size: 15px; font-weight: 600; margin-bottom: 5px; }
+.card-foot p { font-size: 12px; line-height: 1.6; opacity: 0.7; }
+
+#sel { position: fixed; bottom: 20px; right: 20px; background: rgba(0,0,0,0.3); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.7); padding: 8px 16px; border-radius: 20px; font-size: 12px; transition: all 200ms; }
+#sel.on { background: rgba(80,160,100,0.5); border-color: rgba(120,200,130,0.5); color: #fff; }
+</style>
+</head>
+<body style="background: linear-gradient(135deg, #c8d8b8 0%, #d8c8b0 50%, #c0ccd8 100%);">
+
+<h2 style="color:#2a3820;">自然玻璃風 — 三種背景氣氛</h2>
+<p class="subtitle" style="color:#2a3820;">同樣的玻璃擬態卡片，搭配三種不同的自然背景，點選喜歡的</p>
+
+<div class="cards-wrap">
+
+  <!-- A: 森林晨霧 -->
+  <div class="card" id="c-a" onclick="pick('a',this)">
+    <div style="background: linear-gradient(150deg, #b8d4b0 0%, #8aad8a 40%, #6a9470 100%); padding: 20px; position: relative; overflow: hidden;">
+      <!-- decorative blobs -->
+      <div style="position:absolute;top:-30px;right:-20px;width:100px;height:100px;background:rgba(255,255,255,0.15);border-radius:50%;"></div>
+      <div style="position:absolute;bottom:-20px;left:-10px;width:70px;height:70px;background:rgba(255,255,255,0.1);border-radius:50%;"></div>
+
+      <div class="card-label" style="color:#2a4a30;">森林晨霧</div>
+      <div class="glass" style="margin-bottom:10px;">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div class="ring" style="border-color:rgba(255,255,255,0.7);">
+            <span style="font-family:'Lora',serif;font-size:18px;font-weight:700;color:#fff;">82</span>
+          </div>
+          <div>
+            <div style="font-family:'Lora',serif;font-size:13px;color:#fff;font-weight:500;">今日健康分數</div>
+            <div class="pill" style="color:#fff;">今天很好 ↑</div>
+          </div>
+        </div>
+      </div>
+      <div class="grid2">
+        <div class="glass-sm"><div class="val" style="color:#fff;">1,240</div><div class="lbl" style="color:#fff;">熱量 kcal</div></div>
+        <div class="glass-sm"><div class="val" style="color:#fff;">45 min</div><div class="lbl" style="color:#fff;">運動</div></div>
+        <div class="glass-sm"><div class="val" style="color:#fff;">72.3</div><div class="lbl" style="color:#fff;">體重 kg</div></div>
+        <div class="glass-sm"><div class="val" style="color:#fff;">12 天</div><div class="lbl" style="color:#fff;">連續</div></div>
+      </div>
+      <div class="btn-glass" style="color:#fff;margin-top:4px;">＋ 記錄今天</div>
+    </div>
+    <div class="card-foot" style="background:rgba(90,140,90,0.95);">
+      <h3 style="color:#e8f5e8;">森林晨霧 × 翠綠</h3>
+      <p style="color:#c0d8c0;">像在晨霧中的森林裡記錄日常，清新、呼吸感強，有一種「自然地好好生活」的溫柔</p>
+    </div>
+  </div>
+
+  <!-- B: 奶茶晚霞 -->
+  <div class="card" id="c-b" onclick="pick('b',this)">
+    <div style="background: linear-gradient(150deg, #f0d8c0 0%, #e0b898 40%, #d4a080 100%); padding: 20px; position: relative; overflow: hidden;">
+      <div style="position:absolute;top:-30px;right:-20px;width:100px;height:100px;background:rgba(255,255,255,0.2);border-radius:50%;"></div>
+      <div style="position:absolute;bottom:-20px;left:-10px;width:70px;height:70px;background:rgba(255,255,255,0.15);border-radius:50%;"></div>
+
+      <div class="card-label" style="color:#6a3820;">奶茶晚霞</div>
+      <div class="glass" style="margin-bottom:10px;">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div class="ring" style="border-color:rgba(255,255,255,0.7);">
+            <span style="font-family:'Lora',serif;font-size:18px;font-weight:700;color:#5a3020;">82</span>
+          </div>
+          <div>
+            <div style="font-family:'Lora',serif;font-size:13px;color:#5a3020;font-weight:500;">今日健康分數</div>
+            <div class="pill" style="color:#5a3020;">今天很好 ↑</div>
+          </div>
+        </div>
+      </div>
+      <div class="grid2">
+        <div class="glass-sm"><div class="val" style="color:#5a2810;">1,240</div><div class="lbl" style="color:#5a2810;">熱量 kcal</div></div>
+        <div class="glass-sm"><div class="val" style="color:#3a6030;">45 min</div><div class="lbl" style="color:#3a6030;">運動</div></div>
+        <div class="glass-sm"><div class="val" style="color:#4a4880;">72.3</div><div class="lbl" style="color:#4a4880;">體重 kg</div></div>
+        <div class="glass-sm"><div class="val" style="color:#7a5020;">12 天</div><div class="lbl" style="color:#7a5020;">連續</div></div>
+      </div>
+      <div class="btn-glass" style="color:#5a3020;margin-top:4px;">＋ 記錄今天</div>
+    </div>
+    <div class="card-foot" style="background:rgba(200,140,100,0.95);">
+      <h3 style="color:#fff8f0;">奶茶晚霞 × 暖土</h3>
+      <p style="color:#f0d8c0;">奶茶色的溫暖，像傍晚喝杯茶順手記錄一天。文字在玻璃上若隱若現，低調又有質感</p>
+    </div>
+  </div>
+
+  <!-- C: 薄荷雲霧 -->
+  <div class="card" id="c-c" onclick="pick('c',this)">
+    <div style="background: linear-gradient(150deg, #d0e8f0 0%, #b0d0e8 40%, #90b8e0 100%); padding: 20px; position: relative; overflow: hidden;">
+      <div style="position:absolute;top:-30px;right:-20px;width:100px;height:100px;background:rgba(255,255,255,0.25);border-radius:50%;"></div>
+      <div style="position:absolute;bottom:-20px;left:-10px;width:70px;height:70px;background:rgba(255,255,255,0.2);border-radius:50%;"></div>
+
+      <div class="card-label" style="color:#1a3a5a;">薄荷雲霧</div>
+      <div class="glass" style="margin-bottom:10px;">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div class="ring" style="border-color:rgba(255,255,255,0.8);">
+            <span style="font-family:'Lora',serif;font-size:18px;font-weight:700;color:#1a3a5a;">82</span>
+          </div>
+          <div>
+            <div style="font-family:'Lora',serif;font-size:13px;color:#1a3a5a;font-weight:500;">今日健康分數</div>
+            <div class="pill" style="color:#1a3a5a;">今天很好 ↑</div>
+          </div>
+        </div>
+      </div>
+      <div class="grid2">
+        <div class="glass-sm"><div class="val" style="color:#1a3a5a;">1,240</div><div class="lbl" style="color:#1a3a5a;">熱量 kcal</div></div>
+        <div class="glass-sm"><div class="val" style="color:#1a5a3a;">45 min</div><div class="lbl" style="color:#1a5a3a;">運動</div></div>
+        <div class="glass-sm"><div class="val" style="color:#3a3a7a;">72.3</div><div class="lbl" style="color:#3a3a7a;">體重 kg</div></div>
+        <div class="glass-sm"><div class="val" style="color:#1a4a6a;">12 天</div><div class="lbl" style="color:#1a4a6a;">連續</div></div>
+      </div>
+      <div class="btn-glass" style="color:#1a3a5a;margin-top:4px;">＋ 記錄今天</div>
+    </div>
+    <div class="card-foot" style="background:rgba(100,160,210,0.95);">
+      <h3 style="color:#f0f8ff;">薄荷雲霧 × 天藍</h3>
+      <p style="color:#d0e8f8;">清爽、輕盈，像清晨薄霧中的湖面。玻璃效果在藍白漸層上特別透亮，有種療癒的清潔感</p>
+    </div>
+  </div>
+
+</div>
+
+<div id="sel">尚未選擇</div>
+
+<script>
+function pick(id, el) {
+  document.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  const ind = document.getElementById('sel');
+  ind.className = 'on';
+  ind.textContent = '已選擇：' + el.querySelector('h3').textContent;
+  fetch('/__record', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ type:'click', choice: id, text: el.querySelector('h3').textContent, timestamp: Date.now() }) }).catch(()=>{});
+}
+</script>
+</body>
+</html>
