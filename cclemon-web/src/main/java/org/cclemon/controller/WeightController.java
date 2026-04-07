@@ -3,7 +3,6 @@ package org.cclemon.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.cclemon.api.WeightHandler;
-import org.cclemon.api.vo.PagedResult;
 import org.cclemon.api.vo.WeightChartData;
 import org.cclemon.api.vo.WeightRecordResult;
 import org.cclemon.api.vo.command.DeleteWeightCommand;
@@ -17,9 +16,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/weights")
+@RequestMapping("/weight")
 @RequiredArgsConstructor
 @Validated
 public class WeightController {
@@ -32,9 +32,9 @@ public class WeightController {
     }
 
     @PostMapping
-    public ResponseEntity<WeightRecordResult> upsertWeight(@Valid @RequestBody WeightUpsertRequest request) {
+    public ResponseEntity<WeightResponse> upsertWeight(@Valid @RequestBody WeightUpsertRequest request) {
         LocalDate today = LocalDate.now();
-        LocalDate measureDate = request.getMeasureDate() != null ? request.getMeasureDate() : today;
+        LocalDate measureDate = request.getDate() != null ? request.getDate() : today;
 
         if (measureDate.isAfter(today)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
@@ -43,24 +43,24 @@ public class WeightController {
         RecordWeightCommand command = RecordWeightCommand.builder()
                 .userId(getCurrentUserId())
                 .measureDate(measureDate)
-                .weightKg(request.getWeightKg())
+                .weightKg(request.getWeight())
                 .measureTime(request.getMeasureTime())
                 .note(request.getNote())
                 .build();
 
         WeightRecordResult result = weightHandler.record(command);
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(toResponse(result));
     }
 
     @GetMapping
-    public PagedResult<WeightRecordResult> listWeights(
+    public List<WeightResponse> listWeights(
             @RequestParam(value = "startDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam(value = "endDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
             @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "30") int size
+            @RequestParam(value = "size", defaultValue = "90") int size
     ) {
         LocalDate finalEndDate = (endDate == null) ? LocalDate.now() : endDate;
-        LocalDate finalStartDate = (startDate == null) ? finalEndDate.minusDays(29) : startDate;
+        LocalDate finalStartDate = (startDate == null) ? finalEndDate.minusDays(89) : startDate;
 
         ListWeightsQuery query = ListWeightsQuery.builder()
                 .userId(getCurrentUserId())
@@ -70,8 +70,21 @@ public class WeightController {
                 .size(size)
                 .build();
 
-        return weightHandler.list(query);
+        return weightHandler.list(query).getContent()
+                .stream().map(this::toResponse).toList();
     }
+
+    private WeightResponse toResponse(WeightRecordResult result) {
+        return new WeightResponse(
+                String.valueOf(result.getLogId()),
+                String.valueOf(result.getUserId()),
+                result.getMeasureDate() != null ? result.getMeasureDate().toString() : null,
+                result.getWeightKg() != null ? result.getWeightKg().doubleValue() : null,
+                null
+        );
+    }
+
+    record WeightResponse(String id, String userId, String date, Double weight, Object measurements) {}
 
     @GetMapping("/chart")
     public WeightChartData getChart(

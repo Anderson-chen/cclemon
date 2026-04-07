@@ -11,7 +11,7 @@ import java.time.LocalTime;
 
 /**
  * DTO for receiving weight upsert requests from the API.
- * Validation is less strict than the internal command.
+ * Supports both UI format (date/weight) and legacy format (measureDate/weightKg).
  */
 @Builder
 @AllArgsConstructor
@@ -19,10 +19,18 @@ import java.time.LocalTime;
 @Getter
 public class WeightUpsertRequest {
 
-    // measureDate is optional in the request, will default to today in the controller.
+    // UI format: date (maps to measureDate)
+    private LocalDate date;
+
+    // Legacy format: measureDate
     private LocalDate measureDate;
 
-    @NotNull // weightKg is still required.
+    // UI format: weight (maps to weightKg)
+    @DecimalMin("20.0")
+    @DecimalMax("300.0")
+    private BigDecimal weight;
+
+    // Legacy format: weightKg
     @DecimalMin("20.0")
     @DecimalMax("300.0")
     private BigDecimal weightKg;
@@ -30,4 +38,19 @@ public class WeightUpsertRequest {
     private LocalTime measureTime;
 
     private String note;
+
+    /**
+     * Returns the effective date, preferring UI format field.
+     */
+    public LocalDate getDate() {
+        return date != null ? date : measureDate;
+    }
+
+    /**
+     * Returns the effective weight, preferring UI format field.
+     */
+    @NotNull
+    public BigDecimal getWeight() {
+        return weight != null ? weight : weightKg;
+    }
 }
