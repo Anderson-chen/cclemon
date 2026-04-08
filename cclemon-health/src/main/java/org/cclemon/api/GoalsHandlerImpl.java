@@ -1,11 +1,10 @@
-package org.cclemon.health.api;
+package org.cclemon.api;
 
 import lombok.RequiredArgsConstructor;
-import org.cclemon.api.GoalsHandler;
 import org.cclemon.api.vo.GoalsResult;
 import org.cclemon.api.vo.command.UpdateGoalsCommand;
 import org.cclemon.entity.UserGoalSetting;
-import org.cclemon.health.internal.service.GoalsService;
+import org.cclemon.service.GoalsService;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 

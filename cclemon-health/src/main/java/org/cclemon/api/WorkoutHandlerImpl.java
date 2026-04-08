@@ -1,7 +1,6 @@
-package org.cclemon.health.api;
+package org.cclemon.api;
 
 import lombok.RequiredArgsConstructor;
-import org.cclemon.api.WorkoutHandler;
 import org.cclemon.api.vo.ExerciseEntryResult;
 import org.cclemon.api.vo.PersonalRecordResult;
 import org.cclemon.api.vo.TemplateResult;
@@ -15,7 +14,7 @@ import org.cclemon.entity.ExerciseTemplate;
 import org.cclemon.entity.TemplateExerciseEntry;
 import org.cclemon.entity.UserWorkout;
 import org.cclemon.entity.WorkoutExerciseEntry;
-import org.cclemon.health.internal.service.WorkoutService;
+import org.cclemon.service.WorkoutService;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 

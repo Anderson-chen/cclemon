@@ -1,7 +1,6 @@
-package org.cclemon.health.api;
+package org.cclemon.api;
 
 import lombok.RequiredArgsConstructor;
-import org.cclemon.api.WeightHandler;
 import org.cclemon.api.vo.PagedResult;
 import org.cclemon.api.vo.WeightChartData;
 import org.cclemon.api.vo.WeightRecordResult;
@@ -10,7 +9,7 @@ import org.cclemon.api.vo.command.RecordWeightCommand;
 import org.cclemon.api.vo.query.GetWeightChartQuery;
 import org.cclemon.api.vo.query.ListWeightsQuery;
 import org.cclemon.entity.UserWeightLog;
-import org.cclemon.health.internal.service.WeightService;
+import org.cclemon.service.WeightService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

@@ -1,9 +1,8 @@
-package org.cclemon.health.api;
+package org.cclemon.api;
 
 import lombok.RequiredArgsConstructor;
-import org.cclemon.api.ReportHandler;
 import org.cclemon.api.vo.ScoreResult;
-import org.cclemon.health.internal.service.ScoreService;
+import org.cclemon.service.ScoreService;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 

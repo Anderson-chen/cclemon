@@ -1,13 +1,12 @@
-package org.cclemon.health.api;
+package org.cclemon.api;
 
 import lombok.RequiredArgsConstructor;
-import org.cclemon.api.WaterHandler;
 import org.cclemon.api.vo.WaterEntryResult;
 import org.cclemon.api.vo.WaterLogEntryResult;
 import org.cclemon.api.vo.command.LogWaterCommand;
 import org.cclemon.api.vo.query.WaterQuery;
 import org.cclemon.entity.WaterDailyLog;
-import org.cclemon.health.internal.service.WaterService;
+import org.cclemon.service.WaterService;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 

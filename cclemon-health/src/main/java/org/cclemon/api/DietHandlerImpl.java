@@ -1,7 +1,6 @@
-package org.cclemon.health.api;
+package org.cclemon.api;
 
 import lombok.RequiredArgsConstructor;
-import org.cclemon.api.DietHandler;
 import org.cclemon.api.vo.FoodEntryResult;
 import org.cclemon.api.vo.FoodItemResult;
 import org.cclemon.api.vo.MealResult;
@@ -13,8 +12,8 @@ import org.cclemon.api.vo.query.ListMealsQuery;
 import org.cclemon.entity.Food;
 import org.cclemon.entity.Meal;
 import org.cclemon.entity.MealFoodEntry;
-import org.cclemon.health.internal.service.FoodLibraryService;
-import org.cclemon.health.internal.service.MealService;
+import org.cclemon.service.FoodLibraryService;
+import org.cclemon.service.MealService;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 

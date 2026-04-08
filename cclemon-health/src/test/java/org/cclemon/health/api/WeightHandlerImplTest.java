@@ -1,12 +1,13 @@
 package org.cclemon.health.api;
 
+import org.cclemon.api.WeightHandlerImpl;
 import org.cclemon.api.vo.WeightChartData;
 import org.cclemon.api.vo.WeightRecordResult;
 import org.cclemon.api.vo.command.RecordWeightCommand;
 import org.cclemon.api.vo.query.GetWeightChartQuery;
 import org.cclemon.entity.CclemonUser;
 import org.cclemon.entity.UserWeightLog;
-import org.cclemon.health.internal.service.WeightService;
+import org.cclemon.service.WeightService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

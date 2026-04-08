@@ -1,4 +1,4 @@
-package org.cclemon.health.internal.service;
+package org.cclemon.service;
 
 import lombok.RequiredArgsConstructor;
 import org.cclemon.entity.CclemonUser;

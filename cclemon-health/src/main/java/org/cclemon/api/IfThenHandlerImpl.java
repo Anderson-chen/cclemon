@@ -1,13 +1,12 @@
-package org.cclemon.health.api;
+package org.cclemon.api;
 
 import lombok.RequiredArgsConstructor;
-import org.cclemon.api.IfThenHandler;
 import org.cclemon.api.vo.IfThenResult;
 import org.cclemon.api.vo.command.CreateIfThenCommand;
 import org.cclemon.api.vo.command.DeleteIfThenCommand;
 import org.cclemon.api.vo.command.UpdateIfThenCommand;
 import org.cclemon.entity.IfThenPlan;
-import org.cclemon.health.internal.service.IfThenService;
+import org.cclemon.service.IfThenService;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
