@@ -46,12 +46,6 @@ import java.util.function.Function;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private final String cclemonUiUrl;
-
-    public SecurityConfig(@Value("${cclemon-ui.url}") String cclemonUiUrl) {
-        this.cclemonUiUrl = cclemonUiUrl;
-    }
-
     private static KeyPair generateRsaKey() {
         KeyPair keyPair;
         try {
@@ -213,15 +207,4 @@ public class SecurityConfig {
         return AuthorizationServerSettings.builder().build();
     }
 
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        CorsConfiguration config = new CorsConfiguration();
-        config.addAllowedHeader("*");
-        config.addAllowedMethod("*");
-        config.addAllowedOriginPattern(cclemonUiUrl);
-        config.setAllowCredentials(true);
-        source.registerCorsConfiguration("/**", config);
-        return source;
-    }
 }

@@ -34,7 +34,9 @@
       "Bash(git rm:*)",
       "Bash(./gradlew :cclemon-api:build :cclemon-health:build :cclemon-web:build -x test)",
       "Bash(./gradlew :cclemon-health:compileJava :cclemon-web:compileJava -x test)",
-      "Bash(./gradlew :cclemon-health:classes :cclemon-web:classes -x test)"
+      "Bash(./gradlew :cclemon-health:classes :cclemon-web:classes -x test)",
+      "Bash(xargs ls:*)",
+      "Bash(xargs wc:*)"
     ]
   }
 }
