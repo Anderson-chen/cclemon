@@ -1,0 +1,43 @@
+services:
+  cclemon-auth:
+    build:
+      context: ..
+      dockerfile: cclemon-auth/Dockerfile
+    container_name: cclemon-auth
+    ports:
+      - "9000:9000"
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      # Override dev profile's port 8080 back to the canonical auth-server port
+      SERVER_PORT: "9000"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - cclemon-network
+
+  mysql:
+    image: mysql:8.4
+    container_name: cclemon-mysql-auth
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: P@ssw0rd
+      MYSQL_DATABASE: cclemon-auth
+    volumes:
+      - mysql_auth_data:/var/lib/mysql
+      - ./docker/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pP@ssw0rd"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - cclemon-network
+
+volumes:
+  mysql_auth_data:
+
+networks:
+  cclemon-network:
+    external: true
