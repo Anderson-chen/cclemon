@@ -34,13 +34,14 @@ public class UserRepositoryOAuth2UserHandler implements Consumer<OAuth2User> {
 
             String sub = MapUtils.getString(attributes, "sub");
             String userName = MapUtils.getString(attributes, "email");
-            Optional<User> opt = userRepository.findByUsername(userName);
+            String name = MapUtils.getString(attributes, "name");
+            Optional<User> opt = userRepository.findByEmail(userName);
             if (opt.isEmpty() && StringUtils.isNotBlank(userName)) {
                 User newUser = new User();
                 newUser.setId(UUID.randomUUID().toString());
                 newUser.setProvider(registrationId);
                 newUser.setProviderId(sub);
-                newUser.setUsername(userName);
+                newUser.setUsername(name);
                 newUser.setEmail(userName);
                 this.userRepository.save(newUser);
             }
